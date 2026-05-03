@@ -214,5 +214,14 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+# Context Markdown files
+CLAUDE.md
+data-quality-tool-prompt1.md
+
+# Project-specific
+data/*
+!data/.gitkeep
+.chroma/
+
 # Streamlit
 .streamlit/secrets.toml
