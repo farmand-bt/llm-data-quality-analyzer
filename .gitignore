@@ -217,6 +217,7 @@ __marimo__/
 # Context Markdown files
 CLAUDE.md
 data-quality-tool-prompt1.md
+data-quality-tool-milestone2.md
 
 # Project-specific
 data/*

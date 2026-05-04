@@ -1,1 +1,325 @@
-# Profiler tests — implemented across Milestones 2–4
+from pathlib import Path
+
+import pandas as pd
+import pytest
+
+from profiler.missing import analyze_missing
+from profiler.report import build_report
+from profiler.stats import compute_stats
+from profiler.type_detector import detect_types
+
+FIXTURES = Path(__file__).parent / "fixtures"
+
+
+# ---------------------------------------------------------------------------
+# Shared fixtures
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def messy_df():
+    path = FIXTURES / "messy_sample.csv"
+    if path.exists():
+        return pd.read_csv(path)
+    return _make_messy_df()
+
+
+@pytest.fixture
+def clean_df():
+    return pd.DataFrame(
+        {
+            "price": [100.0, 200.0, 300.0, 400.0, 500.0],
+            "category": ["a", "b", "a", "b", "a"],
+        }
+    )
+
+
+def _make_messy_df() -> pd.DataFrame:
+    return pd.DataFrame(
+        {
+            "id": range(1, 11),
+            "age": [25, 30, None, 22, 45, 38, None, 29, 55, 33],
+            "salary": [50000, 60000, 70000, None, 80000, 55000, 90000, 65000, None, 72000],
+            "name": ["Alice", "Bob", "Carol", "Dave", "Eve", "Frank", "Grace", "Heidi", "Ivan", "Judy"],
+            "status": ["active", "inactive", "active", "active", None, "inactive", "active", None, "active", "inactive"],
+            "score_str": ["1.5", "2.3", "bad_val", "4.1", "5.0", "1.1", "3.3", "2.2", "4.4", "5.5"],
+            "date_str": ["2020-01-01", "2020-06-15", "2021-03-20", None, "2019-11-05",
+                         "2022-08-10", "2023-01-01", "2020-07-07", "2021-12-31", "2022-05-05"],
+        }
+    )
+
+
+# ---------------------------------------------------------------------------
+# type_detector
+# ---------------------------------------------------------------------------
+
+
+class TestTypeDetector:
+    def test_integer_column(self):
+        df = pd.DataFrame({"x": [1, 2, 3, 4, 5]})
+        result = detect_types(df)
+        assert result["x"]["inferred_type"] == "numeric"
+        assert result["x"]["type_mismatch"] is False
+
+    def test_float_column(self):
+        df = pd.DataFrame({"x": [1.1, 2.2, 3.3]})
+        result = detect_types(df)
+        assert result["x"]["inferred_type"] == "numeric"
+        assert result["x"]["type_mismatch"] is False
+
+    def test_categorical_low_cardinality(self):
+        df = pd.DataFrame({"cat": ["a", "b", "a", "c", "b", "a", "c", "b"]})
+        result = detect_types(df)
+        assert result["cat"]["inferred_type"] == "categorical"
+        assert result["cat"]["type_mismatch"] is False
+
+    def test_numeric_stored_as_string(self):
+        df = pd.DataFrame({"num_str": ["1.0", "2.0", "3.0", "4.0", "5.0"]})
+        result = detect_types(df)
+        assert result["num_str"]["inferred_type"] == "numeric"
+        assert result["num_str"]["type_mismatch"] is True
+
+    def test_mixed_numeric_and_strings(self):
+        df = pd.DataFrame({"mixed": ["1.5", "2.3", "bad", "4.1", "5.0", "1.1", "3.3", "2.2", "4.4", "5.5"]})
+        result = detect_types(df)
+        assert result["mixed"]["inferred_type"] == "mixed"
+        assert result["mixed"]["type_mismatch"] is True
+
+    def test_datetime_stored_as_string(self):
+        df = pd.DataFrame({"dt": ["2020-01-01", "2021-06-15", "2022-03-20", "2023-08-10", "2019-11-05"]})
+        result = detect_types(df)
+        assert result["dt"]["inferred_type"] == "datetime"
+        assert result["dt"]["type_mismatch"] is True
+
+    def test_boolean_stored_as_yes_no(self):
+        df = pd.DataFrame({"flag": ["yes", "no", "yes", "no", "yes"]})
+        result = detect_types(df)
+        assert result["flag"]["inferred_type"] == "boolean"
+        assert result["flag"]["type_mismatch"] is True
+
+    def test_native_bool_dtype(self):
+        df = pd.DataFrame({"b": [True, False, True, False]})
+        result = detect_types(df)
+        assert result["b"]["inferred_type"] == "boolean"
+        assert result["b"]["type_mismatch"] is False
+
+    def test_native_datetime_dtype(self):
+        df = pd.DataFrame({"dt": pd.to_datetime(["2020-01-01", "2021-01-01"])})
+        result = detect_types(df)
+        assert result["dt"]["inferred_type"] == "datetime"
+        assert result["dt"]["type_mismatch"] is False
+
+    def test_pandas_dtype_recorded(self):
+        df = pd.DataFrame({"x": pd.array([1, 2, 3], dtype="int64")})
+        result = detect_types(df)
+        assert result["x"]["pandas_dtype"] == "int64"
+
+    def test_all_columns_present(self, messy_df):
+        result = detect_types(messy_df)
+        assert set(result.keys()) == set(messy_df.columns)
+
+    def test_all_null_column(self):
+        df = pd.DataFrame({"empty": [None, None, None]})
+        result = detect_types(df)
+        assert result["empty"]["inferred_type"] == "categorical"
+        assert result["empty"]["type_mismatch"] is False
+
+
+# ---------------------------------------------------------------------------
+# stats
+# ---------------------------------------------------------------------------
+
+
+class TestStats:
+    def test_numeric_keys(self):
+        df = pd.DataFrame({"x": [1.0, 2.0, 3.0, 4.0, 5.0]})
+        type_info = detect_types(df)
+        result = compute_stats(df, type_info)
+        for key in ("mean", "median", "std", "min", "max", "skewness", "kurtosis", "zeros", "unique_count"):
+            assert key in result["x"]
+
+    def test_numeric_mean(self):
+        df = pd.DataFrame({"x": [1.0, 2.0, 3.0, 4.0, 5.0]})
+        type_info = detect_types(df)
+        result = compute_stats(df, type_info)
+        assert result["x"]["mean"] == pytest.approx(3.0)
+
+    def test_numeric_zeros(self):
+        df = pd.DataFrame({"x": [0.0, 0.0, 1.0, 2.0, 3.0]})
+        type_info = detect_types(df)
+        result = compute_stats(df, type_info)
+        assert result["x"]["zeros"] == 2
+
+    def test_categorical_keys(self):
+        df = pd.DataFrame({"cat": ["a", "b", "a", "c", "b", "a"]})
+        type_info = detect_types(df)
+        result = compute_stats(df, type_info)
+        for key in ("unique_count", "top_values", "cardinality_ratio"):
+            assert key in result["cat"]
+
+    def test_categorical_unique_count(self):
+        df = pd.DataFrame({"cat": ["a", "b", "a", "c", "b", "a"]})
+        type_info = detect_types(df)
+        result = compute_stats(df, type_info)
+        assert result["cat"]["unique_count"] == 3
+
+    def test_categorical_top_values(self):
+        df = pd.DataFrame({"cat": ["a", "a", "a", "b", "b", "c"]})
+        type_info = detect_types(df)
+        result = compute_stats(df, type_info)
+        assert result["cat"]["top_values"]["a"] == 3
+
+    def test_datetime_keys(self):
+        df = pd.DataFrame({"dt": pd.to_datetime(["2020-01-01", "2021-01-01", "2022-01-01"])})
+        type_info = detect_types(df)
+        result = compute_stats(df, type_info)
+        for key in ("min_date", "max_date", "range_days"):
+            assert key in result["dt"]
+
+    def test_datetime_range_days(self):
+        df = pd.DataFrame({"dt": pd.to_datetime(["2020-01-01", "2022-01-01"])})
+        type_info = detect_types(df)
+        result = compute_stats(df, type_info)
+        assert result["dt"]["range_days"] == 731  # 2020 is a leap year
+
+    def test_all_columns_covered(self, messy_df):
+        type_info = detect_types(messy_df)
+        result = compute_stats(messy_df, type_info)
+        assert set(result.keys()) == set(messy_df.columns)
+
+    def test_handles_missing_in_numeric(self):
+        df = pd.DataFrame({"x": [1.0, None, 3.0, None, 5.0]})
+        type_info = detect_types(df)
+        result = compute_stats(df, type_info)
+        assert result["x"]["mean"] == pytest.approx(3.0)
+
+
+# ---------------------------------------------------------------------------
+# missing
+# ---------------------------------------------------------------------------
+
+
+class TestMissingAnalysis:
+    def test_no_missing(self):
+        df = pd.DataFrame({"x": [1, 2, 3], "y": [4, 5, 6]})
+        result = analyze_missing(df)
+        assert result["overall_missing_pct"] == 0.0
+        assert result["total_missing_cells"] == 0
+
+    def test_missing_count(self):
+        df = pd.DataFrame({"x": [1, None, 3, None, 5]})
+        result = analyze_missing(df)
+        assert result["per_column"]["x"]["missing_count"] == 2
+        assert result["per_column"]["x"]["missing_pct"] == pytest.approx(40.0)
+
+    def test_overall_missing_pct(self):
+        df = pd.DataFrame({"x": [None, None, 3], "y": [4, 5, 6]})
+        result = analyze_missing(df)
+        # 2 missing out of 6 total cells
+        assert result["overall_missing_pct"] == pytest.approx(33.33, abs=0.1)
+
+    def test_co_occurrence(self):
+        df = pd.DataFrame(
+            {"a": [None, None, 3, 4, 5], "b": [None, None, 6, 7, 8]}
+        )
+        result = analyze_missing(df)
+        assert "a|b" in result["co_occurrence"]
+        assert result["co_occurrence"]["a|b"] == 2
+
+    def test_no_co_occurrence_when_no_overlap(self):
+        df = pd.DataFrame(
+            {"a": [None, 2, 3], "b": [1, None, 3]}
+        )
+        result = analyze_missing(df)
+        # They never missing in the same row
+        assert result["co_occurrence"].get("a|b", 0) == 0
+
+    def test_missing_pattern_none_for_complete(self):
+        df = pd.DataFrame({"x": [1, 2, 3, 4, 5]})
+        result = analyze_missing(df)
+        assert result["per_column"]["x"]["missing_pattern"] == "none"
+
+    def test_missing_pattern_mnar_high_pct(self):
+        df = pd.DataFrame({"x": [None] * 7 + [1, 2, 3]})
+        result = analyze_missing(df)
+        assert result["per_column"]["x"]["missing_pattern"] == "MNAR"
+
+    def test_missing_pattern_mcar(self):
+        import random
+        random.seed(42)
+        vals = [float(i) if random.random() > 0.1 else None for i in range(50)]
+        df = pd.DataFrame({"x": vals, "y": list(range(50))})
+        result = analyze_missing(df)
+        # Should not be MNAR (< 60%) and no co-occurrence with y (y has no missing)
+        assert result["per_column"]["x"]["missing_pattern"] in ("MCAR", "MAR")
+
+
+# ---------------------------------------------------------------------------
+# report
+# ---------------------------------------------------------------------------
+
+
+class TestBuildReport:
+    def test_top_level_keys(self, messy_df):
+        report = build_report(messy_df, "messy.csv")
+        for key in ("dataset", "columns", "duplicates", "correlations", "recommendations", "generated_at"):
+            assert key in report
+
+    def test_dataset_fields(self, messy_df):
+        report = build_report(messy_df, "test.csv")
+        ds = report["dataset"]
+        assert ds["name"] == "test.csv"
+        assert ds["rows"] == len(messy_df)
+        assert ds["columns"] == len(messy_df.columns)
+        assert isinstance(ds["quality_score"], int)
+        assert 0 <= ds["quality_score"] <= 100
+        assert ds["quality_grade"] in ("A", "B", "C", "D", "F")
+
+    def test_column_schema(self, messy_df):
+        report = build_report(messy_df, "test.csv")
+        assert set(report["columns"].keys()) == set(messy_df.columns)
+        for info in report["columns"].values():
+            for key in ("pandas_dtype", "inferred_type", "type_mismatch",
+                        "missing_count", "missing_pct", "stats",
+                        "outliers", "distribution", "warnings"):
+                assert key in info
+
+    def test_clean_data_gets_high_score(self, clean_df):
+        report = build_report(clean_df, "clean.csv")
+        assert report["dataset"]["quality_score"] >= 90
+        assert report["dataset"]["quality_grade"] == "A"
+
+    def test_missing_data_lowers_score(self, clean_df):
+        import numpy as np
+
+        messy = pd.DataFrame(
+            {"price": [np.nan] * len(clean_df), "category": clean_df["category"]}
+        )
+        report_clean = build_report(clean_df, "clean.csv")
+        report_messy = build_report(messy, "messy.csv")
+        assert report_clean["dataset"]["quality_score"] > report_messy["dataset"]["quality_score"]
+
+    def test_type_mismatch_lowers_score(self):
+        df_clean = pd.DataFrame({"x": [1.0, 2.0, 3.0], "y": ["a", "b", "a"]})
+        df_mismatch = pd.DataFrame({"x": ["1.0", "2.0", "3.0"], "y": ["a", "b", "a"]})
+        r_clean = build_report(df_clean, "c.csv")
+        r_mismatch = build_report(df_mismatch, "m.csv")
+        assert r_clean["dataset"]["quality_score"] > r_mismatch["dataset"]["quality_score"]
+
+    def test_warnings_generated_for_high_missing(self):
+        df = pd.DataFrame({"x": [None] * 8 + [1, 2]})
+        report = build_report(df, "t.csv")
+        warnings = report["columns"]["x"]["warnings"]
+        assert any("missing" in w.lower() for w in warnings)
+
+    def test_warnings_generated_for_type_mismatch(self):
+        df = pd.DataFrame({"x": ["1.0", "2.0", "3.0", "4.0", "5.0"]})
+        report = build_report(df, "t.csv")
+        warnings = report["columns"]["x"]["warnings"]
+        assert any("mismatch" in w.lower() for w in warnings)
+
+    def test_report_is_json_serializable(self, messy_df):
+        import json
+        report = build_report(messy_df, "test.csv")
+        # Should not raise
+        json.dumps(report)

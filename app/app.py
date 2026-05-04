@@ -6,8 +6,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import pandas as pd
 import streamlit as st
 
+from app.components import overview
 from config.settings import MAX_PREVIEW_ROWS
 from profiler.loader import load_file
+from profiler.report import build_report
 
 st.set_page_config(
     page_title="Data Quality Analyzer",
@@ -48,10 +50,15 @@ st.session_state["filename"] = uploaded_file.name
 st.subheader("Data Preview")
 st.dataframe(df.head(MAX_PREVIEW_ROWS), use_container_width=True)
 st.caption(
-    f"{len(df):,} rows x {len(df.columns):,} columns"
+    f"{len(df):,} rows × {len(df.columns):,} columns"
     f" — showing first {min(MAX_PREVIEW_ROWS, len(df))}"
 )
 
 st.divider()
-st.subheader("Quality Report")
-st.info("Quality analysis will appear here after Milestone 2.")
+
+with st.spinner("Profiling dataset…"):
+    report = build_report(df, uploaded_file.name)
+
+st.session_state["report"] = report
+
+overview.render(report)
