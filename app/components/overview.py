@@ -204,4 +204,32 @@ def _render_column_table(columns: dict) -> None:
                 "Warnings": len(info["warnings"]),
             }
         )
-    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+
+    df_table = pd.DataFrame(rows)
+
+    styled = (
+        df_table.style
+        .map(lambda v: "color: #dc2626;" if isinstance(v, int) and v > 0 else "",
+             subset=["Missing Count", "Warnings"])
+        .map(lambda v: "color: #dc2626;" if isinstance(v, str) and float(v.rstrip("%")) > 0 else "",
+             subset=["Missing %"])
+        .map(lambda v: "color: #dc2626;" if v == "⚠ Yes" else "",
+             subset=["Type Mismatch"])
+    )
+    st.dataframe(styled, use_container_width=True, hide_index=True)
+
+    with st.expander("What does the Pattern column mean?"):
+        st.markdown(
+            """
+            The **Pattern** column is a heuristic guess at *why* values are missing:
+
+            | Pattern | Meaning |
+            |---------|---------|
+            | **none** | No missing values — column is complete |
+            | **MCAR** | *Missing Completely At Random* — no detectable pattern; missingness appears random and unrelated to any other variable |
+            | **MAR** | *Missing At Random* — missingness strongly overlaps with another column also having missing values, suggesting a shared cause |
+            | **MNAR** | *Missing Not At Random* — over 60% of values are absent, suggesting the missingness is structural (e.g. a field only filled under certain conditions) |
+
+            These are heuristics, not statistical proofs. Use them as a starting point for investigation.
+            """
+        )

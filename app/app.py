@@ -48,7 +48,7 @@ st.session_state["df"] = df
 st.session_state["filename"] = uploaded_file.name
 
 st.subheader("Data Preview")
-st.dataframe(df.head(MAX_PREVIEW_ROWS), use_container_width=True)
+st.dataframe(df.head(MAX_PREVIEW_ROWS), use_container_width=True, hide_index=True)
 st.caption(
     f"{len(df):,} rows × {len(df.columns):,} columns"
     f" — showing first {min(MAX_PREVIEW_ROWS, len(df))}"

@@ -57,7 +57,7 @@ make clean     # remove build artifacts
 | Milestone | Focus | Status |
 |-----------|-------|--------|
 | 1 | Project scaffolding, file upload, data preview | Done |
-| 2 | Core profiling — type detection, stats, missing values | Planned |
+| 2 | Core profiling — type detection, stats, missing values | Done |
 | 3 | Per-column profiling, distribution charts, normality tests | Planned |
 | 4 | Outliers, duplicates, correlations, recommendations | Planned |
 | 5 | Interactive cleaning engine with export | Planned |
