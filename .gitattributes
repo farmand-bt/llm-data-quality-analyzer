@@ -1,2 +1,26 @@
 # Default: treat as text and normalize
 * text=auto
+
+# Force LF for source/code/docs
+*.py text eol=lf
+*.toml text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.txt text eol=lf
+Makefile text eol=lf
+*.sh text eol=lf
+*.lock text eol=lf
+
+# Windows scripts can stay CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary files (never modify line endings)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.zip binary
