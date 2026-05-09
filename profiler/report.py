@@ -3,6 +3,7 @@ from datetime import datetime
 import pandas as pd
 
 from config.settings import COLUMN_WARNING_MISSING_THRESHOLD, QUALITY_GRADE_THRESHOLDS
+from profiler.distributions import analyze_distributions
 from profiler.missing import analyze_missing
 from profiler.stats import compute_stats
 from profiler.type_detector import detect_types
@@ -46,7 +47,7 @@ def _quality_grade(score: int) -> str:
     return "F"
 
 
-def _column_warnings(col_type: dict, col_missing: dict) -> list[str]:
+def _column_warnings(col_type: dict, col_missing: dict, col_dist: dict) -> list[str]:
     warnings = []
     threshold_pct = COLUMN_WARNING_MISSING_THRESHOLD * 100
     if col_missing["missing_pct"] > threshold_pct:
@@ -57,6 +58,10 @@ def _column_warnings(col_type: dict, col_missing: dict) -> list[str]:
         warnings.append(
             f"Type mismatch: stored as {col_type['pandas_dtype']}, "
             f"inferred as {col_type['inferred_type']}"
+        )
+    if col_dist.get("high_cardinality"):
+        warnings.append(
+            "High cardinality: column may be an ID or free text rather than a true categorical"
         )
     return warnings
 
@@ -70,11 +75,13 @@ def build_report(df: pd.DataFrame, filename: str) -> dict:
     type_info = detect_types(df)
     missing_info = analyze_missing(df)
     stats_info = compute_stats(df, type_info)
+    dist_info = analyze_distributions(df, type_info, stats_info)
 
     quality_score = _compute_quality_score(type_info, missing_info)
 
     columns = {}
     for col in df.columns:
+        col_dist = dist_info[col]
         columns[col] = {
             "pandas_dtype": type_info[col]["pandas_dtype"],
             "inferred_type": type_info[col]["inferred_type"],
@@ -83,7 +90,7 @@ def build_report(df: pd.DataFrame, filename: str) -> dict:
             "missing_pct": missing_info["per_column"][col]["missing_pct"],
             "missing_pattern": missing_info["per_column"][col]["missing_pattern"],
             "stats": stats_info[col],
-            # Outlier and distribution fields populated in Milestone 4
+            # Outlier fields populated in Milestone 4
             "outliers": {
                 "iqr_count": None,
                 "zscore_count": None,
@@ -91,11 +98,16 @@ def build_report(df: pd.DataFrame, filename: str) -> dict:
                 "zscore_indices": [],
             },
             "distribution": {
-                "normality_pvalue": None,
-                "is_normal": None,
-                "skew_label": None,
+                "normality_pvalue": col_dist["normality_pvalue"],
+                "is_normal": col_dist["is_normal"],
+                "skew_label": col_dist["skew_label"],
+                "kurtosis_label": col_dist["kurtosis_label"],
+                "high_cardinality": col_dist["high_cardinality"],
+                "datetime_gaps": col_dist["datetime_gaps"],
             },
-            "warnings": _column_warnings(type_info[col], missing_info["per_column"][col]),
+            "warnings": _column_warnings(
+                type_info[col], missing_info["per_column"][col], col_dist
+            ),
         }
 
     return {

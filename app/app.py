@@ -6,7 +6,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import pandas as pd
 import streamlit as st
 
-from app.components import overview
+from app.components import column_report, overview
 from config.settings import MAX_PREVIEW_ROWS
 from profiler.loader import load_file
 from profiler.report import build_report
@@ -62,3 +62,6 @@ with st.spinner("Profiling dataset…"):
 st.session_state["report"] = report
 
 overview.render(report)
+
+st.divider()
+column_report.render(report)

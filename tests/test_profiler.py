@@ -3,6 +3,13 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
+from profiler.distributions import (
+    _detect_datetime_gaps,
+    _kurtosis_label,
+    _normality_test,
+    _skew_label,
+    analyze_distributions,
+)
 from profiler.missing import analyze_missing
 from profiler.report import build_report
 from profiler.stats import compute_stats
@@ -323,3 +330,167 @@ class TestBuildReport:
         report = build_report(messy_df, "test.csv")
         # Should not raise
         json.dumps(report)
+
+    def test_high_cardinality_warning(self):
+        # All-unique strings → classified as "text" (cardinality 1.0 > 0.5 threshold)
+        # → high_cardinality=True → cardinality warning generated
+        df = pd.DataFrame({"id": [f"user_{i}" for i in range(20)]})
+        report = build_report(df, "t.csv")
+        assert report["columns"]["id"]["inferred_type"] == "text"
+        assert any("cardinality" in w.lower() for w in report["columns"]["id"]["warnings"])
+
+    def test_distribution_fields_present(self, messy_df):
+        report = build_report(messy_df, "test.csv")
+        for info in report["columns"].values():
+            dist = info["distribution"]
+            for key in ("normality_pvalue", "is_normal", "skew_label",
+                        "kurtosis_label", "high_cardinality", "datetime_gaps"):
+                assert key in dist
+
+
+# ---------------------------------------------------------------------------
+# distributions
+# ---------------------------------------------------------------------------
+
+
+class TestDistributions:
+
+    # --- _normality_test ---
+
+    def test_normal_data_passes(self):
+        import numpy as np
+        rng = np.random.default_rng(42)
+        series = pd.Series(rng.normal(0, 1, 200))
+        pval, is_normal = _normality_test(series)
+        assert pval is not None
+        assert isinstance(is_normal, bool)
+
+    def test_uniform_data_fails_normality(self):
+        series = pd.Series(list(range(100)))  # clearly not normal
+        pval, is_normal = _normality_test(series)
+        assert pval is not None
+        assert is_normal is False
+
+    def test_too_few_values_returns_none(self):
+        series = pd.Series([1.0, 2.0])
+        pval, is_normal = _normality_test(series)
+        assert pval is None
+        assert is_normal is None
+
+    def test_all_null_returns_none(self):
+        series = pd.Series([None, None, None])
+        pval, is_normal = _normality_test(series)
+        assert pval is None
+        assert is_normal is None
+
+    def test_single_unique_value_handled(self):
+        # Constant column — zero variance; should not raise
+        series = pd.Series([5.0] * 10)
+        pval, is_normal = _normality_test(series)
+        # Either None (handled gracefully) or a valid float
+        assert pval is None or isinstance(pval, float)
+
+    # --- _skew_label ---
+
+    def test_skew_symmetric(self):
+        assert _skew_label(0.1) == "symmetric"
+        assert _skew_label(-0.3) == "symmetric"
+
+    def test_skew_moderately_right(self):
+        assert _skew_label(0.7) == "moderately right-skewed"
+
+    def test_skew_highly_right(self):
+        assert _skew_label(1.5) == "highly right-skewed"
+
+    def test_skew_highly_left(self):
+        assert _skew_label(-1.2) == "highly left-skewed"
+
+    def test_skew_none_returns_none(self):
+        assert _skew_label(None) is None
+
+    # --- _kurtosis_label ---
+
+    def test_kurtosis_leptokurtic(self):
+        assert _kurtosis_label(2.0) == "leptokurtic"
+
+    def test_kurtosis_platykurtic(self):
+        assert _kurtosis_label(-2.0) == "platykurtic"
+
+    def test_kurtosis_mesokurtic(self):
+        assert _kurtosis_label(0.5) == "mesokurtic"
+
+    def test_kurtosis_none_returns_none(self):
+        assert _kurtosis_label(None) is None
+
+    # --- _detect_datetime_gaps ---
+
+    def test_no_gaps_regular_series(self):
+        dt = pd.Series(pd.date_range("2020-01-01", periods=12, freq="MS"))
+        result = _detect_datetime_gaps(dt)
+        assert result["gap_count"] == 0
+
+    def test_gap_detected(self):
+        # Insert a 2-year gap between 2020 and 2022
+        dates = list(pd.date_range("2020-01-01", periods=6, freq="MS")) + \
+                list(pd.date_range("2022-06-01", periods=6, freq="MS"))
+        dt = pd.Series(dates)
+        result = _detect_datetime_gaps(dt)
+        assert result["gap_count"] >= 1
+        assert result["max_gap_days"] > 300
+
+    def test_single_date_returns_zero_gaps(self):
+        dt = pd.Series([pd.Timestamp("2020-01-01")])
+        result = _detect_datetime_gaps(dt)
+        assert result["gap_count"] == 0
+        assert result["max_gap_days"] is None
+
+    # --- analyze_distributions ---
+
+    def test_numeric_column_has_normality_fields(self):
+        df = pd.DataFrame({"x": [float(i) for i in range(20)]})
+        type_info = detect_types(df)
+        stats_info = compute_stats(df, type_info)
+        result = analyze_distributions(df, type_info, stats_info)
+        assert "normality_pvalue" in result["x"]
+        assert "skew_label" in result["x"]
+        assert "kurtosis_label" in result["x"]
+        assert result["x"]["high_cardinality"] is None
+
+    def test_text_column_high_cardinality_flagged(self):
+        # All-unique strings → type detector classifies as "text" (ratio 1.0 > 0.5)
+        # → distributions module flags high_cardinality=True for text columns
+        df = pd.DataFrame({"col": [f"item_{i}" for i in range(10)]})
+        type_info = detect_types(df)
+        stats_info = compute_stats(df, type_info)
+        result = analyze_distributions(df, type_info, stats_info)
+        assert type_info["col"]["inferred_type"] == "text"
+        assert result["col"]["high_cardinality"] is True
+
+    def test_categorical_low_cardinality_not_flagged(self):
+        df = pd.DataFrame({"cat": ["a", "b", "a", "b", "a", "b", "a", "b"]})
+        type_info = detect_types(df)
+        stats_info = compute_stats(df, type_info)
+        result = analyze_distributions(df, type_info, stats_info)
+        assert result["cat"]["high_cardinality"] is False
+
+    def test_datetime_column_returns_gaps(self):
+        df = pd.DataFrame({"dt": pd.date_range("2020-01-01", periods=10, freq="ME")})
+        type_info = detect_types(df)
+        stats_info = compute_stats(df, type_info)
+        result = analyze_distributions(df, type_info, stats_info)
+        assert result["dt"]["datetime_gaps"] is not None
+        assert "gap_count" in result["dt"]["datetime_gaps"]
+
+    def test_all_null_column_handled(self):
+        df = pd.DataFrame({"x": [None, None, None, None, None]})
+        type_info = detect_types(df)
+        stats_info = compute_stats(df, type_info)
+        # Should not raise
+        result = analyze_distributions(df, type_info, stats_info)
+        assert "normality_pvalue" in result["x"]
+
+    def test_all_columns_covered(self, messy_df):
+        type_info = detect_types(messy_df)
+        stats_info = compute_stats(messy_df, type_info)
+        result = analyze_distributions(messy_df, type_info, stats_info)
+        assert set(result.keys()) == set(messy_df.columns)
