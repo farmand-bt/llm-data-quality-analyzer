@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pandas as pd
 
-from config.settings import QUALITY_GRADE_THRESHOLDS
+from config.settings import COLUMN_WARNING_MISSING_THRESHOLD, QUALITY_GRADE_THRESHOLDS
 from profiler.missing import analyze_missing
 from profiler.stats import compute_stats
 from profiler.type_detector import detect_types
@@ -48,9 +48,10 @@ def _quality_grade(score: int) -> str:
 
 def _column_warnings(col_type: dict, col_missing: dict) -> list[str]:
     warnings = []
-    if col_missing["missing_pct"] > 50:
+    threshold_pct = COLUMN_WARNING_MISSING_THRESHOLD * 100
+    if col_missing["missing_pct"] > threshold_pct:
         warnings.append(
-            f"Over 50% of values are missing ({col_missing['missing_pct']:.1f}%)"
+            f"Over {threshold_pct:.0f}% of values are missing ({col_missing['missing_pct']:.1f}%)"
         )
     if col_type["type_mismatch"]:
         warnings.append(
