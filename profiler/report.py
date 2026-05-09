@@ -55,9 +55,17 @@ def _column_warnings(col_type: dict, col_missing: dict, col_dist: dict) -> list[
             f"Over {threshold_pct:.0f}% of values are missing ({col_missing['missing_pct']:.1f}%)"
         )
     if col_type["type_mismatch"]:
+        inferred = col_type["inferred_type"]
+        dtype = col_type["pandas_dtype"]
+        hints = {
+            "numeric": "consider converting with pd.to_numeric()",
+            "datetime": "consider converting with pd.to_datetime()",
+            "boolean": "consider casting to bool",
+            "mixed": "column contains mixed types — inspect and clean before casting",
+        }
+        hint = hints.get(inferred, "consider casting to the correct type")
         warnings.append(
-            f"Type mismatch: stored as {col_type['pandas_dtype']}, "
-            f"inferred as {col_type['inferred_type']}"
+            f"Type mismatch: values appear to be {inferred} but are stored as {dtype} — {hint}"
         )
     if col_dist.get("high_cardinality"):
         warnings.append(

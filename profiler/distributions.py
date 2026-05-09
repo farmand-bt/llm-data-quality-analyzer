@@ -10,11 +10,11 @@ def _normality_test(series: pd.Series) -> tuple[float | None, bool | None]:
     """Shapiro-Wilk for n ≤ 5000, D'Agostino-Pearson for larger samples.
 
     p ≥ 0.05 → fail to reject normality (treat as normal).
-    Returns (p_value, is_normal). Both None when n < 3.
+    Returns (p_value, is_normal). Both None when n < 3 or variance is zero.
     """
     vals = pd.to_numeric(series, errors="coerce").dropna()
     n = len(vals)
-    if n < 3:
+    if n < 3 or float(vals.std()) == 0:
         return None, None
     try:
         if n <= 5000:
@@ -57,7 +57,10 @@ def _detect_datetime_gaps(series: pd.Series) -> dict:
     """
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", UserWarning)
-        dt = pd.to_datetime(series, errors="coerce").dropna().sort_values()
+        try:
+            dt = pd.to_datetime(series, format="mixed", errors="coerce").dropna().sort_values()
+        except Exception:
+            dt = pd.to_datetime(series, errors="coerce").dropna().sort_values()
     if len(dt) < 2:
         return {"max_gap_days": None, "gap_count": 0, "median_gap_days": None}
     diffs_days = dt.diff().dropna().dt.days

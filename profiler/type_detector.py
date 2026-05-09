@@ -37,12 +37,17 @@ def _infer_type(series: pd.Series) -> tuple[str, bool]:
     if numeric_ratio >= _NUMERIC_THRESHOLD:
         return "mixed", True  # mostly numeric with stray non-numerics
 
-    # Datetime check — only when the column isn't mostly numeric-looking
+    # Datetime check — only when the column isn't mostly numeric-looking.
+    # format="mixed" lets pandas parse each value individually, which handles columns
+    # that contain dates in more than one format (e.g. ISO + DD/MM/YYYY + "Jan 15 2020").
     if numeric_ratio < 0.5:
         try:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", UserWarning)
-                dt_parsed = pd.to_datetime(non_null, errors="coerce")
+                try:
+                    dt_parsed = pd.to_datetime(non_null, format="mixed", errors="coerce")
+                except Exception:
+                    dt_parsed = pd.to_datetime(non_null, errors="coerce")
             datetime_ratio = float(dt_parsed.notna().mean())
             if datetime_ratio >= _DATETIME_THRESHOLD:
                 return "datetime", True

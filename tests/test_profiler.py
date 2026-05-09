@@ -384,11 +384,11 @@ class TestDistributions:
         assert is_normal is None
 
     def test_single_unique_value_handled(self):
-        # Constant column — zero variance; should not raise
+        # Constant column — zero variance; normality is undefined, both fields are None
         series = pd.Series([5.0] * 10)
         pval, is_normal = _normality_test(series)
-        # Either None (handled gracefully) or a valid float
-        assert pval is None or isinstance(pval, float)
+        assert pval is None
+        assert is_normal is None
 
     # --- _skew_label ---
 

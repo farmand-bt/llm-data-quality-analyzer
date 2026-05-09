@@ -179,42 +179,46 @@ def _render_stats_block(info: dict) -> None:
     st.markdown("**Key Stats**")
 
     if inferred in ("numeric", "mixed"):
-        lines = []
+        rows = []
         for label, key in [
             ("Mean", "mean"), ("Median", "median"), ("Std Dev", "std"),
-            ("Min", "min"), ("Max", "max"), ("Zeros", "zeros"),
-            ("Unique", "unique_count"),
+            ("Min", "min"), ("Max", "max"), ("Zeros", "zeros"), ("Unique", "unique_count"),
         ]:
             val = s.get(key)
             if val is not None:
                 fmt = f"{val:,.4g}" if isinstance(val, float) else f"{val:,}"
-                lines.append(f"**{label}:** {fmt}")
-        st.markdown("  \n".join(lines))
+                rows.append({"Metric": label, "Value": fmt})
+        if rows:
+            st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
 
     elif inferred in ("categorical", "boolean"):
-        st.markdown(
-            f"**Unique values:** {s.get('unique_count', '—')}  \n"
-            f"**Cardinality ratio:** {s.get('cardinality_ratio', 0):.1%}"
-        )
+        rows = [
+            {"Metric": "Unique values", "Value": str(s.get("unique_count", "—"))},
+            {"Metric": "Cardinality ratio", "Value": f"{s.get('cardinality_ratio', 0):.1%}"},
+        ]
+        st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
         top = s.get("top_values", {})
         if top:
-            st.markdown("**Top values:**")
-            for k, v in list(top.items())[:5]:
-                st.markdown(f"&nbsp;&nbsp;• `{k}` — {v:,}")
+            st.markdown("**Top values**")
+            top_rows = [{"Value": str(k), "Count": f"{v:,}"} for k, v in list(top.items())[:5]]
+            st.dataframe(pd.DataFrame(top_rows), hide_index=True, use_container_width=True)
 
     elif inferred == "datetime":
-        st.markdown(
-            f"**Min date:** {s.get('min_date', '—')}  \n"
-            f"**Max date:** {s.get('max_date', '—')}  \n"
-            f"**Range:** {s.get('range_days', '—')} days"
-        )
+        rows = [
+            {"Metric": "Min date", "Value": str(s.get("min_date", "—"))},
+            {"Metric": "Max date", "Value": str(s.get("max_date", "—"))},
+            {"Metric": "Range (days)", "Value": str(s.get("range_days", "—"))},
+        ]
+        st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
 
     elif inferred == "text":
-        st.markdown(
-            f"**Unique values:** {s.get('unique_count', '—')}  \n"
-            f"**Avg length:** {s.get('avg_length', 0):.1f} chars  \n"
-            f"**Min / Max length:** {s.get('min_length', '—')} / {s.get('max_length', '—')} chars"
-        )
+        rows = [
+            {"Metric": "Unique values", "Value": str(s.get("unique_count", "—"))},
+            {"Metric": "Avg length", "Value": f"{s.get('avg_length', 0):.1f} chars"},
+            {"Metric": "Max length", "Value": f"{s.get('max_length', '—')} chars"},
+            {"Metric": "Min length", "Value": f"{s.get('min_length', '—')} chars"},
+        ]
+        st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
 
 
 def _render_distribution_info(info: dict) -> None:
@@ -342,7 +346,10 @@ def _categorical_chart(top_values: dict, col: str) -> go.Figure | None:
 def _datetime_chart(series: pd.Series, col: str) -> go.Figure | None:
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", UserWarning)
-        dt = pd.to_datetime(series.dropna(), errors="coerce").dropna()
+        try:
+            dt = pd.to_datetime(series.dropna(), format="mixed", errors="coerce").dropna()
+        except Exception:
+            dt = pd.to_datetime(series.dropna(), errors="coerce").dropna()
     if len(dt) == 0:
         return None
 

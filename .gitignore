@@ -224,6 +224,7 @@ data-quality-tool-milestone3.md
 data/*
 !data/.gitkeep
 .chroma/
+*.csv
 
 # Streamlit
 .streamlit/secrets.toml

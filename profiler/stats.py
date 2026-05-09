@@ -38,7 +38,10 @@ def _datetime_stats(series: pd.Series) -> dict:
     if pd.api.types.is_datetime64_any_dtype(series.dtype):
         dt = series.dropna()
     else:
-        dt = pd.to_datetime(series, errors="coerce").dropna()
+        try:
+            dt = pd.to_datetime(series, format="mixed", errors="coerce").dropna()
+        except Exception:
+            dt = pd.to_datetime(series, errors="coerce").dropna()
     if len(dt) == 0:
         return {"min_date": None, "max_date": None, "range_days": None}
     return {
