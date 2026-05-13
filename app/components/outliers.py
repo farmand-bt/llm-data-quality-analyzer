@@ -26,6 +26,19 @@ def render(report: dict) -> None:
     )
     use_iqr = method == "IQR (1.5×)"
 
+    if use_iqr:
+        st.caption(
+            "**IQR (Interquartile Range):** flags values that fall more than 1.5× the "
+            "distance between the 25th and 75th percentiles below Q1 or above Q3. "
+            "Robust to skewed data and does not assume a normal distribution."
+        )
+    else:
+        st.caption(
+            "**Z-score (Standard Score):** flags values more than 3 standard deviations "
+            "from the column mean. Works best when the data is approximately normally "
+            "distributed; sensitive to extreme values in heavily skewed columns."
+        )
+
     # Summary table
     st.markdown("**Outlier Summary**")
     rows = []
@@ -102,7 +115,7 @@ def _boxplot_with_outliers(
         y=vals.tolist(),
         name=col,
         boxpoints=False,
-        fillcolor="#93c5fd40",
+        fillcolor="rgba(147, 197, 253, 0.25)",
         line=dict(color="#3b82f6"),
         showlegend=False,
     ))

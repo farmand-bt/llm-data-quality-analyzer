@@ -21,6 +21,12 @@ def render(report: dict) -> None:
     # Pearson heatmap
     if pearson:
         st.markdown("**Pearson Correlation — Numeric Columns**")
+        st.caption(
+            "Pearson r measures the linear relationship between two numeric columns. "
+            "Values range from −1 (perfect negative) to +1 (perfect positive); "
+            "0 means no linear relationship. "
+            f"Pairs with |r| ≥ {HIGH_CORRELATION_THRESHOLD} are flagged as potentially redundant."
+        )
         _render_pearson_heatmap(pearson)
 
     # High-correlation pairs
@@ -52,6 +58,11 @@ def render(report: dict) -> None:
     # Cramér's V section
     if cramers:
         with st.expander("Cramér's V — Categorical Associations"):
+            st.caption(
+                "Cramér's V measures the strength of association between two categorical columns. "
+                "Values range from 0 (no association) to 1 (perfect association). "
+                "Unlike Pearson r, it does not indicate direction — only strength."
+            )
             _render_cramers_table(cramers)
 
 

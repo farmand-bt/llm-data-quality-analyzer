@@ -156,6 +156,15 @@ def _render_meta(info: dict) -> None:
         f"**Pattern:** {info.get('missing_pattern', '—')}"
     )
 
+    _pattern = info.get("missing_pattern", "none")
+    _pattern_hints = {
+        "MCAR": "MCAR — Missing Completely At Random: no detectable pattern",
+        "MAR":  "MAR — Missing At Random: missingness overlaps with another column",
+        "MNAR": "MNAR — Missing Not At Random: likely structural absence (>60% missing)",
+    }
+    if _pattern in _pattern_hints:
+        st.caption(_pattern_hints[_pattern])
+
     # Missing severity bar
     pct = info["missing_pct"]
     if pct > 0:
