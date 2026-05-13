@@ -124,6 +124,7 @@ def build_report(df: pd.DataFrame, filename: str) -> dict:
             "rows": len(df),
             "columns": len(df.columns),
             "memory_mb": round(df.memory_usage(deep=True).sum() / 1e6, 3),
+            "overall_missing_pct": missing_info["overall_missing_pct"],
             "quality_score": quality_score,
             "quality_grade": _quality_grade(quality_score),
         },

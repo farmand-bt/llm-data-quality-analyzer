@@ -78,9 +78,7 @@ def _render_score_and_metrics(dataset: dict, columns: dict) -> None:
         )
 
     with col_metrics:
-        total_cells = dataset["rows"] * dataset["columns"]
-        total_missing = sum(v["missing_count"] for v in columns.values())
-        overall_missing_pct = round(total_missing / total_cells * 100, 1) if total_cells > 0 else 0.0
+        overall_missing_pct = dataset["overall_missing_pct"]
         mismatch_count = sum(1 for v in columns.values() if v["type_mismatch"])
         warn_count = sum(len(v["warnings"]) for v in columns.values())
 

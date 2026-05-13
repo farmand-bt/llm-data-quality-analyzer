@@ -1,3 +1,4 @@
+MAX_UPLOAD_SIZE_MB = 200
 MISSING_THRESHOLD = 0.30              # Bar chart: columns above this % are flagged red
 COLUMN_WARNING_MISSING_THRESHOLD = 0.50  # Column warning: raise a warning when missing % exceeds this
 OUTLIER_IQR_MULTIPLIER = 1.5

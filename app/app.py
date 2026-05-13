@@ -7,9 +7,14 @@ import pandas as pd
 import streamlit as st
 
 from app.components import column_report, overview
-from config.settings import MAX_PREVIEW_ROWS
+from config.settings import MAX_PREVIEW_ROWS, MAX_UPLOAD_SIZE_MB
 from profiler.loader import load_file
 from profiler.report import build_report
+
+
+@st.cache_data(show_spinner=False)
+def _build_report_cached(df: pd.DataFrame, filename: str) -> dict:
+    return build_report(df, filename)
 
 st.set_page_config(
     page_title="Data Quality Analyzer",
@@ -38,6 +43,13 @@ if uploaded_file is None:
     st.info("Upload a file using the sidebar to begin.")
     st.stop()
 
+if uploaded_file.size > MAX_UPLOAD_SIZE_MB * 1024 * 1024:
+    st.error(
+        f"File is too large ({uploaded_file.size / 1024**2:.1f} MB). "
+        f"Maximum supported size is {MAX_UPLOAD_SIZE_MB} MB."
+    )
+    st.stop()
+
 try:
     df = load_file(uploaded_file, sheet_name=sheet_name)
 except Exception as e:
@@ -57,7 +69,7 @@ st.caption(
 st.divider()
 
 with st.spinner("Profiling dataset…"):
-    report = build_report(df, uploaded_file.name)
+    report = _build_report_cached(df, uploaded_file.name)
 
 st.session_state["report"] = report
 
