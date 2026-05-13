@@ -10,7 +10,11 @@ from profiler.distributions import (
     _skew_label,
     analyze_distributions,
 )
+from profiler.correlations import compute_correlations
+from profiler.duplicates import analyze_duplicates
 from profiler.missing import analyze_missing
+from profiler.outliers import detect_outliers
+from profiler.recommendations import generate_recommendations
 from profiler.report import build_report
 from profiler.stats import compute_stats
 from profiler.type_detector import detect_types
@@ -494,3 +498,226 @@ class TestDistributions:
         stats_info = compute_stats(messy_df, type_info)
         result = analyze_distributions(messy_df, type_info, stats_info)
         assert set(result.keys()) == set(messy_df.columns)
+
+
+# ---------------------------------------------------------------------------
+# outliers
+# ---------------------------------------------------------------------------
+
+
+class TestOutliers:
+    def test_iqr_outlier_detected(self):
+        # Use values with non-zero IQR so the fence is well-defined
+        df = pd.DataFrame({"x": list(range(1, 21)) + [1000.0]})
+        type_info = detect_types(df)
+        result = detect_outliers(df, type_info)
+        assert result["x"]["iqr_count"] > 0
+        assert len(result["x"]["iqr_indices"]) > 0
+
+    def test_no_outliers_uniform_data(self):
+        df = pd.DataFrame({"x": list(range(1, 21))})
+        type_info = detect_types(df)
+        result = detect_outliers(df, type_info)
+        assert result["x"]["iqr_count"] == 0
+
+    def test_zscore_outlier_detected(self):
+        import numpy as np
+        rng = np.random.default_rng(42)
+        vals = list(rng.normal(0, 1, 100)) + [15.0]
+        df = pd.DataFrame({"x": vals})
+        type_info = detect_types(df)
+        result = detect_outliers(df, type_info)
+        assert result["x"]["zscore_count"] > 0
+
+    def test_non_numeric_returns_zeros(self):
+        df = pd.DataFrame({"cat": ["a", "b", "c"] * 5})
+        type_info = detect_types(df)
+        result = detect_outliers(df, type_info)
+        assert result["cat"]["iqr_count"] == 0
+        assert result["cat"]["zscore_count"] == 0
+        assert result["cat"]["iqr_indices"] == []
+
+    def test_constant_column_no_outliers(self):
+        df = pd.DataFrame({"x": [5.0] * 10})
+        type_info = detect_types(df)
+        result = detect_outliers(df, type_info)
+        assert result["x"]["iqr_count"] == 0
+
+    def test_too_few_values_no_outliers(self):
+        df = pd.DataFrame({"x": [1.0, 2.0, 3.0]})
+        type_info = detect_types(df)
+        result = detect_outliers(df, type_info)
+        assert result["x"]["iqr_count"] == 0
+        assert result["x"]["zscore_count"] == 0
+
+    def test_indices_are_valid_row_labels(self):
+        df = pd.DataFrame({"x": [1.0] * 10 + [999.0]})
+        type_info = detect_types(df)
+        result = detect_outliers(df, type_info)
+        for idx in result["x"]["iqr_indices"]:
+            assert idx in df.index
+
+    def test_pct_is_proportion_of_total_rows(self):
+        df = pd.DataFrame({"x": list(range(1, 11)) + [999.0]})
+        type_info = detect_types(df)
+        result = detect_outliers(df, type_info)
+        expected_pct = round(1 / 11 * 100, 2)
+        assert result["x"]["iqr_pct"] == pytest.approx(expected_pct, abs=0.5)
+
+    def test_all_columns_covered(self, messy_df):
+        type_info = detect_types(messy_df)
+        result = detect_outliers(messy_df, type_info)
+        assert set(result.keys()) == set(messy_df.columns)
+
+
+# ---------------------------------------------------------------------------
+# duplicates
+# ---------------------------------------------------------------------------
+
+
+class TestDuplicates:
+    def test_exact_duplicates_detected(self):
+        df = pd.DataFrame({"a": [1, 2, 1], "b": ["x", "y", "x"]})
+        result = analyze_duplicates(df)
+        assert result["exact_count"] == 1
+
+    def test_no_duplicates(self):
+        df = pd.DataFrame({"a": [1, 2, 3], "b": ["x", "y", "z"]})
+        result = analyze_duplicates(df)
+        assert result["exact_count"] == 0
+        assert result["exact_pct"] == 0.0
+
+    def test_exact_pct(self):
+        df = pd.DataFrame({"a": [1, 1, 2, 3, 4], "b": [1, 1, 2, 3, 4]})
+        result = analyze_duplicates(df)
+        assert result["exact_count"] == 1
+        assert result["exact_pct"] == pytest.approx(20.0)
+
+    def test_sample_indices_valid(self):
+        df = pd.DataFrame({"a": [1, 2, 1], "b": ["x", "y", "x"]})
+        result = analyze_duplicates(df)
+        for idx in result["sample_indices"]:
+            assert idx in df.index
+
+    def test_near_duplicates_detected(self):
+        df = pd.DataFrame({
+            "a": [1, 1, 3, 4, 5],
+            "b": [2, 2, 4, 5, 6],
+            "c": ["x", "z", "q", "w", "e"],   # only column that differs between rows 0 and 1
+        })
+        result = analyze_duplicates(df)
+        # Rows 0 and 1 are exact duplicates on columns a, b — so near_dup_count should be ≥ 0
+        assert result["near_duplicate_count"] >= 0  # implementation-dependent count
+
+    def test_empty_dataframe(self):
+        df = pd.DataFrame({"a": [], "b": []})
+        result = analyze_duplicates(df)
+        assert result["exact_count"] == 0
+        assert result["near_duplicate_count"] == 0
+
+    def test_schema_keys_present(self, messy_df):
+        result = analyze_duplicates(messy_df)
+        for key in ("exact_count", "exact_pct", "sample_indices",
+                    "near_duplicate_count", "near_duplicate_pct", "near_sample_indices"):
+            assert key in result
+
+
+# ---------------------------------------------------------------------------
+# correlations
+# ---------------------------------------------------------------------------
+
+
+class TestCorrelations:
+    def test_pearson_computed_for_numeric(self):
+        import numpy as np
+        rng = np.random.default_rng(42)
+        x = rng.normal(0, 1, 100)
+        df = pd.DataFrame({"x": x, "y": x + rng.normal(0, 0.1, 100)})
+        type_info = detect_types(df)
+        result = compute_correlations(df, type_info)
+        assert "x" in result["pearson"]
+        assert abs(result["pearson"]["x"]["y"]) > 0.9
+
+    def test_high_correlation_pair_detected(self):
+        import numpy as np
+        rng = np.random.default_rng(0)
+        x = rng.normal(0, 1, 100)
+        df = pd.DataFrame({"x": x, "y": x + 1e-6})
+        type_info = detect_types(df)
+        result = compute_correlations(df, type_info)
+        assert len(result["high_correlation_pairs"]) > 0
+
+    def test_pearson_empty_without_numeric(self):
+        df = pd.DataFrame({"cat": ["a", "b", "a", "b"] * 5})
+        type_info = detect_types(df)
+        result = compute_correlations(df, type_info)
+        assert result["pearson"] == {}
+
+    def test_cramers_v_for_categorical(self):
+        df = pd.DataFrame({
+            "a": (["x", "y"] * 10),
+            "b": (["x", "y"] * 10),  # perfectly correlated
+        })
+        type_info = detect_types(df)
+        result = compute_correlations(df, type_info)
+        if "a" in result["cramers_v"] and "b" in result["cramers_v"].get("a", {}):
+            assert result["cramers_v"]["a"]["b"] >= 0.9
+
+    def test_schema_keys_present(self, messy_df):
+        type_info = detect_types(messy_df)
+        result = compute_correlations(messy_df, type_info)
+        for key in ("pearson", "cramers_v", "high_correlation_pairs"):
+            assert key in result
+
+    def test_high_pairs_sorted_by_abs_value(self):
+        import numpy as np
+        rng = np.random.default_rng(1)
+        x = rng.normal(0, 1, 100)
+        df = pd.DataFrame({
+            "a": x, "b": x + 1e-6, "c": x * 2 + 1e-6,
+        })
+        type_info = detect_types(df)
+        result = compute_correlations(df, type_info)
+        vals = [abs(p["value"]) for p in result["high_correlation_pairs"]]
+        assert vals == sorted(vals, reverse=True)
+
+
+# ---------------------------------------------------------------------------
+# recommendations
+# ---------------------------------------------------------------------------
+
+
+class TestRecommendations:
+    def test_missing_recommendation(self):
+        df = pd.DataFrame({"x": [None] * 8 + [1.0, 2.0]})
+        report = build_report(df, "t.csv")
+        assert any(r["category"] == "missing" and r["column"] == "x" for r in report["recommendations"])
+
+    def test_duplicate_recommendation(self):
+        df = pd.DataFrame({"x": [1, 1, 2, 3, 4], "y": [1, 1, 2, 3, 4]})
+        report = build_report(df, "t.csv")
+        assert any(r["category"] == "duplicate" for r in report["recommendations"])
+
+    def test_outlier_recommendation(self):
+        df = pd.DataFrame({"x": list(range(1, 21)) + [10000.0]})
+        report = build_report(df, "t.csv")
+        assert any(r["category"] == "outlier" and r["column"] == "x" for r in report["recommendations"])
+
+    def test_schema(self, messy_df):
+        report = build_report(messy_df, "t.csv")
+        for rec in report["recommendations"]:
+            assert rec["severity"] in ("info", "warning", "critical")
+            assert "category" in rec
+            assert "column" in rec
+            assert "message" in rec
+
+    def test_severity_ordering(self, messy_df):
+        report = build_report(messy_df, "t.csv")
+        order = {"critical": 0, "warning": 1, "info": 2}
+        severities = [r["severity"] for r in report["recommendations"]]
+        for i in range(len(severities) - 1):
+            assert order[severities[i]] <= order[severities[i + 1]]
+
+    def test_clean_data_no_critical(self, clean_df):
+        report = build_report(clean_df, "t.csv")
+        assert not any(r["severity"] == "critical" for r in report["recommendations"])

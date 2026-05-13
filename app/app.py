@@ -6,7 +6,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import pandas as pd
 import streamlit as st
 
-from app.components import column_report, overview
+from app.components import (
+    column_report,
+    correlations,
+    duplicates,
+    outliers,
+    overview,
+    recommendations,
+)
 from config.settings import MAX_PREVIEW_ROWS, MAX_UPLOAD_SIZE_MB
 from profiler.loader import load_file
 from profiler.report import build_report
@@ -77,3 +84,15 @@ overview.render(report)
 
 st.divider()
 column_report.render(report)
+
+st.divider()
+outliers.render(report)
+
+st.divider()
+duplicates.render(report)
+
+st.divider()
+correlations.render(report)
+
+st.divider()
+recommendations.render(report)
