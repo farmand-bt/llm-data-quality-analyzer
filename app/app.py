@@ -7,6 +7,7 @@ import pandas as pd
 import streamlit as st
 
 from app.components import (
+    cleaning_panel,
     column_report,
     correlations,
     duplicates,
@@ -96,3 +97,6 @@ correlations.render(report)
 
 st.divider()
 recommendations.render(report)
+
+st.divider()
+cleaning_panel.render(df, report)

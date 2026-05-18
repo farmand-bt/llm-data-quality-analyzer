@@ -60,7 +60,7 @@ make clean     # remove build artifacts
 | 2 | Core profiling — type detection, stats, missing values | Done |
 | 3 | Per-column profiling, distribution charts, normality tests | Done |
 | 4 | Outliers, duplicates, correlations, recommendations | Done |
-| 5 | Interactive cleaning engine with export | Planned |
+| 5 | Interactive cleaning engine with export | Done |
 | 6 | LLM-powered insights via GWDG API | Planned |
 | 7 | Polish, sample datasets, Streamlit Cloud deploy | Planned |
 
