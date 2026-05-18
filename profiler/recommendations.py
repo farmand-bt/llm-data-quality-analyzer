@@ -54,7 +54,7 @@ def generate_recommendations(report: dict) -> list[dict]:
                 "category": "missing",
                 "column": col,
                 "message": (
-                    f"'{col}' has {missing_pct:.1f}% missing values — "
+                    f"{missing_pct:.1f}% of values are missing — "
                     "consider dropping this column"
                 ),
             })
@@ -64,7 +64,7 @@ def generate_recommendations(report: dict) -> list[dict]:
                 "category": "missing",
                 "column": col,
                 "message": (
-                    f"'{col}' has {missing_pct:.1f}% missing values — "
+                    f"{missing_pct:.1f}% of values are missing — "
                     "consider imputation or dropping"
                 ),
             })
@@ -75,7 +75,7 @@ def generate_recommendations(report: dict) -> list[dict]:
                 "category": "type",
                 "column": col,
                 "message": (
-                    f"'{col}' is stored as {info['pandas_dtype']} but inferred as "
+                    f"Stored as {info['pandas_dtype']} but inferred as "
                     f"{info['inferred_type']} — consider type conversion"
                 ),
             })
@@ -90,7 +90,7 @@ def generate_recommendations(report: dict) -> list[dict]:
                 "category": "outlier",
                 "column": col,
                 "message": (
-                    f"'{col}' has {iqr_count:,} outliers ({iqr_pct:.1f}%, IQR method) — "
+                    f"{iqr_count:,} outliers detected ({iqr_pct:.1f}%, IQR method) — "
                     "review before modeling or impute/remove"
                 ),
             })
