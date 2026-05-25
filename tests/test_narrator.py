@@ -5,7 +5,12 @@ import pytest
 
 from narrator.client import generate, is_configured
 from narrator.narrator import Narrator
-from narrator.prompts import build_cleaning_prompt, build_column_prompt, build_overview_prompt
+from narrator.prompts import (
+    build_cleaning_prompt,
+    build_column_prompt,
+    build_overview_prompt,
+    build_question_prompt,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -318,6 +323,39 @@ class TestBuildCleaningPrompt:
         assert "No issues detected" in build_cleaning_prompt(report)
 
 
+class TestBuildQuestionPrompt:
+    def test_contains_question(self, report):
+        prompt = build_question_prompt(report, "What is the biggest issue?")
+        assert "What is the biggest issue?" in prompt
+
+    def test_contains_dataset_name(self, report):
+        assert "test.csv" in build_question_prompt(report, "q")
+
+    def test_contains_column_names(self, report):
+        prompt = build_question_prompt(report, "q")
+        assert "price" in prompt
+        assert "city" in prompt
+
+    def test_flags_missing_in_column_summary(self, report):
+        prompt = build_question_prompt(report, "q")
+        assert "missing" in prompt
+
+    def test_flags_outliers_in_column_summary(self, report):
+        prompt = build_question_prompt(report, "q")
+        assert "outlier" in prompt
+
+    def test_contains_quality_score(self, report):
+        assert "75" in build_question_prompt(report, "q")
+
+    def test_contains_recommendation(self, report):
+        prompt = build_question_prompt(report, "q")
+        assert "missing values" in prompt
+
+    def test_no_recommendations_shows_none(self, report):
+        report["recommendations"] = []
+        assert "none" in build_question_prompt(report, "q")
+
+
 # ---------------------------------------------------------------------------
 # Narrator class
 # ---------------------------------------------------------------------------
@@ -371,3 +409,23 @@ class TestNarrator:
         with patch("narrator.narrator.generate", return_value="x"):
             Narrator(report).narrate_overview()
         assert report["dataset"]["quality_score"] == original_score
+
+    def test_answer_question_returns_text(self, report):
+        with patch("narrator.narrator.generate", return_value="Here is the answer"):
+            result = Narrator(report).answer_question("Which column is worst?")
+        assert result == "Here is the answer"
+
+    def test_answer_question_prompt_contains_question(self, report):
+        with patch("narrator.narrator.generate", return_value="x") as mock_gen:
+            Narrator(report).answer_question("Which column is worst?")
+        assert "Which column is worst?" in mock_gen.call_args[0][0]
+
+    def test_answer_question_prompt_contains_dataset_name(self, report):
+        with patch("narrator.narrator.generate", return_value="x") as mock_gen:
+            Narrator(report).answer_question("q")
+        assert "test.csv" in mock_gen.call_args[0][0]
+
+    def test_answer_question_max_tokens(self, report):
+        with patch("narrator.narrator.generate", return_value="x") as mock_gen:
+            Narrator(report).answer_question("q")
+        assert mock_gen.call_args[1]["max_tokens"] == 400

@@ -1,5 +1,10 @@
 from narrator.client import generate
-from narrator.prompts import build_cleaning_prompt, build_column_prompt, build_overview_prompt
+from narrator.prompts import (
+    build_cleaning_prompt,
+    build_column_prompt,
+    build_overview_prompt,
+    build_question_prompt,
+)
 
 
 class Narrator:
@@ -19,3 +24,6 @@ class Narrator:
 
     def narrate_cleaning_plan(self) -> str:
         return generate(build_cleaning_prompt(self._report), max_tokens=400)
+
+    def answer_question(self, question: str) -> str:
+        return generate(build_question_prompt(self._report, question), max_tokens=400)

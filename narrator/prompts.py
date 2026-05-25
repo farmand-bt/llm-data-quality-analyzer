@@ -35,6 +35,21 @@ _CLEANING_TEMPLATE = (
     "Strategy:"
 )
 
+_QUESTION_TEMPLATE = (
+    "You are a data quality analyst. Based on the following dataset profile, "
+    "answer the question as specifically as possible. "
+    "You only have access to summary statistics — no raw data rows.\n\n"
+    "Dataset: {name}, {rows:,} rows × {cols} columns "
+    "(quality score {quality_score}/100, grade {quality_grade})\n"
+    "Columns: {column_summary}\n"
+    "Missing: {missing_summary}\n"
+    "Exact duplicates: {duplicate_count:,}\n"
+    "Outlier columns: {outlier_summary}\n"
+    "Top recommendations: {rec_summary}\n\n"
+    "Question: {question}\n\n"
+    "Answer:"
+)
+
 
 def build_overview_prompt(report: dict) -> str:
     ds = report["dataset"]
@@ -100,6 +115,64 @@ def build_column_prompt(report: dict, col_name: str) -> str:
         missing_pct=info["missing_pct"],
         outlier_count=info["outliers"]["iqr_count"],
         warnings=warnings,
+    )
+
+
+def build_question_prompt(report: dict, question: str) -> str:
+    ds = report["dataset"]
+    cols = report["columns"]
+
+    col_parts = []
+    for name, info in cols.items():
+        tags = [info["inferred_type"]]
+        if info["missing_count"] > 0:
+            tags.append(f"{info['missing_pct']:.1f}% missing")
+        if info["outliers"]["iqr_count"] > 0:
+            tags.append(f"{info['outliers']['iqr_count']} outliers")
+        if info["type_mismatch"]:
+            tags.append("type mismatch")
+        col_parts.append(f"{name} ({', '.join(tags)})")
+    column_summary = "; ".join(col_parts)
+
+    missing_cols = sorted(
+        [(c, v["missing_pct"]) for c, v in cols.items() if v["missing_count"] > 0],
+        key=lambda x: -x[1],
+    )
+    missing_summary = (
+        ", ".join(f"{c} ({p:.1f}%)" for c, p in missing_cols[:5])
+        if missing_cols
+        else "none"
+    )
+
+    outlier_cols = sorted(
+        [(c, v["outliers"]["iqr_count"]) for c, v in cols.items() if v["outliers"]["iqr_count"] > 0],
+        key=lambda x: -x[1],
+    )
+    outlier_summary = (
+        ", ".join(f"{c} ({n})" for c, n in outlier_cols[:5])
+        if outlier_cols
+        else "none detected"
+    )
+
+    recs = report.get("recommendations", [])
+    rec_summary = (
+        "; ".join(f"{r['severity']} — {r['message'][:60]}" for r in recs[:5])
+        if recs
+        else "none"
+    )
+
+    return _QUESTION_TEMPLATE.format(
+        name=ds["name"],
+        rows=ds["rows"],
+        cols=ds["columns"],
+        quality_score=ds["quality_score"],
+        quality_grade=ds["quality_grade"],
+        column_summary=column_summary,
+        missing_summary=missing_summary,
+        duplicate_count=report["duplicates"]["exact_count"],
+        outlier_summary=outlier_summary,
+        rec_summary=rec_summary,
+        question=question,
     )
 
 
