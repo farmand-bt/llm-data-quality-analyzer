@@ -9,24 +9,33 @@ _STATE_KEY = "llm_insights"
 def render(report: dict) -> None:
     """Render sidebar toggle and AI insights section.
 
-    When the toggle is off (default), no API calls are made and no main-area
-    content is rendered. When on, a single "Generate" button triggers all LLM
-    calls and caches results in st.session_state.
+    When the toggle is off (default), no API calls are made and nothing is
+    rendered in the main area (not even a divider). When on, a single
+    "Generate" button triggers all LLM calls and caches results in
+    st.session_state.
     """
     with st.sidebar:
         st.divider()
+        st.markdown("**AI Insights**")
+        st.caption("Generate plain-English analysis of this dataset.")
         enabled = st.toggle("Enable AI Insights", value=False, key="llm_enabled")
 
     if not enabled:
         return
 
+    # Divider only rendered when the section is actually visible
+    st.divider()
     st.subheader("AI Insights")
 
     if not is_configured():
         st.info(
-            "AI Insights require GWDG credentials. "
-            "Copy `.env.example` to `.env`, fill in `GWDG_API_KEY`, "
-            "`GWDG_API_BASE`, and `GWDG_MODEL_NAME`, then restart the app."
+            "AI Insights require LLM API credentials. "
+            "Copy `.env.example` to `.env` and set:\n"
+            "- `GWDG_API_KEY` — your API key\n"
+            "- `GWDG_API_BASE` — your API endpoint "
+            "(any OpenAI-compatible provider works, not just GWDG)\n"
+            "- `GWDG_MODEL_NAME` — the model name to use\n\n"
+            "Then restart the app."
         )
         return
 
@@ -61,17 +70,19 @@ def render(report: dict) -> None:
         st.markdown("#### Column Analysis")
         for col_name, text in col_insights.items():
             with st.expander(f"**{col_name}**"):
-                st.write(text)
+                st.markdown(text)
 
     if "cleaning_plan" in cached:
         st.markdown("#### Recommended Cleaning Strategy")
-        st.write(cached["cleaning_plan"])
+        st.markdown(cached["cleaning_plan"])
 
 
 def _generate_all(report: dict) -> dict:
     narrator = Narrator(report)
     result: dict = {}
 
+    # Only analyse columns with real quality issues — not cosmetic warnings like
+    # high cardinality, which don't require cleaning action.
     issue_cols = [
         col
         for col, info in report["columns"].items()
@@ -79,7 +90,6 @@ def _generate_all(report: dict) -> dict:
             info["missing_count"] > 0
             or info["outliers"]["iqr_count"] > 0
             or info["type_mismatch"]
-            or info["warnings"]
         )
     ]
 

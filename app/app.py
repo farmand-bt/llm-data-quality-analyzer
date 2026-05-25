@@ -69,6 +69,7 @@ if st.session_state.get("filename") != uploaded_file.name:
     st.session_state.pop("cleaned_df", None)
     st.session_state.pop("cleaning_log", None)
     st.session_state.pop("llm_insights", None)
+    st.session_state.pop("llm_enabled", None)
 
 st.session_state["df"] = df
 st.session_state["filename"] = uploaded_file.name
@@ -89,7 +90,6 @@ st.session_state["report"] = report
 
 overview.render(report)
 
-st.divider()
 llm_insights.render(report)
 
 st.divider()

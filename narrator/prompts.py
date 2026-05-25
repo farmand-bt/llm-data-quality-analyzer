@@ -17,8 +17,9 @@ _OVERVIEW_TEMPLATE = (
 )
 
 _COLUMN_TEMPLATE = (
-    "Given the following column profile, write 2-3 sentences describing "
-    "the column's quality and any concerns. Be specific and actionable.\n\n"
+    "Given the following column profile, write 2-3 bullet points describing "
+    "the column's quality and any concerns. Be specific and actionable. "
+    "Use **bold** markdown for key numeric values (counts, percentages, thresholds).\n\n"
     "Column: {name} ({col_type})\n"
     "Stats: {stats}\n"
     "Missing: {missing_pct:.1f}%\n"
