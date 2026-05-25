@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from app.components.cleaning_panel import _step_priority
 from cleaner.duplicate_handler import remove_duplicates
 from cleaner.missing_handler import handle_missing
 from cleaner.outlier_handler import handle_outliers
@@ -310,3 +311,56 @@ class TestCleaningPipeline:
         })
         out = p.execute(df_with_outliers)
         assert 1000 not in out["x"].values
+
+
+# ---------------------------------------------------------------------------
+# _step_priority (cleaning_panel)
+# ---------------------------------------------------------------------------
+
+
+class TestStepPriority:
+    """Verify the three-tier ordering that keeps profiler indices valid.
+
+    Priority 0 — no row change (type fixes, fills, cap, replace_nan)
+    Priority 1 — outlier remove (uses original row indices from profiler)
+    Priority 2 — row-dropping ops (drop_rows, drop_column, remove_duplicates)
+    """
+
+    def test_fix_type_is_priority_zero(self):
+        assert _step_priority({"action": "fix_type", "column": "x", "target_type": "numeric"}) == 0
+
+    def test_fill_mean_is_priority_zero(self):
+        assert _step_priority({"action": "handle_missing", "column": "x", "strategy": "fill_mean"}) == 0
+
+    def test_fill_constant_is_priority_zero(self):
+        assert _step_priority({"action": "handle_missing", "column": "x", "strategy": "fill_constant"}) == 0
+
+    def test_cap_iqr_is_priority_zero(self):
+        assert _step_priority({"action": "handle_outliers", "column": "x", "strategy": "cap_iqr"}) == 0
+
+    def test_replace_nan_is_priority_zero(self):
+        assert _step_priority({"action": "handle_outliers", "column": "x", "strategy": "replace_nan"}) == 0
+
+    def test_outlier_remove_is_priority_one(self):
+        assert _step_priority({"action": "handle_outliers", "column": "x", "strategy": "remove"}) == 1
+
+    def test_drop_rows_is_priority_two(self):
+        assert _step_priority({"action": "handle_missing", "column": "x", "strategy": "drop_rows"}) == 2
+
+    def test_drop_column_is_priority_two(self):
+        assert _step_priority({"action": "handle_missing", "column": "x", "strategy": "drop_column"}) == 2
+
+    def test_remove_duplicates_is_priority_two(self):
+        assert _step_priority({"action": "remove_duplicates"}) == 2
+
+    def test_sort_order_is_correct(self):
+        steps = [
+            {"action": "handle_missing", "column": "x", "strategy": "drop_rows"},
+            {"action": "handle_outliers", "column": "x", "strategy": "remove"},
+            {"action": "fix_type", "column": "x", "target_type": "numeric"},
+            {"action": "remove_duplicates"},
+            {"action": "handle_missing", "column": "y", "strategy": "fill_median"},
+        ]
+        sorted_steps = sorted(steps, key=_step_priority)
+        priorities = [_step_priority(s) for s in sorted_steps]
+        assert priorities == sorted(priorities)

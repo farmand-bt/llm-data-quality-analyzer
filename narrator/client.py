@@ -43,6 +43,8 @@ def generate(prompt: str, max_tokens: int = 512) -> str:
                 temperature=0.3,
                 timeout=30,
             )
+            if not response.choices:
+                raise RuntimeError("API returned an empty choices list.")
             return response.choices[0].message.content.strip()
 
         except RateLimitError as exc:

@@ -4,6 +4,12 @@ import pandas as pd
 import streamlit as st
 
 from cleaner.pipeline import CleaningPipeline
+from profiler.report import build_report
+
+
+@st.cache_data(show_spinner=False)
+def _profile_cleaned(df: pd.DataFrame, name: str) -> dict:
+    return build_report(df, name)
 
 _MISSING_OPTIONS_ALL = {
     "— skip —": None,
@@ -285,8 +291,15 @@ def _render_before_after(
     clean_missing = int(cleaned_df.isnull().sum().sum())
     orig_dups = report.get("duplicates", {}).get("exact_count") or 0
     clean_dups = int(cleaned_df.duplicated(keep=False).sum())
+    orig_score = report["dataset"]["quality_score"]
+    orig_grade = report["dataset"]["quality_grade"]
 
-    c1, c2, c3, c4 = st.columns(4)
+    with st.spinner("Recalculating quality score…"):
+        cleaned_report = _profile_cleaned(cleaned_df, report["dataset"]["name"])
+    clean_score = cleaned_report["dataset"]["quality_score"]
+    clean_grade = cleaned_report["dataset"]["quality_grade"]
+
+    c1, c2, c3, c4, c5 = st.columns(5)
     c1.metric("Rows", f"{len(cleaned_df):,}", delta=f"{len(cleaned_df) - len(orig_df):,}")
     c2.metric(
         "Columns", cleaned_df.shape[1],
@@ -299,6 +312,11 @@ def _render_before_after(
     c4.metric(
         "Exact Duplicates", f"{clean_dups:,}",
         delta=f"{clean_dups - orig_dups:,}",
+    )
+    c5.metric(
+        "Quality Score",
+        f"{clean_score}/100 ({clean_grade})",
+        delta=f"{clean_score - orig_score:+d} from {orig_score} ({orig_grade})",
     )
 
     with st.expander("Preview cleaned dataset (first 10 rows)"):

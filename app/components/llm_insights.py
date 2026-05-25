@@ -167,6 +167,7 @@ def _render_qa(report: dict) -> None:
                     st.session_state[_QA_KEY] = qa_history + [
                         {"question": question.strip(), "answer": answer}
                     ]
+                    st.session_state.pop("llm_question_input", None)
                     st.rerun()
                 except Exception as exc:
                     st.error(f"Could not answer: {exc}")
