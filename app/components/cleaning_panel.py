@@ -5,7 +5,7 @@ import streamlit as st
 
 from cleaner.pipeline import CleaningPipeline
 
-_MISSING_OPTIONS = {
+_MISSING_OPTIONS_ALL = {
     "— skip —": None,
     "Drop rows with missing": "drop_rows",
     "Drop this column": "drop_column",
@@ -15,6 +15,11 @@ _MISSING_OPTIONS = {
     "Fill with constant": "fill_constant",
     "Forward fill (time-series)": "ffill",
     "Backward fill (time-series)": "bfill",
+}
+
+_MISSING_OPTIONS_NON_NUMERIC = {
+    k: v for k, v in _MISSING_OPTIONS_ALL.items()
+    if v not in ("fill_mean", "fill_median")
 }
 
 _TYPE_OPTIONS = {
@@ -73,9 +78,14 @@ def render(df: pd.DataFrame, report: dict) -> None:
                     f"**{col}**  \n"
                     f"{info['missing_count']:,} missing ({info['missing_pct']:.1f}%)"
                 )
+                opts = (
+                    _MISSING_OPTIONS_ALL
+                    if info["inferred_type"] in ("numeric", "mixed")
+                    else _MISSING_OPTIONS_NON_NUMERIC
+                )
                 choice = c2.selectbox(
                     "Strategy",
-                    list(_MISSING_OPTIONS.keys()),
+                    list(opts.keys()),
                     key=f"miss_{col}",
                     label_visibility="collapsed",
                 )
@@ -128,6 +138,11 @@ def render(df: pd.DataFrame, report: dict) -> None:
         with st.expander(
             f"Outliers — {len(outlier_cols)} column(s) with outliers", expanded=True
         ):
+            st.caption(
+                "Outlier indices come from the original upload. "
+                "If you also drop rows (missing values or duplicates), "
+                "the pipeline runs outlier removal first automatically so indices stay valid."
+            )
             out_method = st.radio(
                 "Use indices from",
                 ["IQR", "Z-score"],
@@ -192,14 +207,23 @@ def _collect_steps(
 ) -> list[dict]:
     steps: list[dict] = []
 
-    for col in missing_cols:
+    for col, info in missing_cols.items():
         choice = st.session_state.get(f"miss_{col}", "— skip —")
-        strategy = _MISSING_OPTIONS.get(choice)
+        opts = (
+            _MISSING_OPTIONS_ALL
+            if info["inferred_type"] in ("numeric", "mixed")
+            else _MISSING_OPTIONS_NON_NUMERIC
+        )
+        strategy = opts.get(choice)
         if strategy is None:
             continue
         step: dict = {"action": "handle_missing", "column": col, "strategy": strategy}
         if strategy == "fill_constant":
-            step["value"] = st.session_state.get(f"miss_{col}_val", "")
+            raw = st.session_state.get(f"miss_{col}_val", "").strip()
+            if not raw:
+                st.warning(f"Enter a constant value for **{col}** before applying.")
+                continue
+            step["value"] = raw
         steps.append(step)
 
     if exact_count > 0:
@@ -230,7 +254,25 @@ def _collect_steps(
                 "strategy": strategy,
             })
 
+    steps.sort(key=_step_priority)
     return steps
+
+
+def _step_priority(step: dict) -> int:
+    """Sort order: type fixes and fills (0) → outlier remove (1) → row drops (2).
+
+    Keeps profiler-computed outlier indices valid by running outlier removal
+    before any step that resets the DataFrame index.
+    """
+    action = step["action"]
+    strategy = step.get("strategy", "")
+    if action == "handle_outliers" and strategy == "remove":
+        return 1
+    if action == "remove_duplicates" or (
+        action == "handle_missing" and strategy in ("drop_rows", "drop_column")
+    ):
+        return 2
+    return 0
 
 
 def _render_before_after(
@@ -241,7 +283,7 @@ def _render_before_after(
 
     orig_missing = int(orig_df.isnull().sum().sum())
     clean_missing = int(cleaned_df.isnull().sum().sum())
-    orig_dups = report["duplicates"].get("exact_count") or 0
+    orig_dups = report.get("duplicates", {}).get("exact_count") or 0
     clean_dups = int(cleaned_df.duplicated(keep=False).sum())
 
     c1, c2, c3, c4 = st.columns(4)
@@ -271,6 +313,8 @@ def _render_log(log: list[dict]) -> None:
             "Action": entry["action"],
             "Column": entry.get("column") or "—",
             "Strategy": entry.get("strategy", "—"),
+            "Original Type": entry.get("original_dtype", "—"),
+            "New Type": entry.get("new_dtype", "—"),
             "Rows Before": entry.get("rows_before", "—"),
             "Rows After": entry.get("rows_after", "—"),
             "Rows Removed": entry.get("rows_removed", 0),

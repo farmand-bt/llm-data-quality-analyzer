@@ -64,6 +64,10 @@ except Exception as e:
     st.error(f"Could not load file: {e}")
     st.stop()
 
+if st.session_state.get("filename") != uploaded_file.name:
+    st.session_state.pop("cleaned_df", None)
+    st.session_state.pop("cleaning_log", None)
+
 st.session_state["df"] = df
 st.session_state["filename"] = uploaded_file.name
 

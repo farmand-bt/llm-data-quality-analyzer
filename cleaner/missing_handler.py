@@ -32,11 +32,17 @@ def handle_missing(
         out = out.drop(columns=[column])
 
     elif strategy == "fill_mean":
-        fill_val = pd.to_numeric(out[column], errors="coerce").mean()
+        numeric = pd.to_numeric(out[column], errors="coerce")
+        fill_val = numeric.mean()
+        if (numeric.dropna() % 1 == 0).all():
+            fill_val = round(fill_val)
         out[column] = out[column].fillna(fill_val)
 
     elif strategy == "fill_median":
-        fill_val = pd.to_numeric(out[column], errors="coerce").median()
+        numeric = pd.to_numeric(out[column], errors="coerce")
+        fill_val = numeric.median()
+        if (numeric.dropna() % 1 == 0).all():
+            fill_val = round(fill_val)
         out[column] = out[column].fillna(fill_val)
 
     elif strategy == "fill_mode":
