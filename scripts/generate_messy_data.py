@@ -72,6 +72,108 @@ def generate_housing_data(n: int = 500, seed: int = 42) -> pd.DataFrame:
     return df.sample(frac=1, random_state=seed).reset_index(drop=True)
 
 
+def generate_titanic_data(n: int = 891, seed: int = 7) -> pd.DataFrame:
+    """Generate a synthetic Titanic-style dataset with intentional messiness.
+
+    Issues baked in: inconsistent Sex labels, ~20% missing Age, ~77% missing
+    Cabin, a few missing Embarked values, Fare values with "$" prefix (type
+    mismatch), outlier fares, and 20 duplicate rows.
+    """
+    rng = np.random.default_rng(seed)
+
+    survived = rng.integers(0, 2, n)
+    pclass = rng.choice([1, 2, 3], n, p=[0.24, 0.21, 0.55])
+
+    titles = ["Mr.", "Mrs.", "Miss.", "Dr.", "Rev.", "Col."]
+    first_names = ["James", "Mary", "John", "Anna", "William", "Emily",
+                   "Thomas", "Rose", "George", "Edith", "Charles", "Alice"]
+    last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Miller",
+                  "Davis", "Wilson", "Moore", "Taylor", "Anderson", "Thomas"]
+    names = [
+        f"{rng.choice(last_names)}, {rng.choice(titles)} {rng.choice(first_names)}"
+        for _ in range(n)
+    ]
+
+    # Inconsistent Sex labels: male/female/Male/Female/M/F/MALE/FEMALE
+    sex_values = []
+    for _ in range(n):
+        base = "male" if rng.random() < 0.65 else "female"
+        fmt = int(rng.integers(0, 5))
+        if fmt == 0:
+            sex_values.append(base.upper())
+        elif fmt == 1:
+            sex_values.append(base[0].upper())
+        elif fmt == 2:
+            sex_values.append(base.capitalize())
+        else:
+            sex_values.append(base)
+
+    # Age — ~20% missing
+    age = rng.normal(29.7, 14.5, n).clip(0.17, 80.0).round(1).astype(float)
+    age[rng.random(n) < 0.20] = np.nan
+
+    sib_sp = rng.choice([0, 1, 2, 3, 4, 5], n, p=[0.68, 0.23, 0.06, 0.01, 0.01, 0.01])
+    parch = rng.choice([0, 1, 2, 3, 4], n, p=[0.76, 0.13, 0.09, 0.01, 0.01])
+
+    ticket_prefixes = ["PC", "CA", "A/5", "SOTON/OQ", ""]
+    tickets = []
+    for _ in range(n):
+        pfx = rng.choice(ticket_prefixes)
+        num = rng.integers(1000, 999999)
+        tickets.append(f"{pfx} {num}".strip() if pfx else str(num))
+
+    # Fare — outliers + some stored as "$X.XX" strings (type mismatch)
+    fare_num = rng.exponential(32, n).clip(0.0, 200.0).round(2)
+    for idx in rng.choice(n, size=8, replace=False):
+        fare_num[idx] = float(rng.choice([0.0, 512.33, 263.0, 227.53]))
+    fare_raw = fare_num.astype(object)
+    for idx in rng.choice(n, size=25, replace=False):
+        fare_raw[idx] = f"${float(fare_num[idx]):.2f}"
+
+    # Cabin — ~77% missing
+    cabin_letters = ["A", "B", "C", "D", "E", "F", "G"]
+    cabin_vals = [
+        np.nan if rng.random() < 0.77
+        else f"{rng.choice(cabin_letters)}{rng.integers(1, 148)}"
+        for _ in range(n)
+    ]
+
+    # Embarked — ~2% missing
+    embarked_vals = []
+    for _ in range(n):
+        r = rng.random()
+        if r < 0.019:
+            embarked_vals.append(np.nan)
+        elif r < 0.208:
+            embarked_vals.append("C")
+        elif r < 0.298:
+            embarked_vals.append("Q")
+        else:
+            embarked_vals.append("S")
+
+    df = pd.DataFrame({
+        "PassengerId": range(1, n + 1),
+        "Survived": survived,
+        "Pclass": pclass,
+        "Name": names,
+        "Sex": sex_values,
+        "Age": age,
+        "SibSp": sib_sp,
+        "Parch": parch,
+        "Ticket": tickets,
+        "Fare": fare_raw,
+        "Cabin": cabin_vals,
+        "Embarked": embarked_vals,
+    })
+
+    # 20 duplicate rows
+    dup_idx = rng.choice(n, size=20, replace=False)
+    df = pd.concat([df, df.iloc[dup_idx].copy()], ignore_index=True)
+    df["PassengerId"] = range(1, len(df) + 1)
+
+    return df.sample(frac=1, random_state=seed).reset_index(drop=True)
+
+
 def generate_clean_sample(n: int = 50, seed: int = 0) -> pd.DataFrame:
     rng = np.random.default_rng(seed)
     return pd.DataFrame({
@@ -97,6 +199,10 @@ def main():
     messy.to_csv(sample_data / "housing_messy.csv", index=False)
     print(f"Written {len(messy)} rows -> tests/fixtures/messy_sample.csv")
     print(f"Written {len(messy)} rows -> sample_data/housing_messy.csv")
+
+    titanic = generate_titanic_data()
+    titanic.to_csv(sample_data / "titanic_messy.csv", index=False)
+    print(f"Written {len(titanic)} rows -> sample_data/titanic_messy.csv")
 
     clean = generate_clean_sample()
     clean.to_csv(fixtures / "clean_sample.csv", index=False)
