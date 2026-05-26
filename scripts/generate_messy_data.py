@@ -166,10 +166,9 @@ def generate_titanic_data(n: int = 891, seed: int = 7) -> pd.DataFrame:
         "Embarked": embarked_vals,
     })
 
-    # 20 duplicate rows
+    # 20 duplicate rows — keep original PassengerId so they are true exact duplicates
     dup_idx = rng.choice(n, size=20, replace=False)
     df = pd.concat([df, df.iloc[dup_idx].copy()], ignore_index=True)
-    df["PassengerId"] = range(1, len(df) + 1)
 
     return df.sample(frac=1, random_state=seed).reset_index(drop=True)
 

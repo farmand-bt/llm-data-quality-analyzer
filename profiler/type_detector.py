@@ -58,6 +58,9 @@ def _infer_type(series: pd.Series) -> tuple[str, bool]:
     # <= threshold: a 50% unique ratio still counts as categorical
     cardinality_ratio = non_null.nunique() / len(non_null)
     if cardinality_ratio <= HIGH_CARDINALITY_THRESHOLD:
+        # Detect case-inconsistent labels (e.g. "Male"/"MALE"/"M")
+        if non_null.astype(str).str.strip().str.lower().nunique() < non_null.nunique():
+            return "categorical", True
         return "categorical", False
 
     return "text", False

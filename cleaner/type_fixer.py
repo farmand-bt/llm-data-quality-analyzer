@@ -58,6 +58,12 @@ def fix_types(
             out[column].astype(str).str.strip().str.lower().map(_BOOL_MAP)
         )
 
+    elif target_type == "lowercase":
+        out[column] = out[column].where(
+            out[column].isna(),
+            out[column].astype(str).str.strip().str.lower(),
+        )
+
     else:
         raise ValueError(f"Unknown target_type '{target_type}'")
 

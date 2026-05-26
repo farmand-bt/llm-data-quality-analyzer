@@ -34,6 +34,7 @@ _TYPE_OPTIONS = {
     "Convert to datetime": "datetime",
     "Convert to categorical": "categorical",
     "Convert to string": "string",
+    "Normalize case (lowercase)": "lowercase",
 }
 
 _OUTLIER_OPTIONS = {

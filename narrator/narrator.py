@@ -23,7 +23,7 @@ class Narrator:
         return generate(build_column_prompt(self._report, col_name), max_tokens=200)
 
     def narrate_cleaning_plan(self) -> str:
-        return generate(build_cleaning_prompt(self._report), max_tokens=400)
+        return generate(build_cleaning_prompt(self._report), max_tokens=600)
 
     def answer_question(self, question: str) -> str:
         return generate(build_question_prompt(self._report, question), max_tokens=400)

@@ -145,12 +145,16 @@ def _render_qa(report: dict) -> None:
         st.markdown(entry["answer"])
         st.divider()
 
+    # Counter-key pattern: incrementing the counter creates a fresh widget on the next
+    # rerun, reliably clearing the input box after each submission.
+    q_counter = st.session_state.get("llm_q_counter", 0)
+
     q_col, btn_col = st.columns([4, 1])
     with q_col:
         question = st.text_input(
             "Question",
             placeholder="e.g. Which column needs the most urgent attention?",
-            key="llm_question_input",
+            key=f"llm_question_input_{q_counter}",
             label_visibility="collapsed",
         )
     with btn_col:
@@ -167,7 +171,7 @@ def _render_qa(report: dict) -> None:
                     st.session_state[_QA_KEY] = qa_history + [
                         {"question": question.strip(), "answer": answer}
                     ]
-                    st.session_state.pop("llm_question_input", None)
+                    st.session_state["llm_q_counter"] = q_counter + 1
                     st.rerun()
                 except Exception as exc:
                     st.error(f"Could not answer: {exc}")

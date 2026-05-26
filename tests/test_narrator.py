@@ -402,7 +402,7 @@ class TestNarrator:
     def test_cleaning_plan_max_tokens(self, report):
         with patch("narrator.narrator.generate", return_value="x") as mock_gen:
             Narrator(report).narrate_cleaning_plan()
-        assert mock_gen.call_args[1]["max_tokens"] == 400
+        assert mock_gen.call_args[1]["max_tokens"] == 600
 
     def test_does_not_mutate_report(self, report):
         original_score = report["dataset"]["quality_score"]

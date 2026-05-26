@@ -19,18 +19,20 @@ _OVERVIEW_TEMPLATE = (
 _COLUMN_TEMPLATE = (
     "Given the following column profile, write 2-3 bullet points describing "
     "the column's quality and any concerns. Be specific and actionable. "
-    "Use **bold** markdown for key numeric values (counts, percentages, thresholds).\n\n"
+    "Use **bold** markdown for key numeric values (counts, percentages, thresholds). "
+    "Start directly with the first bullet point — do not write any introductory sentence.\n\n"
     "Column: {name} ({col_type})\n"
     "Stats: {stats}\n"
     "Missing: {missing_pct:.1f}%\n"
     "Outliers (IQR): {outlier_count}\n"
     "Warnings: {warnings}\n\n"
-    "Analysis:"
+    "Bullet points:"
 )
 
 _CLEANING_TEMPLATE = (
-    "Given the following data quality issues, suggest a prioritized "
-    "cleaning strategy. Explain the trade-offs of each recommendation.\n\n"
+    "Given the following data quality issues, suggest a prioritized cleaning strategy. "
+    "Format as a numbered list. For each item state: the recommended action and, "
+    "in one sentence, its key trade-off. Be concise — no extra commentary.\n\n"
     "Issues:\n{issues_list}\n\n"
     "Strategy:"
 )

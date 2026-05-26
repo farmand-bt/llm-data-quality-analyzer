@@ -176,6 +176,19 @@ class TestFixTypes:
         out, log = fix_types(df_mixed_types, "flag_str", "boolean")
         assert set(out["flag_str"].dropna().unique()).issubset({True, False})
 
+    def test_to_lowercase(self):
+        df = pd.DataFrame({"sex": ["Male", "FEMALE", "male", None]})
+        out, log = fix_types(df, "sex", "lowercase")
+        assert out["sex"].iloc[0] == "male"
+        assert out["sex"].iloc[1] == "female"
+        assert out["sex"].iloc[2] == "male"
+        assert pd.isna(out["sex"].iloc[3])
+
+    def test_to_lowercase_non_destructive(self):
+        df = pd.DataFrame({"cat": ["Apple", "APPLE"]})
+        fix_types(df, "cat", "lowercase")
+        assert df["cat"].iloc[0] == "Apple"
+
     def test_unknown_type_raises(self):
         df = pd.DataFrame({"x": [1, 2, 3]})
         with pytest.raises(ValueError, match="Unknown target_type"):
