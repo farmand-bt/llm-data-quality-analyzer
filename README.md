@@ -222,24 +222,19 @@ make clean     # remove __pycache__ and .pytest_cache
 
 ## Future Improvements
 
-- **More file formats** — JSON, Parquet, SQL database connections
-- **Pipeline export** — download the applied cleaning steps as a standalone Python script
-- **Comparison mode** — upload two datasets and compare their quality profiles side-by-side
-- **Scheduled profiling** — connect to a data source and run periodic quality checks with alerting
-- **Custom rules** — let users define constraints (e.g. "column X must be between 0 and 100")
-- **PDF report export** — generate a downloadable quality report as a PDF
+Listed by implementation priority (easiest and highest-value first):
 
-## Milestone Progress
+1. **More file formats (JSON, Parquet)** — Only `profiler/loader.py` needs extending with `pd.read_json()` / `pd.read_parquet()`; Parquet requires adding `pyarrow` to dependencies. SQL connections are more involved but follow the same pattern. High value for data engineering use cases.
 
-| # | Focus | Status |
-|---|-------|--------|
-| 1 | Project Scaffolding (repo skeleton, file upload, loader) | ✅ Done |
-| 2 | Core Profiling — Dataset Overview (types, stats, missing) | ✅ Done |
-| 3 | Per-Column Profiling & Distributions | ✅ Done |
-| 4 | Outliers, Duplicates & Correlations + Recommendations | ✅ Done |
-| 5 | Data Cleaning Engine | ✅ Done |
-| 6 | LLM-Powered Insights (GWDG narrator) | ✅ Done |
-| 7 | Polish, sample datasets, Streamlit Cloud deploy | ✅ Done |
+2. **PDF report export** — Render the profiler report dict to a downloadable PDF using a library like `weasyprint` or `reportlab`. The main effort is layout: recreating the charts and tables in a static format. High value for sharing results with non-technical stakeholders.
+
+3. **Pipeline export as Python script** — Serialize `pipeline.get_log()` into a runnable `.py` file with the correct imports and `pd` operations. Useful for teams who want to apply the same cleaning steps in a production pipeline without the UI.
+
+4. **Custom quality rules** — A rule-builder UI (column + operator + threshold, e.g. "price must be > 0") that feeds into the recommendations engine. Makes the tool useful for data contracts and domain-specific validation.
+
+5. **Comparison mode** — Upload two datasets and diff their quality profiles side-by-side. Useful for comparing a dataset before and after an ETL step, or two data exports from different sources. Touches almost every component, so it is the largest single feature.
+
+6. **Scheduled profiling** — Connect to a live data source, run profiling on a schedule, and alert when quality degrades. This is more infrastructure than analytics (needs job scheduling, persistent storage, alerting) and is effectively a different product category.
 
 ## License
 

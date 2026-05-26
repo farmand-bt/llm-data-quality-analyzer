@@ -59,9 +59,10 @@ def fix_types(
         )
 
     elif target_type == "lowercase":
-        out[column] = out[column].where(
-            out[column].isna(),
-            out[column].astype(str).str.strip().str.lower(),
+        out[column] = (
+            out[column]
+            .where(out[column].isna(), out[column].astype(str).str.strip().str.lower())
+            .astype("category")
         )
 
     else:

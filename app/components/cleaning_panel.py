@@ -52,6 +52,18 @@ _DUP_OPTIONS = {
 }
 
 
+def _type_options_for(inferred_type: str) -> dict:
+    """Return the type-conversion options appropriate for a given inferred type.
+
+    "Normalize case (lowercase)" only applies to categorical columns — it is
+    the fix for case-inconsistent labels (Male/MALE/male → male → category).
+    Showing it for boolean or numeric mismatches would produce a wrong dtype.
+    """
+    if inferred_type == "categorical":
+        return _TYPE_OPTIONS
+    return {k: v for k, v in _TYPE_OPTIONS.items() if v != "lowercase"}
+
+
 def render(df: pd.DataFrame, report: dict) -> None:
     """Render interactive cleaning controls. Original df is never modified."""
     st.subheader("Data Cleaning")
@@ -133,7 +145,7 @@ def render(df: pd.DataFrame, report: dict) -> None:
                 )
                 c2.selectbox(
                     "Target type",
-                    list(_TYPE_OPTIONS.keys()),
+                    list(_type_options_for(info["inferred_type"]).keys()),
                     key=f"type_{col}",
                     label_visibility="collapsed",
                 )
@@ -239,9 +251,9 @@ def _collect_steps(
         if keep_val is not None:
             steps.append({"action": "remove_duplicates", "keep": keep_val})
 
-    for col in mismatch_cols:
+    for col, info in mismatch_cols.items():
         choice = st.session_state.get(f"type_{col}", "— skip —")
-        target_type = _TYPE_OPTIONS.get(choice)
+        target_type = _type_options_for(info["inferred_type"]).get(choice)
         if target_type is None:
             continue
         steps.append({"action": "fix_type", "column": col, "target_type": target_type})

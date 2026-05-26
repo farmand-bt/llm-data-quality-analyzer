@@ -183,6 +183,7 @@ class TestFixTypes:
         assert out["sex"].iloc[1] == "female"
         assert out["sex"].iloc[2] == "male"
         assert pd.isna(out["sex"].iloc[3])
+        assert hasattr(out["sex"], "cat")  # cast to category dtype
 
     def test_to_lowercase_non_destructive(self):
         df = pd.DataFrame({"cat": ["Apple", "APPLE"]})
