@@ -229,6 +229,7 @@ data/*
 !data/.gitkeep
 .chroma/
 *.csv
+!sample_data/*.csv
 
 # Streamlit
 .streamlit/secrets.toml

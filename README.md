@@ -2,6 +2,8 @@
 
 A Streamlit app for automated data profiling, interactive cleaning, and optional LLM-powered quality insights — upload a CSV or Excel file and instantly get a comprehensive report with actionable recommendations.
 
+**[▶ Live demo](https://llm-data-quality-analyzer.streamlit.app/)**
+
 ## Features
 
 - ✅ **Data Profiling** — per-column statistics, type inference, missing value analysis with MCAR/MAR/MNAR classification, outlier detection (IQR & Z-score), normality tests, correlation heatmap
@@ -214,6 +216,9 @@ make clean     # remove __pycache__ and .pytest_cache
 
 ## Deployment (Streamlit Community Cloud)
 
+**Live app:** https://llm-data-quality-analyzer.streamlit.app/
+
+To deploy your own instance:
 1. Push the repository to GitHub
 2. Go to [share.streamlit.io](https://share.streamlit.io) → **New app**
 3. Set **Main file path** to `app/app.py`

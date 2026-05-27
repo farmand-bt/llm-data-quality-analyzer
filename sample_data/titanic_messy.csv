@@ -1,0 +1,912 @@
+PassengerId,Survived,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked
+583,1,3,"Smith, Miss. Anna",male,18.2,0,0,SOTON/OQ 280564,4.62,,S
+404,1,1,"Davis, Rev. Anna",Male,37.1,0,0,SOTON/OQ 738943,31.88,,S
+262,1,3,"Moore, Miss. Charles",Male,55.5,0,0,SOTON/OQ 226641,54.04,,S
+366,1,2,"Wilson, Miss. Charles",male,13.8,2,0,SOTON/OQ 846109,4.81,,S
+685,0,2,"Brown, Dr. Alice",M,37.0,0,0,SOTON/OQ 294817,15.07,,
+587,0,3,"Taylor, Miss. Emily",MALE,,1,0,117905,24.77,,S
+815,0,3,"Johnson, Mr. Alice",Male,,0,1,CA 880272,42.95,,C
+531,1,2,"Johnson, Col. Emily",MALE,21.8,1,0,A/5 142425,6.99,D11,S
+506,0,1,"Anderson, Mr. Rose",F,35.8,0,0,PC 88380,0.0,C63,C
+544,0,2,"Davis, Rev. William",Male,,0,1,CA 748210,57.09,,S
+853,1,3,"Smith, Mr. Charles",male,21.9,0,0,CA 400447,20.02,C96,S
+710,0,2,"Williams, Mr. Rose",male,22.0,0,0,CA 634957,97.4,,S
+827,0,3,"Davis, Col. John",female,9.3,1,0,PC 367583,263.0,,S
+736,1,2,"Brown, Col. Charles",female,39.2,0,0,PC 422236,14.57,,S
+64,0,2,"Taylor, Mr. Edith",male,22.8,0,0,348733,6.63,,C
+327,1,2,"Thomas, Dr. George",MALE,,0,0,670503,1.0,,S
+319,0,2,"Brown, Mrs. William",M,36.4,0,0,A/5 630410,18.62,,S
+61,0,2,"Williams, Mr. Thomas",M,25.0,0,0,SOTON/OQ 906995,27.45,C128,S
+890,0,3,"Wilson, Miss. William",M,33.3,0,0,PC 987079,32.66,,C
+328,0,3,"Johnson, Col. William",male,13.0,0,0,PC 45749,9.12,,S
+353,0,3,"Taylor, Mr. Emily",F,29.3,1,2,CA 642876,30.3,C89,C
+448,1,2,"Miller, Dr. George",M,33.0,0,0,SOTON/OQ 322322,6.45,,Q
+479,1,2,"Smith, Rev. George",male,36.8,0,0,CA 551583,1.54,,S
+238,0,3,"Taylor, Mrs. Charles",Male,,1,0,SOTON/OQ 975309,44.6,,Q
+159,0,1,"Taylor, Mrs. Mary",Female,26.5,1,0,PC 614386,40.58,,C
+805,1,3,"Davis, Mrs. Anna",male,12.1,0,1,CA 948721,64.52,,S
+265,1,3,"Anderson, Rev. Emily",female,64.5,0,2,941558,27.52,,C
+25,1,1,"Johnson, Col. Anna",male,,0,0,PC 302697,77.17,,S
+54,0,1,"Wilson, Miss. John",male,,0,0,SOTON/OQ 161755,6.76,F42,S
+149,1,2,"Brown, Col. James",Female,,0,0,SOTON/OQ 131144,$3.87,,S
+397,1,3,"Taylor, Mr. John",M,22.1,1,0,542613,61.06,,C
+624,0,3,"Williams, Mr. James",Female,,0,0,706706,40.09,,S
+300,1,2,"Johnson, Miss. James",MALE,,2,0,CA 626420,18.68,E37,S
+882,1,1,"Wilson, Dr. Rose",male,16.6,1,0,PC 464823,13.68,B98,S
+668,0,3,"Davis, Dr. Charles",M,19.8,0,0,SOTON/OQ 549791,117.48,,S
+868,1,3,"Jones, Col. Emily",F,59.7,0,0,CA 12313,44.9,,S
+388,1,3,"Thomas, Col. Charles",Male,41.4,0,0,SOTON/OQ 120736,0.95,,C
+205,1,3,"Williams, Mr. Thomas",female,49.7,0,0,A/5 694359,3.74,,S
+325,1,3,"Moore, Col. Edith",male,13.6,0,0,CA 1543,2.0,,C
+109,1,1,"Miller, Dr. George",male,22.9,0,0,PC 428205,25.33,,S
+684,0,1,"Taylor, Mrs. George",M,34.7,0,0,832698,8.4,G66,S
+468,1,3,"Jones, Mrs. Alice",Male,9.2,0,2,SOTON/OQ 366011,7.86,F63,S
+514,0,1,"Johnson, Dr. George",female,58.6,0,0,466232,27.07,,Q
+456,1,3,"Miller, Dr. Mary",male,,1,0,PC 73623,57.54,,S
+643,0,1,"Brown, Mrs. Alice",F,37.7,0,0,A/5 496632,9.1,,S
+100,1,2,"Wilson, Mrs. Emily",male,25.3,0,0,PC 445958,20.04,,C
+806,0,1,"Taylor, Mr. John",MALE,,2,2,343702,65.16,,S
+493,1,1,"Johnson, Dr. Mary",male,31.6,0,0,152590,98.96,,S
+855,0,2,"Davis, Miss. Alice",MALE,43.8,0,0,259088,17.55,,S
+169,0,1,"Smith, Miss. Anna",M,35.3,0,2,PC 92221,53.68,,S
+657,0,2,"Smith, Rev. Emily",MALE,22.4,0,0,SOTON/OQ 121781,7.82,,S
+598,1,3,"Jones, Mrs. John",female,,1,0,A/5 88050,17.66,,S
+594,1,1,"Taylor, Mrs. Charles",M,,0,2,PC 661633,67.52,,Q
+14,0,2,"Brown, Mr. John",MALE,33.2,0,0,A/5 625304,5.47,,S
+786,1,2,"Thomas, Col. William",MALE,40.6,1,0,PC 725009,69.68,,Q
+837,0,2,"Miller, Col. Mary",Male,23.3,0,0,A/5 924949,38.05,D145,Q
+111,0,3,"Moore, Col. Mary",M,32.9,0,1,PC 768069,37.49,,S
+272,0,3,"Brown, Col. Charles",MALE,16.1,0,0,SOTON/OQ 355005,18.94,G19,Q
+533,1,2,"Davis, Mrs. Rose",female,13.5,0,0,CA 238159,29.04,,S
+27,1,3,"Thomas, Mrs. Rose",F,35.1,0,0,SOTON/OQ 867256,2.12,G20,S
+661,1,1,"Jones, Miss. Mary",male,38.1,0,0,CA 876027,80.91,F142,S
+47,0,3,"Anderson, Mr. Rose",MALE,21.7,0,0,PC 821721,11.05,,C
+833,0,3,"Jones, Mr. Edith",Male,27.1,0,1,PC 610457,55.85,,S
+467,0,3,"Davis, Rev. John",female,41.6,1,1,A/5 75851,52.12,,S
+135,1,3,"Moore, Dr. Thomas",Male,43.6,0,0,SOTON/OQ 412098,23.93,,S
+715,1,3,"Thomas, Miss. Charles",Male,28.7,0,0,PC 931133,17.91,A38,S
+217,1,1,"Brown, Dr. William",M,53.7,0,0,CA 115722,39.58,,S
+474,1,3,"Johnson, Mrs. Alice",male,36.4,0,1,A/5 955705,45.04,,S
+223,1,2,"Brown, Mrs. Thomas",female,36.3,0,3,SOTON/OQ 486432,33.65,,C
+58,1,3,"Miller, Col. Emily",male,39.2,0,1,SOTON/OQ 260628,46.62,A61,C
+141,0,3,"Jones, Dr. Edith",female,39.5,0,0,A/5 201203,81.63,F118,S
+172,1,1,"Brown, Mrs. Mary",M,40.3,1,0,A/5 104119,3.74,,S
+110,0,2,"Davis, Dr. Anna",MALE,33.6,0,0,41307,$85.55,,S
+284,1,2,"Williams, Mrs. Thomas",MALE,24.6,0,1,956267,94.8,D96,S
+831,0,2,"Davis, Rev. Alice",male,43.6,0,0,PC 429834,54.35,,S
+62,0,3,"Davis, Mr. James",M,63.6,0,0,687328,39.08,,S
+854,0,3,"Moore, Miss. Alice",male,29.9,1,0,PC 680621,51.98,,S
+713,1,3,"Miller, Rev. John",female,,1,0,SOTON/OQ 973200,7.25,,C
+483,0,3,"Miller, Dr. Mary",Male,36.3,0,0,19067,61.68,E72,S
+829,0,3,"Brown, Mrs. Thomas",male,43.2,0,0,SOTON/OQ 500892,20.34,,S
+160,0,1,"Davis, Mr. Rose",M,44.7,0,0,A/5 358070,13.95,,C
+458,1,3,"Brown, Rev. Mary",F,37.4,0,0,PC 779458,2.32,A146,S
+95,0,3,"Moore, Mr. Alice",M,,2,0,PC 708767,12.05,,C
+819,1,3,"Williams, Mrs. Emily",MALE,,1,0,A/5 757532,156.65,A67,S
+309,0,1,"Anderson, Mrs. Mary",F,25.8,2,0,SOTON/OQ 29723,45.32,,S
+575,1,3,"Brown, Mrs. John",male,57.2,1,0,PC 372608,44.71,,S
+454,1,1,"Miller, Miss. James",MALE,33.6,1,0,A/5 85440,34.36,C41,S
+692,1,2,"Anderson, Rev. Emily",F,29.6,1,0,SOTON/OQ 483700,7.04,F83,Q
+750,0,3,"Davis, Dr. Charles",M,,1,0,SOTON/OQ 393505,15.47,,C
+35,1,2,"Smith, Mrs. George",M,,5,0,A/5 712670,64.09,D64,S
+554,0,1,"Thomas, Dr. James",female,,0,0,A/5 65521,26.35,,S
+129,1,3,"Wilson, Dr. James",male,31.4,0,0,A/5 321652,23.43,C82,S
+99,1,3,"Johnson, Miss. John",MALE,7.0,0,0,CA 480018,17.07,C43,S
+438,0,2,"Moore, Dr. Charles",male,33.7,1,3,CA 860585,$8.23,,S
+686,1,2,"Taylor, Rev. Mary",M,46.9,0,0,438785,12.54,,S
+210,1,3,"Jones, Rev. William",M,,1,0,CA 105663,64.54,,S
+609,0,3,"Davis, Rev. George",male,34.6,1,0,A/5 210131,7.62,,S
+409,1,3,"Brown, Rev. Rose",Male,26.3,0,0,CA 995609,16.92,,Q
+677,0,3,"Thomas, Miss. Charles",FEMALE,21.5,3,0,121599,5.39,C85,S
+376,0,1,"Williams, Miss. George",female,,0,0,PC 904129,22.51,C99,Q
+453,0,3,"Smith, Miss. Charles",F,27.0,0,0,SOTON/OQ 61583,9.01,C132,S
+147,0,3,"Williams, Col. Charles",Male,17.4,4,1,CA 987870,2.08,,C
+516,1,3,"Smith, Dr. Charles",MALE,46.2,0,1,SOTON/OQ 645818,29.88,,S
+110,0,2,"Davis, Dr. Anna",MALE,33.6,0,0,41307,$85.55,,S
+233,1,3,"Williams, Mr. Thomas",MALE,,1,0,PC 350109,9.5,,C
+278,1,1,"Williams, Col. Charles",F,14.1,0,1,CA 407151,0.31,,S
+871,1,2,"Williams, Dr. James",M,44.6,0,2,SOTON/OQ 841123,46.2,,C
+596,1,1,"Wilson, Miss. Charles",M,23.4,0,0,A/5 41060,8.25,,Q
+725,1,1,"Jones, Mr. Emily",female,12.2,0,0,A/5 909427,10.87,,S
+180,0,1,"Miller, Mrs. Rose",male,,0,0,757203,0.57,,S
+656,1,3,"Smith, Mrs. Anna",M,13.5,0,0,PC 414037,1.49,,S
+495,0,3,"Moore, Rev. William",male,8.4,0,0,195118,104.53,,Q
+154,1,2,"Taylor, Miss. Edith",male,0.2,0,0,A/5 57441,49.23,,C
+412,0,3,"Brown, Rev. George",male,34.2,0,0,CA 924108,18.33,F106,S
+398,1,2,"Johnson, Mrs. George",male,26.7,0,2,A/5 358604,22.08,E109,S
+126,1,1,"Wilson, Col. Alice",F,26.5,1,0,CA 750618,3.38,A65,S
+363,1,3,"Smith, Dr. John",F,14.4,1,2,SOTON/OQ 625165,14.91,,C
+652,0,2,"Taylor, Mrs. Anna",male,28.5,1,0,923976,48.81,,S
+602,1,3,"Jones, Rev. Mary",female,23.6,0,0,173765,102.45,E63,S
+548,1,3,"Jones, Dr. Thomas",MALE,40.0,0,0,PC 296352,512.33,,C
+887,0,2,"Johnson, Rev. Rose",MALE,24.4,0,0,709230,1.03,E28,S
+741,0,1,"Miller, Miss. George",female,17.4,0,2,206443,20.7,B83,S
+286,0,3,"Jones, Mr. John",MALE,44.0,1,0,SOTON/OQ 144439,31.53,,S
+636,0,1,"Williams, Mr. Emily",male,20.5,0,0,SOTON/OQ 765818,17.81,G66,S
+673,1,3,"Moore, Mrs. Edith",male,12.5,0,0,A/5 428735,25.11,E13,C
+260,0,1,"Wilson, Dr. George",male,,0,0,CA 115319,3.96,,Q
+356,1,1,"Jones, Mr. Alice",F,26.1,1,0,A/5 677650,1.43,,C
+874,0,3,"Moore, Miss. George",M,60.0,2,0,CA 481892,30.8,D92,Q
+621,0,3,"Jones, Dr. Charles",female,34.0,0,0,PC 672269,6.53,,S
+331,1,2,"Johnson, Dr. Emily",Female,24.8,0,0,SOTON/OQ 585557,6.37,,S
+49,0,3,"Taylor, Rev. George",F,45.2,0,0,CA 105901,6.56,,S
+75,0,2,"Thomas, Rev. Charles",female,32.1,0,0,SOTON/OQ 277189,19.24,,S
+702,0,3,"Jones, Col. Mary",Female,,0,0,CA 470084,47.16,F51,S
+595,1,1,"Davis, Miss. George",female,,0,0,SOTON/OQ 189536,7.61,,Q
+420,0,1,"Davis, Mr. Edith",male,32.9,0,0,PC 972257,4.37,,S
+206,0,1,"Thomas, Miss. Anna",male,,0,0,360858,44.82,,S
+663,1,3,"Davis, Dr. John",M,56.7,0,0,343010,70.16,,C
+165,0,3,"Moore, Col. Anna",MALE,37.6,0,2,CA 842181,4.83,F144,S
+628,1,3,"Smith, Mr. Thomas",MALE,56.0,0,0,A/5 849907,12.35,,C
+849,1,1,"Smith, Miss. William",F,44.1,0,0,SOTON/OQ 852336,12.27,F146,S
+98,1,3,"Miller, Mrs. John",female,5.8,1,0,A/5 818274,4.29,,S
+571,1,3,"Davis, Col. William",M,37.3,0,0,A/5 986007,7.81,,S
+559,1,1,"Miller, Mrs. William",FEMALE,32.6,0,0,245284,33.48,,Q
+335,0,3,"Williams, Dr. Anna",female,22.4,0,0,PC 1485,58.28,,S
+128,0,3,"Johnson, Rev. Thomas",F,13.0,0,0,622187,4.77,,S
+512,0,3,"Miller, Dr. Anna",male,27.5,1,0,PC 147053,59.23,,S
+619,0,2,"Williams, Dr. Charles",M,,0,0,SOTON/OQ 825254,41.83,,Q
+675,0,3,"Wilson, Mr. Charles",female,,0,0,SOTON/OQ 715549,16.84,B11,S
+81,1,1,"Thomas, Dr. Thomas",FEMALE,48.1,0,0,A/5 174944,1.52,,S
+501,0,2,"Thomas, Miss. William",Female,51.4,0,0,PC 185681,13.12,G2,C
+545,0,3,"Jones, Mr. Charles",male,7.0,0,0,PC 133947,19.14,,S
+813,0,3,"Thomas, Dr. Charles",male,35.2,1,0,PC 290562,59.46,E60,S
+581,1,3,"Smith, Col. Emily",MALE,39.2,0,0,CA 587559,14.94,,S
+631,0,2,"Smith, Mr. Thomas",Male,6.3,4,0,SOTON/OQ 10319,4.2,,S
+492,0,3,"Miller, Miss. George",male,20.5,1,0,PC 529687,0.58,,S
+499,1,1,"Thomas, Mr. James",Male,16.5,1,0,CA 659214,50.45,,S
+570,1,1,"Wilson, Dr. Mary",M,23.2,0,0,PC 531881,27.52,D7,S
+254,0,2,"Johnson, Miss. James",Female,16.7,0,2,PC 595204,10.75,,C
+490,0,1,"Williams, Rev. Alice",FEMALE,,1,0,PC 291860,43.46,,S
+873,1,3,"Brown, Mrs. Emily",FEMALE,,0,1,869558,25.47,,S
+519,1,1,"Moore, Mrs. Charles",male,33.1,0,1,PC 389555,9.28,,S
+792,0,3,"Anderson, Miss. Anna",male,39.6,0,0,SOTON/OQ 585928,17.21,,S
+800,1,3,"Jones, Col. James",Male,18.8,1,1,CA 543684,4.24,,S
+646,1,3,"Smith, Miss. Thomas",MALE,62.6,0,0,950511,30.19,,S
+672,0,3,"Brown, Miss. Anna",male,0.2,1,0,CA 92639,1.96,,S
+823,1,3,"Brown, Dr. John",female,,0,0,PC 823177,40.94,E24,S
+424,0,1,"Johnson, Col. William",Female,,0,0,CA 363678,77.99,,C
+411,0,3,"Johnson, Mr. Edith",Male,49.7,0,0,CA 11535,27.49,D85,Q
+373,0,2,"Brown, Mrs. Thomas",male,22.2,0,0,SOTON/OQ 748978,0.77,,S
+16,1,3,"Johnson, Mr. John",male,45.2,0,0,SOTON/OQ 89324,85.93,E108,S
+667,1,2,"Davis, Miss. Anna",MALE,4.7,0,0,PC 247272,47.59,,C
+442,1,1,"Miller, Mr. Edith",male,34.8,1,0,PC 666465,11.62,,S
+724,1,3,"Wilson, Col. Anna",male,42.7,0,0,CA 472455,12.66,G143,C
+776,1,1,"Williams, Rev. George",male,38.9,1,1,580379,42.42,,C
+695,0,3,"Brown, Miss. Charles",MALE,42.5,2,3,CA 2562,12.88,,S
+464,1,1,"Miller, Mr. Emily",female,40.3,0,4,CA 818065,83.79,,S
+625,1,3,"Wilson, Miss. George",Male,39.0,1,0,241134,9.81,,C
+148,1,3,"Miller, Rev. Rose",Male,33.7,0,2,CA 976101,91.96,,S
+452,0,3,"Johnson, Rev. Rose",Female,15.0,0,0,CA 17487,1.48,,C
+290,0,3,"Thomas, Mrs. John",male,5.7,0,0,PC 637436,56.46,,S
+591,0,1,"Jones, Miss. James",Female,,1,1,58750,$44.91,A58,C
+352,0,3,"Johnson, Mr. Charles",Female,9.1,0,1,287378,108.22,D129,S
+465,0,3,"Smith, Col. Alice",FEMALE,32.1,0,0,CA 714780,46.52,,S
+139,1,1,"Williams, Miss. William",MALE,42.8,2,0,SOTON/OQ 280139,20.81,,S
+55,1,2,"Brown, Col. Mary",Male,42.6,0,0,A/5 673923,28.66,,S
+737,0,2,"Taylor, Rev. Mary",F,30.3,0,0,CA 732276,2.3,,S
+257,0,3,"Brown, Col. John",male,45.7,0,1,A/5 141359,23.81,,S
+53,1,3,"Moore, Mrs. Thomas",M,38.1,0,0,A/5 923948,37.98,,S
+61,0,2,"Williams, Mr. Thomas",M,25.0,0,0,SOTON/OQ 906995,27.45,C128,S
+271,0,2,"Wilson, Mr. Anna",female,51.7,0,0,661572,14.59,,S
+23,0,2,"Brown, Miss. Edith",male,17.9,0,1,894286,30.07,,C
+828,0,2,"Jones, Dr. Mary",male,14.9,0,0,101709,21.16,,S
+419,0,2,"Miller, Mrs. John",female,20.3,0,0,A/5 453688,20.72,,S
+389,0,1,"Smith, Mr. Edith",male,23.5,0,0,A/5 149933,17.86,,S
+243,1,3,"Anderson, Col. John",male,11.4,2,0,384429,31.03,,S
+325,1,3,"Moore, Col. Edith",male,13.6,0,0,CA 1543,2.0,,C
+757,0,2,"Brown, Miss. James",male,29.2,0,2,PC 360411,25.97,,S
+245,0,2,"Johnson, Miss. Charles",MALE,,1,0,A/5 3451,8.33,,S
+732,1,3,"Williams, Miss. Mary",MALE,,2,0,SOTON/OQ 182756,87.01,E82,S
+569,1,1,"Moore, Col. Charles",F,28.9,0,2,SOTON/OQ 788268,116.54,G70,S
+844,1,2,"Taylor, Mrs. Emily",male,,0,0,277743,3.36,,S
+143,0,3,"Johnson, Dr. Edith",female,47.0,2,1,CA 858110,27.46,,C
+51,0,3,"Moore, Dr. Edith",MALE,9.4,2,0,538875,8.42,,C
+721,1,2,"Brown, Rev. John",female,,1,2,205412,45.7,D25,
+622,1,1,"Thomas, Rev. Alice",male,0.2,0,2,599116,4.22,,Q
+586,1,3,"Thomas, Mrs. John",MALE,,0,0,813803,10.63,,Q
+565,1,3,"Brown, Mrs. Alice",Male,,0,0,900679,48.53,,S
+450,1,3,"Wilson, Mrs. William",female,17.5,0,2,A/5 628540,17.52,,S
+82,0,3,"Wilson, Col. James",MALE,22.8,0,0,SOTON/OQ 391365,64.82,A108,S
+604,0,3,"Smith, Mrs. Mary",female,0.2,0,1,662882,18.65,,S
+337,0,1,"Anderson, Rev. George",male,16.2,2,0,536517,33.59,,S
+627,0,3,"Moore, Rev. James",Female,,2,0,SOTON/OQ 457474,39.49,,S
+822,1,1,"Smith, Dr. Anna",M,45.2,1,4,CA 817960,11.03,,Q
+665,1,1,"Thomas, Dr. Alice",M,33.0,0,1,CA 197085,11.47,,Q
+67,0,1,"Taylor, Dr. Emily",male,,0,0,SOTON/OQ 427721,9.2,A25,Q
+669,0,3,"Johnson, Dr. Rose",M,,0,0,A/5 119679,25.73,,S
+10,0,2,"Taylor, Col. Rose",M,17.2,1,0,PC 70297,73.44,,S
+813,0,3,"Thomas, Dr. Charles",male,35.2,1,0,PC 290562,59.46,E60,S
+221,1,3,"Williams, Rev. James",Female,46.6,2,0,780068,70.46,,Q
+229,0,3,"Williams, Col. Rose",male,9.1,0,0,PC 65286,5.67,,S
+664,0,2,"Davis, Col. Edith",M,30.1,4,0,SOTON/OQ 124855,1.35,,Q
+436,1,3,"Thomas, Col. Rose",FEMALE,46.1,0,0,SOTON/OQ 740033,18.65,,
+709,1,2,"Moore, Col. Charles",Female,26.8,0,1,529675,10.13,,S
+114,1,1,"Anderson, Rev. Alice",Male,38.8,0,0,A/5 348034,18.47,C98,S
+348,0,3,"Anderson, Mr. William",male,27.3,0,2,PC 148616,7.49,,Q
+756,1,3,"Taylor, Miss. Emily",M,7.6,3,0,CA 580860,8.15,,S
+857,0,2,"Thomas, Miss. William",male,48.2,0,0,CA 803120,18.8,,S
+65,1,3,"Taylor, Rev. Charles",F,45.2,0,0,A/5 313322,58.55,,S
+588,1,1,"Brown, Mrs. Charles",F,52.3,4,0,A/5 859383,130.07,,S
+717,1,3,"Jones, Dr. Anna",male,22.4,0,0,CA 805149,9.86,G34,S
+466,1,3,"Jones, Mrs. Rose",Male,,0,0,SOTON/OQ 721473,75.29,,S
+810,0,1,"Taylor, Dr. Mary",male,,0,0,CA 644540,9.8,C119,S
+390,0,1,"Brown, Miss. Emily",male,10.4,1,0,SOTON/OQ 100906,29.97,,S
+472,0,3,"Anderson, Dr. Emily",female,,1,0,A/5 792168,24.93,,S
+21,1,3,"Johnson, Mrs. Thomas",MALE,29.9,0,0,722913,$70.31,,C
+775,0,3,"Brown, Miss. Rose",female,44.4,0,1,PC 550823,90.95,A147,S
+777,1,2,"Wilson, Rev. Rose",M,13.3,0,0,CA 104532,70.94,,S
+601,0,1,"Smith, Rev. George",F,50.6,0,0,SOTON/OQ 908155,15.6,,C
+361,1,3,"Jones, Mrs. William",MALE,,0,0,CA 495553,8.23,,S
+306,1,3,"Anderson, Mrs. Anna",F,,0,0,PC 737248,$10.31,,C
+615,0,3,"Davis, Miss. Mary",M,22.1,1,0,SOTON/OQ 640612,0.41,,S
+427,0,1,"Miller, Miss. Edith",MALE,47.0,0,1,A/5 587698,26.37,,S
+572,0,2,"Brown, Col. Thomas",Male,44.8,0,0,PC 495126,$109.95,,
+707,1,3,"Brown, Miss. James",MALE,14.1,1,0,PC 981689,32.56,,S
+597,0,1,"Jones, Col. John",MALE,,0,0,624280,4.86,,C
+52,1,2,"Davis, Mrs. Rose",FEMALE,18.2,0,0,SOTON/OQ 677755,4.21,,S
+187,1,1,"Williams, Mr. Edith",female,14.2,0,3,PC 597002,52.38,D20,C
+593,1,3,"Thomas, Rev. Thomas",Female,17.1,3,1,488531,6.61,F51,S
+410,1,2,"Miller, Miss. James",male,33.6,2,0,A/5 232153,20.14,,S
+26,0,2,"Johnson, Rev. James",M,32.5,1,0,CA 454613,43.15,,S
+693,0,3,"Brown, Miss. Mary",MALE,21.7,1,0,A/5 193391,18.72,,S
+504,1,3,"Miller, Mrs. Edith",female,,0,0,PC 479411,16.64,,S
+734,0,1,"Thomas, Miss. Charles",Male,44.8,2,0,510740,6.14,A86,S
+752,1,3,"Miller, Col. Edith",male,34.1,0,0,CA 317253,46.9,,S
+189,0,3,"Miller, Mrs. George",FEMALE,,0,0,SOTON/OQ 812471,33.34,,S
+542,1,2,"Moore, Miss. Charles",male,,0,0,CA 215052,61.09,A136,
+252,0,3,"Moore, Miss. John",female,42.2,1,2,PC 706753,14.63,E78,S
+726,0,3,"Brown, Dr. Rose",MALE,43.7,0,0,SOTON/OQ 987908,75.65,,C
+842,1,3,"Smith, Mr. George",female,15.6,3,0,968255,25.05,,C
+539,1,3,"Brown, Mrs. Thomas",male,14.6,0,0,A/5 528965,27.22,,S
+324,1,2,"Smith, Mr. James",male,8.8,0,0,919092,86.64,,C
+701,1,3,"Miller, Mrs. Edith",Male,22.9,0,0,A/5 282183,16.67,,Q
+566,0,1,"Davis, Col. Anna",male,34.2,0,0,CA 792747,8.9,,S
+847,1,3,"Taylor, Col. Edith",male,62.5,0,0,PC 751517,24.84,,S
+535,1,2,"Johnson, Rev. Rose",male,44.2,3,0,CA 37386,5.69,,
+771,1,3,"Miller, Rev. John",M,63.6,1,1,SOTON/OQ 649294,37.22,,Q
+740,0,3,"Johnson, Mr. Anna",male,4.9,2,2,391984,0.34,,S
+541,0,2,"Taylor, Dr. William",male,31.2,0,0,SOTON/OQ 689279,83.1,,C
+617,0,3,"Taylor, Miss. James",Male,17.2,0,0,PC 260277,109.21,,Q
+455,0,2,"Thomas, Mrs. Rose",MALE,44.9,0,0,A/5 60204,10.98,D28,S
+859,1,3,"Williams, Rev. Thomas",Female,51.0,0,0,PC 171124,6.22,,C
+620,1,2,"Williams, Mr. Emily",F,17.0,0,0,CA 88944,13.25,,S
+644,0,2,"Smith, Mr. Charles",female,38.8,0,1,237955,11.31,,
+219,1,3,"Miller, Dr. James",M,30.3,1,0,PC 523909,6.97,,S
+240,1,2,"Davis, Mr. Anna",male,28.7,0,2,A/5 955368,35.92,,S
+612,0,1,"Moore, Col. William",MALE,53.9,0,0,944737,$31.30,,C
+447,0,2,"Davis, Miss. George",MALE,16.4,1,0,SOTON/OQ 787273,27.81,,
+193,0,3,"Moore, Col. Mary",Male,17.7,5,3,819364,39.99,,C
+192,1,3,"Brown, Rev. Edith",Male,,0,2,PC 810948,12.8,E88,S
+298,1,1,"Moore, Dr. George",MALE,,0,0,A/5 251380,61.79,,S
+317,1,2,"Jones, Miss. George",female,1.9,0,2,CA 410489,115.26,,S
+133,0,3,"Williams, Col. Alice",Male,38.3,0,0,993217,11.26,,Q
+297,0,3,"Wilson, Col. John",Male,40.7,0,0,A/5 119884,0.43,,S
+253,0,3,"Miller, Miss. Emily",Female,47.2,0,0,PC 99973,7.86,,S
+611,0,3,"Thomas, Mrs. Rose",M,30.4,2,0,A/5 849080,7.41,,S
+264,1,3,"Moore, Col. Emily",female,33.0,0,0,237438,12.46,G37,S
+71,1,1,"Brown, Mrs. Alice",female,50.0,0,1,SOTON/OQ 838657,12.22,,Q
+273,0,3,"Jones, Col. Rose",M,21.9,0,0,SOTON/OQ 926237,61.14,D117,S
+423,1,1,"Moore, Rev. Rose",male,8.7,0,0,SOTON/OQ 649046,55.96,,S
+116,0,1,"Anderson, Mr. Mary",female,34.0,0,0,A/5 381595,8.46,,S
+295,0,2,"Jones, Col. Mary",M,,1,0,SOTON/OQ 243387,34.63,C141,S
+564,0,3,"Smith, Col. Charles",MALE,41.3,1,0,PC 166315,2.88,A4,S
+883,0,3,"Anderson, Col. Anna",Male,21.7,0,0,PC 53479,80.97,,C
+485,1,2,"Johnson, Mrs. John",male,,0,0,A/5 242726,41.09,,C
+509,0,3,"Taylor, Col. James",Female,,0,0,191941,17.49,,S
+279,1,2,"Taylor, Col. John",F,24.5,0,0,PC 595645,30.29,,S
+3,1,3,"Moore, Mrs. William",female,26.6,0,0,CA 635639,24.46,,S
+230,0,3,"Brown, Rev. William",F,,1,0,A/5 46035,2.43,,S
+826,1,3,"Taylor, Col. John",MALE,,0,1,666433,15.65,G107,C
+372,0,2,"Miller, Col. Alice",Male,,1,0,A/5 228630,32.68,E126,S
+782,1,2,"Brown, Mr. John",MALE,9.7,2,0,680164,12.73,E130,S
+200,0,3,"Jones, Mr. Mary",male,43.8,0,0,PC 516367,28.27,,C
+500,0,1,"Brown, Col. John",Female,,0,2,PC 325332,18.07,,C
+432,0,1,"Jones, Mrs. Mary",MALE,28.6,0,0,PC 114200,5.79,,C
+66,0,3,"Moore, Dr. George",male,,0,1,A/5 306977,58.79,,S
+460,1,3,"Taylor, Miss. Edith",female,45.1,1,0,SOTON/OQ 356418,40.77,,Q
+676,0,1,"Taylor, Dr. Charles",Male,,0,0,640577,62.28,E29,S
+848,1,3,"Moore, Col. William",FEMALE,,1,0,59564,10.02,,S
+769,1,3,"Wilson, Col. Emily",MALE,38.4,0,0,CA 6359,67.87,,S
+642,1,3,"Thomas, Col. Mary",Male,,0,1,SOTON/OQ 955825,158.45,,S
+687,0,3,"Miller, Dr. Mary",MALE,26.2,0,0,PC 329376,34.86,,C
+274,1,3,"Brown, Mr. Charles",male,6.6,1,0,7370,2.19,,S
+889,1,3,"Wilson, Rev. Mary",female,24.4,1,0,SOTON/OQ 358005,2.64,,S
+400,1,3,"Wilson, Col. Anna",female,50.6,0,0,780950,33.79,,S
+690,0,1,"Thomas, Mr. John",MALE,35.2,0,0,PC 723354,10.14,,S
+178,0,2,"Anderson, Mr. Rose",male,20.2,0,0,A/5 802162,7.99,F26,S
+301,1,3,"Williams, Dr. James",male,0.2,1,0,181777,28.88,C22,S
+38,1,3,"Brown, Dr. Emily",Male,0.7,0,1,SOTON/OQ 161575,20.65,E16,Q
+203,0,1,"Williams, Col. Anna",Male,,0,0,A/5 702518,13.9,,C
+237,1,2,"Smith, Col. Anna",male,22.7,0,0,A/5 895129,19.08,,S
+150,0,3,"Johnson, Col. Edith",male,40.2,0,0,SOTON/OQ 2732,50.53,,S
+218,0,1,"Miller, Rev. George",Female,2.8,0,0,PC 549799,23.08,,S
+697,1,3,"Moore, Mrs. George",MALE,56.3,0,0,A/5 766075,43.12,,Q
+329,1,2,"Brown, Col. Thomas",MALE,,0,0,SOTON/OQ 819120,14.23,,S
+866,1,3,"Jones, Dr. Rose",male,38.9,2,2,PC 256906,50.34,A2,S
+553,0,3,"Johnson, Mr. John",female,6.8,0,1,SOTON/OQ 144458,6.04,,S
+759,1,3,"Jones, Rev. Thomas",M,48.3,0,0,A/5 795218,15.93,,S
+303,1,3,"Thomas, Mrs. John",F,49.4,0,0,PC 352845,12.92,,S
+781,1,3,"Thomas, Miss. John",male,10.2,0,2,711783,9.67,A130,S
+832,1,2,"Davis, Rev. Emily",Female,33.2,0,1,724148,30.73,B58,Q
+651,0,1,"Miller, Rev. Anna",male,19.0,1,0,PC 737754,42.92,E32,S
+839,0,3,"Wilson, Mrs. William",male,25.5,1,3,SOTON/OQ 301945,7.89,,C
+340,1,1,"Moore, Miss. John",male,,0,0,PC 411221,82.81,,Q
+797,0,3,"Thomas, Mrs. Rose",male,,0,1,PC 748942,16.03,,S
+351,1,3,"Thomas, Dr. Thomas",female,42.0,0,0,PC 104005,13.44,,C
+194,0,3,"Wilson, Rev. William",F,31.5,0,0,A/5 862450,25.75,,C
+236,0,3,"Davis, Col. James",Male,,2,0,PC 130472,30.55,,C
+358,1,2,"Miller, Col. Mary",female,22.7,0,0,A/5 197170,89.99,A86,S
+845,0,3,"Miller, Rev. Alice",Male,29.3,2,1,SOTON/OQ 177243,29.28,,S
+56,1,3,"Jones, Miss. Edith",F,34.9,0,0,PC 133089,12.39,,S
+443,0,3,"Smith, Dr. John",MALE,31.9,0,1,PC 433258,21.37,,S
+97,1,3,"Smith, Miss. Emily",Female,32.5,0,2,PC 3085,12.62,,C
+142,1,3,"Jones, Mr. John",male,0.4,0,0,CA 743013,29.4,B79,S
+633,0,2,"Moore, Mr. William",male,37.8,2,0,A/5 502502,139.58,,Q
+820,1,1,"Moore, Mrs. John",male,36.6,2,0,SOTON/OQ 223038,98.76,,S
+473,0,2,"Jones, Mrs. John",female,,0,0,SOTON/OQ 345301,2.89,F58,S
+527,1,3,"Johnson, Miss. John",male,24.9,0,0,CA 462607,58.39,,C
+121,0,1,"Wilson, Miss. Charles",M,35.7,0,1,A/5 761868,131.07,,C
+774,1,1,"Davis, Miss. James",M,24.2,2,0,SOTON/OQ 830500,2.2,,S
+63,0,1,"Jones, Mr. Alice",male,12.2,0,1,PC 701071,68.56,,C
+689,1,3,"Thomas, Dr. Edith",male,39.4,1,0,A/5 464827,17.88,,S
+368,1,2,"Moore, Miss. John",Male,,1,0,CA 398815,13.14,A115,S
+4,1,3,"Wilson, Dr. James",female,17.6,3,0,PC 184765,2.33,,C
+59,0,3,"Moore, Miss. George",MALE,36.9,1,0,SOTON/OQ 984436,85.04,,S
+224,1,3,"Moore, Miss. Emily",Female,,0,0,A/5 460277,10.91,,S
+471,0,3,"Anderson, Mrs. Alice",FEMALE,30.7,0,0,A/5 159005,1.91,,Q
+102,0,2,"Moore, Col. James",male,34.9,1,1,CA 685175,35.08,,C
+654,0,1,"Davis, Dr. Thomas",MALE,18.1,1,2,A/5 38008,74.45,,C
+222,1,3,"Thomas, Col. Rose",male,23.6,0,0,872818,10.85,,C
+378,0,3,"Miller, Rev. James",female,41.3,0,1,PC 827689,13.4,B8,S
+5,1,3,"Miller, Miss. Thomas",male,32.6,0,1,CA 526617,5.91,,S
+53,1,3,"Moore, Mrs. Thomas",M,38.1,0,0,A/5 923948,37.98,,S
+18,1,2,"Jones, Rev. William",female,30.1,0,0,SOTON/OQ 511055,24.5,,S
+307,0,3,"Taylor, Dr. Mary",M,,1,0,566696,20.89,,S
+156,1,3,"Thomas, Mrs. Rose",male,19.6,0,0,PC 38544,23.8,,S
+391,0,3,"Taylor, Rev. Anna",male,28.2,0,0,SOTON/OQ 857529,78.89,,S
+614,0,3,"Miller, Mr. James",male,20.1,0,0,A/5 834175,1.98,,S
+249,0,1,"Johnson, Miss. Rose",M,36.7,0,1,PC 104477,63.76,,S
+250,1,3,"Brown, Miss. Rose",F,,1,1,597185,19.37,,S
+359,1,3,"Brown, Miss. Edith",Female,,1,0,PC 190256,77.01,,C
+601,0,1,"Smith, Rev. George",F,50.6,0,0,SOTON/OQ 908155,15.6,,C
+830,0,3,"Davis, Miss. Edith",MALE,6.0,2,0,PC 572216,$27.56,,S
+772,0,3,"Davis, Miss. Charles",F,35.3,0,0,PC 874740,14.88,,C
+31,1,3,"Williams, Dr. William",MALE,50.8,0,0,727083,20.24,,C
+670,1,3,"Wilson, Mr. George",Male,,1,0,398352,30.02,G5,S
+876,1,2,"Wilson, Mr. John",M,16.4,1,0,CA 372348,11.21,,S
+118,1,1,"Johnson, Col. William",female,21.8,1,1,SOTON/OQ 18228,111.5,C24,S
+578,1,3,"Moore, Mrs. John",MALE,30.3,0,1,CA 300473,12.5,F59,Q
+117,1,3,"Brown, Mrs. Edith",F,,5,0,PC 335654,71.96,,S
+225,1,3,"Smith, Col. Charles",female,39.4,1,0,A/5 179358,62.6,C87,S
+603,0,3,"Jones, Mrs. Rose",Female,26.5,0,1,PC 561294,68.16,,S
+505,0,3,"Wilson, Col. Charles",male,27.4,2,0,PC 823013,60.57,,S
+28,0,3,"Williams, Col. George",male,24.6,0,0,PC 564913,23.91,,S
+382,0,1,"Wilson, Col. George",MALE,28.1,0,0,SOTON/OQ 859584,2.73,,C
+308,1,1,"Anderson, Col. James",MALE,,1,0,394887,134.94,,S
+415,0,3,"Anderson, Col. Charles",MALE,6.1,0,0,CA 162979,1.89,,S
+660,0,3,"Anderson, Dr. Alice",FEMALE,,0,0,506079,2.15,B25,S
+201,0,3,"Wilson, Mr. Charles",MALE,,1,0,A/5 102334,21.54,B79,
+681,0,3,"Williams, Mrs. Charles",Female,,1,0,PC 828765,$69.03,,S
+386,0,2,"Brown, Col. Alice",male,34.7,0,0,CA 826622,32.0,,S
+599,1,3,"Smith, Dr. Anna",female,,0,0,735950,0.45,,C
+821,0,3,"Anderson, Mr. Rose",male,31.9,0,0,CA 558350,23.38,,S
+723,0,3,"Thomas, Dr. William",F,19.7,2,0,A/5 806702,29.88,,C
+872,0,1,"Moore, Mrs. Thomas",M,,0,0,A/5 507771,80.39,,S
+315,1,2,"Williams, Mr. Charles",M,41.2,0,0,SOTON/OQ 182645,42.04,,S
+758,0,3,"Williams, Rev. Anna",M,50.5,1,0,PC 446916,9.29,E54,S
+281,1,3,"Miller, Mrs. James",M,27.2,0,1,PC 436793,5.61,F24,S
+862,1,3,"Moore, Mr. Thomas",male,37.4,0,0,SOTON/OQ 994437,6.98,,S
+354,1,3,"Davis, Rev. James",male,30.9,0,0,CA 112759,63.78,,S
+582,0,2,"Wilson, Dr. Edith",male,,0,0,SOTON/OQ 189809,49.44,,Q
+208,1,2,"Thomas, Rev. Edith",male,,0,0,SOTON/OQ 147470,11.67,,S
+380,0,3,"Miller, Mr. Charles",male,36.9,0,0,PC 177687,21.0,,S
+694,1,3,"Anderson, Mr. Mary",female,39.4,1,0,A/5 514698,2.08,A12,S
+720,1,3,"Johnson, Miss. Mary",MALE,25.4,1,0,172356,57.94,,Q
+24,0,3,"Jones, Rev. Alice",male,30.0,0,0,A/5 572469,18.16,,C
+341,1,3,"Taylor, Miss. Edith",M,30.2,0,0,A/5 655554,3.49,,S
+778,1,3,"Johnson, Dr. John",female,32.2,0,0,PC 978618,18.41,G81,C
+706,0,3,"Williams, Miss. Thomas",MALE,40.3,0,0,A/5 789096,77.16,G4,S
+155,1,3,"Anderson, Mr. Emily",Male,33.9,0,0,CA 947090,87.04,,C
+783,0,3,"Thomas, Mr. Charles",MALE,19.0,0,0,844542,61.99,,C
+661,1,1,"Jones, Miss. Mary",male,38.1,0,0,CA 876027,80.91,F142,S
+481,1,3,"Brown, Rev. Charles",MALE,0.9,2,0,SOTON/OQ 214356,56.12,,S
+714,1,3,"Thomas, Dr. Rose",FEMALE,29.9,1,0,CA 975501,12.4,,S
+488,1,3,"Miller, Rev. James",M,,1,0,SOTON/OQ 894466,20.44,,S
+749,0,2,"Taylor, Mrs. William",MALE,8.7,1,0,SOTON/OQ 185869,91.11,,S
+543,1,1,"Thomas, Mrs. George",male,39.5,5,2,214253,78.19,,S
+529,1,3,"Moore, Dr. George",male,61.3,0,2,PC 365459,12.25,F76,Q
+515,0,2,"Thomas, Mrs. Rose",Female,,0,0,168137,40.24,,S
+263,1,1,"Davis, Rev. George",male,39.6,0,0,109154,1.75,,S
+83,1,2,"Moore, Miss. Mary",male,,1,0,937647,9.23,F115,S
+526,0,3,"Anderson, Mr. John",MALE,45.2,0,0,SOTON/OQ 700274,6.2,,S
+408,0,1,"Thomas, Rev. Charles",male,,1,0,SOTON/OQ 73147,38.27,,Q
+878,1,3,"Johnson, Mr. Rose",M,46.4,1,0,CA 970271,8.58,,C
+486,0,2,"Williams, Rev. John",male,10.3,0,0,A/5 424244,40.19,,C
+39,0,2,"Moore, Mrs. Emily",male,13.1,0,0,A/5 118990,16.9,,S
+418,1,2,"Anderson, Mrs. William",Male,34.8,0,0,PC 21749,51.23,,C
+510,0,1,"Jones, Rev. George",male,,1,2,A/5 494689,16.87,B89,Q
+334,1,1,"Taylor, Col. William",F,11.0,0,1,CA 898173,70.03,A113,C
+11,0,3,"Jones, Mr. Mary",Male,3.8,2,2,SOTON/OQ 16005,2.25,,S
+511,1,3,"Moore, Mr. Mary",Male,50.3,0,0,SOTON/OQ 656096,169.21,,S
+320,0,3,"Wilson, Col. Mary",male,18.3,2,0,CA 803314,36.82,,S
+33,1,2,"Thomas, Col. Anna",female,26.2,1,0,CA 550161,55.86,,S
+683,0,3,"Williams, Col. Edith",F,,0,2,CA 306088,$24.16,,S
+798,1,1,"Miller, Col. Emily",Male,37.3,1,0,A/5 772844,37.23,,C
+761,1,2,"Wilson, Dr. William",male,24.2,0,0,A/5 151841,19.45,C3,S
+383,1,2,"Wilson, Mrs. Rose",M,24.8,0,2,CA 155906,0.3,D82,S
+282,1,3,"Brown, Col. James",female,38.8,0,0,A/5 630971,11.18,,S
+579,1,3,"Johnson, Mr. Anna",male,8.0,0,2,A/5 255160,13.28,,S
+494,0,3,"Taylor, Dr. Charles",female,11.9,1,2,PC 20434,7.83,,C
+817,0,1,"Wilson, Mr. Anna",female,40.7,1,1,CA 801976,2.65,,S
+480,1,1,"Johnson, Rev. Mary",female,,0,0,CA 67384,16.82,,S
+881,1,3,"Brown, Rev. William",male,32.7,0,0,CA 83002,92.37,,S
+379,1,3,"Wilson, Miss. Charles",female,31.9,0,0,803545,70.7,,S
+446,1,3,"Miller, Dr. Emily",male,14.9,0,0,A/5 873802,4.04,,S
+784,1,3,"Wilson, Dr. Charles",M,,0,0,517265,33.26,,S
+90,1,1,"Miller, Mr. James",male,,1,0,PC 522079,27.86,G137,S
+214,1,1,"Jones, Miss. Rose",male,27.8,0,0,CA 215343,35.38,B58,S
+322,0,2,"Taylor, Col. Thomas",male,,0,1,SOTON/OQ 517468,57.26,,S
+762,0,1,"Moore, Rev. Mary",MALE,49.1,0,3,CA 795264,44.93,,S
+134,0,1,"Davis, Miss. John",Male,31.3,0,0,PC 135175,10.47,A129,C
+347,0,3,"Wilson, Dr. Thomas",F,37.0,1,0,299332,$19.16,G17,Q
+44,0,3,"Moore, Mrs. John",Female,47.5,1,0,CA 183429,79.11,C95,S
+8,0,3,"Johnson, Miss. Anna",female,43.0,0,0,428709,55.3,B75,S
+557,0,3,"Jones, Dr. Alice",male,24.5,2,0,PC 207373,$14.59,,S
+321,0,2,"Jones, Mrs. Thomas",Male,40.3,0,0,SOTON/OQ 118483,14.64,B77,S
+708,1,3,"Anderson, Rev. Alice",male,9.5,1,0,CA 407423,20.87,,S
+188,1,2,"Taylor, Dr. Emily",Female,34.8,0,0,33492,33.98,,S
+10,0,2,"Taylor, Col. Rose",M,17.2,1,0,PC 70297,73.44,,S
+123,0,2,"Williams, Col. James",Male,23.7,0,0,SOTON/OQ 659790,5.22,,S
+41,0,2,"Jones, Rev. George",Female,14.3,0,0,A/5 457062,11.82,,C
+305,1,3,"Thomas, Mrs. James",MALE,27.6,1,2,SOTON/OQ 764923,10.95,,S
+32,1,3,"Taylor, Dr. James",female,40.2,0,0,CA 240744,38.74,,C
+552,1,1,"Brown, Rev. Mary",M,,1,0,216700,22.39,D143,
+173,1,3,"Anderson, Mr. Charles",male,35.9,0,0,CA 431751,24.52,,Q
+285,1,1,"Smith, Col. Emily",F,7.1,4,0,PC 206830,11.84,G63,S
+431,0,3,"Davis, Miss. Edith",Male,,2,0,A/5 669234,2.68,,S
+802,0,3,"Davis, Rev. George",male,12.1,2,0,PC 71116,0.94,,S
+241,1,3,"Jones, Mr. Rose",male,,1,0,550277,36.5,,S
+659,0,2,"Smith, Dr. Alice",MALE,10.8,0,0,PC 30288,4.11,,S
+175,0,1,"Davis, Dr. John",MALE,10.2,0,0,PC 418641,50.99,,C
+558,1,3,"Thomas, Rev. Anna",male,18.6,0,0,SOTON/OQ 517805,26.81,,C
+743,0,3,"Taylor, Mrs. John",Female,11.5,0,0,PC 525011,17.45,,Q
+246,1,1,"Davis, Mrs. James",F,0.2,1,1,PC 533705,8.56,,Q
+57,1,3,"Jones, Col. Emily",Male,33.9,1,0,SOTON/OQ 457859,0.01,,S
+508,0,1,"Williams, Col. George",Female,,1,0,A/5 540735,3.26,C106,S
+72,0,3,"Jones, Miss. William",F,30.5,0,1,258889,67.58,,C
+680,0,3,"Moore, Mrs. Charles",MALE,23.0,0,0,676176,9.17,,Q
+146,1,3,"Wilson, Dr. Charles",F,,1,0,PC 907584,17.09,,C
+91,0,1,"Moore, Rev. Anna",MALE,29.8,0,0,A/5 412949,33.65,,S
+167,0,3,"Smith, Miss. Edith",female,,1,1,PC 328370,99.52,,C
+393,0,2,"Taylor, Mrs. James",M,45.1,0,0,SOTON/OQ 980332,7.4,G10,C
+888,1,3,"Taylor, Col. Emily",Male,0.2,0,0,PC 948676,12.05,A107,S
+171,1,2,"Moore, Mr. James",Male,66.9,0,0,PC 405246,19.74,,S
+311,1,1,"Davis, Mrs. George",MALE,0.2,0,0,A/5 285220,160.32,,C
+362,1,2,"Taylor, Miss. Emily",male,36.1,0,0,CA 617896,32.52,,C
+360,0,3,"Jones, Col. Anna",Female,28.9,0,0,SOTON/OQ 412582,173.54,,S
+94,0,3,"Smith, Miss. John",M,17.4,2,0,SOTON/OQ 837792,17.09,,S
+323,0,3,"Brown, Mrs. Edith",Male,12.2,0,0,SOTON/OQ 685006,58.37,,Q
+421,1,1,"Jones, Rev. James",M,18.1,2,0,CA 921265,6.36,,S
+413,0,3,"Johnson, Mrs. Anna",female,5.0,2,0,A/5 898820,14.46,,S
+626,1,3,"Anderson, Rev. William",male,,4,0,CA 542197,34.07,,S
+793,0,3,"Thomas, Mrs. Rose",female,,0,0,680496,65.21,,S
+794,1,3,"Jones, Rev. Rose",M,43.2,1,0,SOTON/OQ 266037,15.18,,C
+377,0,3,"Williams, Miss. Edith",male,26.6,0,2,CA 601253,3.06,D54,S
+396,0,2,"Moore, Mrs. Alice",female,39.7,0,0,A/5 75426,4.55,,S
+244,1,3,"Taylor, Rev. Edith",Female,11.7,1,1,CA 375411,25.52,,Q
+816,1,2,"Moore, Mrs. William",MALE,17.8,0,0,SOTON/OQ 480125,30.32,,S
+88,1,3,"Anderson, Mr. George",MALE,26.8,0,0,CA 640307,15.11,,S
+215,0,1,"Davis, Mrs. Thomas",MALE,29.8,0,0,647561,40.19,,S
+885,0,3,"Smith, Miss. Charles",Male,,0,0,SOTON/OQ 338034,60.24,,C
+345,0,3,"Wilson, Rev. Anna",MALE,13.7,0,0,PC 100994,70.22,C87,S
+174,1,3,"Smith, Dr. William",male,52.3,1,0,CA 554510,0.59,,S
+768,0,3,"Davis, Rev. John",male,16.8,0,0,CA 554560,0.0,,C
+716,0,3,"Moore, Col. Mary",F,39.8,1,0,CA 580642,9.3,,S
+292,1,3,"Johnson, Dr. Mary",Male,17.0,0,0,PC 42351,130.48,G69,S
+426,0,1,"Williams, Col. Edith",male,,2,0,238905,19.47,,S
+700,0,3,"Taylor, Col. Anna",Male,53.8,0,3,A/5 402968,31.51,,C
+119,0,2,"Wilson, Miss. William",MALE,,0,2,SOTON/OQ 335515,88.27,,S
+120,1,3,"Anderson, Miss. Alice",Female,36.8,0,1,PC 421068,5.65,,S
+164,1,2,"Williams, Rev. James",male,,0,0,732775,7.54,,S
+796,0,1,"Thomas, Rev. Anna",M,10.7,0,0,PC 152244,40.0,,S
+385,0,3,"Davis, Mrs. Thomas",male,,0,0,365117,29.7,,S
+1,1,3,"Miller, Mrs. George",Female,48.9,0,1,A/5 551151,47.77,,C
+395,0,1,"Miller, Col. Charles",Male,26.0,2,3,SOTON/OQ 334978,20.15,B31,S
+402,1,1,"Brown, Rev. George",male,32.9,0,0,394672,3.44,,S
+405,0,3,"Anderson, Mrs. Emily",MALE,29.9,0,0,SOTON/OQ 427664,13.4,,S
+568,1,2,"Johnson, Rev. James",F,11.0,0,0,SOTON/OQ 874296,24.29,D135,S
+563,0,1,"Anderson, Mrs. William",female,29.2,0,2,359664,8.62,,S
+163,1,3,"Thomas, Mrs. Alice",male,59.0,0,0,CA 396306,17.4,,S
+115,0,3,"Thomas, Mr. George",Male,32.7,0,1,PC 899242,1.68,,Q
+151,1,1,"Brown, Col. Rose",MALE,22.1,2,0,SOTON/OQ 442015,73.81,,C
+766,1,1,"Anderson, Col. James",FEMALE,32.4,0,0,SOTON/OQ 891329,0.0,,S
+524,1,3,"Smith, Miss. Charles",FEMALE,37.4,0,0,PC 136007,95.63,,S
+369,1,2,"Taylor, Dr. Emily",FEMALE,35.6,0,0,A/5 389099,56.21,,S
+478,1,1,"Davis, Mr. Mary",MALE,29.5,0,0,A/5 8460,6.03,,C
+891,1,3,"Brown, Miss. James",FEMALE,34.8,0,0,476308,20.18,,
+532,0,3,"Johnson, Col. George",male,,0,0,CA 196280,22.29,,S
+864,0,3,"Wilson, Rev. John",M,30.0,0,0,PC 153318,65.2,,S
+259,0,3,"Johnson, Dr. John",Male,,0,0,816868,52.68,E15,S
+767,1,3,"Wilson, Mr. Alice",MALE,46.8,0,2,PC 837687,25.24,,S
+136,0,3,"Brown, Mr. Alice",male,27.4,0,0,904306,50.68,B54,S
+836,0,1,"Taylor, Col. Charles",M,46.7,0,0,693320,3.42,,S
+573,0,2,"Anderson, Mr. Mary",Female,0.2,0,0,PC 371635,29.04,,S
+835,1,2,"Taylor, Col. Thomas",male,36.0,4,0,A/5 442228,34.42,,S
+502,0,3,"Johnson, Rev. Charles",FEMALE,44.0,1,1,SOTON/OQ 855081,20.34,E3,S
+733,1,3,"Wilson, Rev. Mary",M,27.9,0,2,PC 286233,71.11,,S
+344,1,2,"Brown, Rev. Edith",male,17.3,1,1,CA 891900,5.78,,C
+610,1,2,"Miller, Mrs. Anna",MALE,42.8,0,0,728900,58.52,F8,S
+658,0,3,"Moore, Mrs. Alice",female,32.4,1,0,32686,35.37,,S
+294,0,1,"Moore, Col. Charles",MALE,37.9,0,0,CA 969357,3.23,,C
+365,1,3,"Johnson, Miss. Edith",Female,15.1,1,0,560131,25.45,,S
+795,1,1,"Smith, Mr. Mary",MALE,25.9,0,0,570827,29.99,,S
+15,0,3,"Jones, Miss. Emily",M,19.9,0,0,CA 210601,200.0,,C
+87,1,2,"Jones, Rev. John",Female,33.9,0,1,SOTON/OQ 869218,227.53,F108,S
+371,0,3,"Miller, Col. Thomas",MALE,30.6,0,1,CA 807944,$5.81,C74,S
+166,1,3,"Johnson, Miss. James",female,,1,0,PC 704121,22.76,,S
+799,1,3,"Smith, Miss. Charles",female,17.9,0,0,920990,17.39,,S
+336,1,3,"Williams, Rev. Rose",M,30.2,2,0,327677,47.64,,S
+60,1,3,"Wilson, Col. William",F,17.3,0,0,307165,16.8,,S
+355,1,3,"Taylor, Dr. Thomas",male,,0,0,PC 652374,27.71,E35,S
+425,0,2,"Anderson, Dr. Rose",Male,,0,1,PC 658566,14.37,,S
+293,0,2,"Jones, Miss. Charles",M,,1,0,SOTON/OQ 52981,109.95,F9,S
+42,0,3,"Taylor, Mrs. Thomas",M,23.0,0,0,A/5 461364,37.54,,S
+330,1,1,"Johnson, Mrs. William",male,32.5,2,1,A/5 166794,67.35,G20,S
+430,1,1,"Anderson, Dr. Edith",M,28.3,0,0,CA 571778,3.28,G20,S
+80,0,3,"Thomas, Miss. Mary",M,15.3,0,2,PC 986446,8.48,,S
+29,0,3,"Thomas, Rev. George",MALE,34.3,0,0,SOTON/OQ 74210,24.3,,S
+255,1,3,"Jones, Rev. Mary",M,40.7,1,0,SOTON/OQ 256538,17.46,,S
+678,0,3,"Davis, Mr. Thomas",female,13.0,0,1,PC 258864,29.84,D108,S
+459,1,3,"Johnson, Col. Rose",female,,0,0,SOTON/OQ 454683,14.12,,C
+384,1,2,"Williams, Miss. Emily",Female,33.8,1,0,900259,6.74,,S
+314,0,3,"Thomas, Mrs. William",male,3.3,0,0,A/5 154993,17.0,,S
+85,0,2,"Johnson, Rev. James",FEMALE,8.5,0,0,403817,76.83,,S
+137,0,1,"Williams, Dr. James",MALE,23.6,0,2,PC 505923,15.54,E80,S
+112,0,1,"Johnson, Mrs. Anna",F,29.8,1,0,SOTON/OQ 960314,14.67,B83,Q
+195,1,2,"Brown, Dr. Anna",male,,0,2,SOTON/OQ 677087,66.8,A1,S
+179,0,3,"Williams, Dr. William",male,39.8,0,0,PC 731789,68.44,,S
+803,1,1,"Williams, Rev. George",male,41.3,0,2,CA 760140,512.33,B3,C
+497,1,3,"Williams, Dr. Thomas",male,28.1,0,0,SOTON/OQ 584530,5.03,,S
+130,0,1,"Anderson, Miss. John",MALE,55.8,0,4,SOTON/OQ 587763,58.84,A13,S
+338,0,3,"Taylor, Mrs. Mary",MALE,33.7,0,0,A/5 63228,148.01,,S
+125,1,3,"Anderson, Col. Rose",male,18.7,0,0,PC 706223,5.73,,S
+865,1,2,"Miller, Mrs. Rose",female,17.1,0,1,A/5 262283,$0.04,,C
+227,0,1,"Williams, Mr. Emily",M,23.9,1,0,88608,72.77,,S
+269,0,2,"Smith, Rev. John",Male,30.4,0,0,CA 24149,60.05,,S
+880,0,3,"Taylor, Rev. James",male,34.8,0,0,SOTON/OQ 424618,20.32,C15,S
+104,1,1,"Anderson, Miss. Thomas",male,48.6,0,0,119025,22.32,,S
+870,1,3,"Brown, Miss. Mary",female,,0,0,CA 994215,27.19,,S
+592,1,2,"Jones, Col. Charles",F,21.2,0,0,CA 640914,25.5,B121,S
+228,1,3,"Moore, Miss. George",Male,30.4,1,0,PC 881351,40.27,,S
+801,1,3,"Wilson, Mr. Emily",F,8.7,2,0,PC 62176,13.11,,S
+302,0,1,"Williams, Miss. Anna",F,,0,0,SOTON/OQ 338954,29.47,,C
+276,1,3,"Davis, Miss. George",male,23.1,0,0,SOTON/OQ 863265,39.7,E125,S
+127,1,3,"Smith, Dr. William",male,,1,0,844510,4.47,,S
+406,1,1,"Brown, Col. John",Male,32.2,1,0,951765,14.11,,S
+807,0,3,"Williams, Mrs. Charles",male,,0,0,735989,17.02,,S
+37,1,2,"Taylor, Mr. John",male,16.4,1,1,A/5 577243,5.82,B125,S
+140,0,3,"Davis, Mrs. William",M,34.5,0,0,PC 654647,0.76,,S
+304,1,1,"Taylor, Miss. Emily",Female,24.0,0,0,CA 243086,55.27,,S
+268,0,3,"Wilson, Col. William",M,21.4,1,0,93659,7.39,,S
+534,1,3,"Taylor, Miss. Mary",Male,,0,1,CA 505785,11.86,G45,S
+546,0,1,"Davis, Miss. Thomas",M,,0,0,PC 641115,0.31,,Q
+213,0,2,"Davis, Rev. Anna",F,26.2,0,0,A/5 852150,26.57,,S
+469,0,1,"Jones, Dr. Edith",FEMALE,27.5,2,1,489319,101.34,,S
+199,1,2,"Moore, Col. Edith",Female,35.3,1,0,CA 519528,32.41,,S
+528,0,3,"Johnson, Col. Thomas",female,23.6,1,0,611035,9.74,,Q
+718,0,2,"Jones, Col. Charles",male,9.7,1,0,219318,18.98,,S
+242,0,3,"Williams, Mr. Rose",Male,22.9,3,0,436101,43.77,,Q
+343,0,1,"Anderson, Mr. William",MALE,20.2,0,0,SOTON/OQ 876724,9.36,A5,C
+550,0,3,"Miller, Rev. Thomas",Male,29.4,0,0,A/5 385803,56.63,A49,C
+387,0,2,"Taylor, Mrs. George",female,45.1,1,2,PC 299973,22.96,,C
+779,1,3,"Brown, Rev. William",Male,9.6,0,0,SOTON/OQ 351492,16.47,,S
+207,0,3,"Wilson, Col. Thomas",male,,0,0,PC 677121,2.71,F80,S
+296,0,3,"Williams, Col. James",F,,0,0,798421,49.88,,C
+696,1,3,"Moore, Col. George",MALE,29.1,1,1,A/5 960263,53.9,,C
+74,0,3,"Jones, Mr. James",Male,14.7,0,0,A/5 111263,7.44,,S
+674,1,3,"Brown, Col. Alice",male,2.5,0,0,PC 841935,54.44,,Q
+105,0,2,"Miller, Mr. Anna",M,,1,2,CA 521091,29.87,,S
+691,1,1,"Moore, Mrs. William",female,25.4,0,0,A/5 122929,22.13,C51,S
+869,0,3,"Brown, Col. Alice",male,,1,0,A/5 176060,41.78,,C
+17,0,3,"Brown, Col. Anna",male,0.2,2,0,PC 493385,10.4,B147,S
+440,1,1,"Williams, Miss. John",male,34.0,0,0,A/5 17529,70.45,,S
+92,1,2,"Miller, Rev. George",M,8.8,0,2,CA 737242,3.19,,C
+89,1,3,"Wilson, Mrs. Emily",MALE,37.5,1,0,A/5 836214,58.54,A52,S
+451,1,3,"Taylor, Miss. Rose",Female,6.9,0,0,A/5 61668,87.93,E44,S
+103,1,3,"Moore, Mrs. Anna",Male,42.6,0,1,PC 784107,51.05,D102,S
+239,1,1,"Thomas, Col. John",male,28.6,0,0,623354,45.67,E102,Q
+653,0,3,"Thomas, Dr. Thomas",male,34.0,0,0,SOTON/OQ 936228,14.73,,S
+247,1,2,"Moore, Mr. Charles",male,27.1,0,0,CA 963840,10.14,,S
+645,0,2,"Moore, Miss. Anna",male,31.6,0,0,SOTON/OQ 982134,42.06,,S
+158,1,1,"Wilson, Rev. George",male,20.7,0,0,A/5 676943,17.65,,C
+480,1,1,"Johnson, Rev. Mary",female,,0,0,CA 67384,16.82,,S
+780,1,3,"Taylor, Col. John",female,18.0,1,0,CA 940266,3.1,,S
+745,1,1,"Davis, Col. George",F,44.9,1,2,457871,51.84,,S
+19,0,3,"Thomas, Miss. William",female,61.7,0,0,PC 897083,43.42,,S
+650,1,3,"Miller, Mrs. Mary",male,20.6,0,1,SOTON/OQ 897026,41.0,,S
+122,1,3,"Brown, Miss. Charles",male,,0,0,PC 807538,3.72,,C
+812,1,3,"Thomas, Col. Charles",M,10.7,0,0,CA 270997,11.78,,S
+275,0,1,"Anderson, Rev. Mary",MALE,36.8,0,1,529614,$7.21,,C
+434,1,3,"Anderson, Mrs. Charles",M,29.1,3,0,PC 100283,21.98,A32,S
+811,0,2,"Wilson, Col. Charles",male,0.2,5,0,PC 723507,11.69,G77,S
+312,1,1,"Jones, Mrs. Thomas",Male,21.4,1,0,380257,42.83,B137,S
+687,0,3,"Miller, Dr. Mary",MALE,26.2,0,0,PC 329376,34.86,,C
+755,1,1,"Smith, Rev. Alice",male,34.3,0,0,PC 53776,58.37,,S
+547,0,3,"Thomas, Rev. Charles",female,11.7,1,0,CA 35593,153.66,,S
+182,0,1,"Thomas, Miss. Mary",Male,51.7,0,0,A/5 900952,6.99,,S
+185,1,3,"Jones, Mr. Rose",FEMALE,38.6,0,0,PC 95947,35.43,,S
+407,0,2,"Johnson, Rev. Mary",female,21.5,0,0,454019,12.45,,S
+607,1,3,"Miller, Miss. Alice",FEMALE,,0,0,SOTON/OQ 621255,17.02,,S
+521,0,2,"Davis, Mrs. Thomas",female,36.3,1,1,SOTON/OQ 58692,17.81,D13,S
+381,1,1,"Davis, Mr. George",female,40.2,4,0,A/5 44227,22.29,,S
+411,0,3,"Johnson, Mr. Edith",Male,49.7,0,0,CA 11535,27.49,D85,Q
+635,0,3,"Johnson, Mr. Emily",Female,31.8,0,1,SOTON/OQ 147134,49.74,,S
+370,1,3,"Moore, Dr. Edith",male,13.0,3,0,CA 379547,18.92,,S
+735,1,3,"Davis, Col. Thomas",Male,,0,2,SOTON/OQ 936296,18.87,,C
+753,1,1,"Johnson, Mr. George",Female,32.9,0,0,CA 972559,4.46,,C
+682,0,1,"Moore, Mr. Emily",MALE,0.2,0,3,SOTON/OQ 631164,25.38,,S
+79,1,3,"Johnson, Dr. William",MALE,45.2,0,0,A/5 591122,41.78,,S
+574,0,1,"Moore, Rev. Alice",Male,27.8,0,1,PC 402620,85.1,,S
+638,0,3,"Wilson, Mrs. Rose",female,40.7,0,0,SOTON/OQ 292046,3.05,,S
+608,1,2,"Wilson, Col. Anna",male,30.2,1,1,CA 956460,32.84,,C
+719,0,1,"Taylor, Mrs. Charles",M,,2,0,A/5 610188,55.26,,S
+762,0,1,"Moore, Rev. Mary",MALE,49.1,0,3,CA 795264,44.93,,S
+751,1,2,"Williams, Dr. Edith",Male,38.1,0,2,PC 837218,131.61,,C
+834,1,2,"Johnson, Col. Mary",male,,1,0,300986,9.36,,S
+417,1,3,"Jones, Dr. Emily",female,37.1,0,0,CA 112416,12.0,A37,S
+747,1,3,"Jones, Col. Alice",M,21.0,0,0,SOTON/OQ 612547,23.29,,C
+562,1,1,"Jones, Rev. Rose",male,31.7,1,0,CA 721166,6.68,A137,C
+68,0,3,"Davis, Miss. William",male,,0,0,CA 723507,16.05,G10,S
+537,1,3,"Jones, Rev. Anna",Male,21.0,0,0,CA 562225,43.55,C132,S
+78,1,3,"Miller, Mr. Edith",Male,40.6,1,0,CA 363247,36.59,,C
+106,0,3,"Johnson, Miss. James",MALE,,0,0,912623,14.64,,S
+121,0,1,"Wilson, Miss. Charles",M,35.7,0,1,A/5 761868,131.07,,C
+861,1,1,"Anderson, Dr. James",FEMALE,,0,0,486199,18.7,G127,S
+639,0,1,"Thomas, Mr. George",Male,53.9,0,3,SOTON/OQ 999200,29.24,,S
+560,1,3,"Thomas, Mr. Mary",M,43.5,0,2,PC 284796,24.69,,Q
+787,1,1,"Williams, Mr. Emily",male,,2,0,A/5 308533,10.5,,C
+846,0,2,"Anderson, Dr. George",FEMALE,,0,0,A/5 104547,2.84,,S
+789,0,1,"Williams, Miss. George",male,,0,0,A/5 507779,20.47,,S
+703,1,1,"Thomas, Mrs. Anna",Male,49.3,0,0,A/5 153614,21.78,,S
+491,1,3,"Johnson, Mrs. Anna",female,38.8,0,0,205769,0.27,,C
+884,0,2,"Miller, Mr. Edith",M,39.9,3,0,A/5 573183,16.45,G73,S
+877,0,1,"Brown, Dr. Alice",Male,,0,0,836988,35.4,,S
+606,1,3,"Johnson, Rev. Thomas",M,,0,0,SOTON/OQ 950959,21.2,,Q
+364,1,3,"Miller, Mrs. William",male,22.9,0,0,PC 415075,$63.22,,C
+70,1,2,"Miller, Mrs. Mary",MALE,44.5,1,0,907734,9.27,,C
+549,1,3,"Taylor, Rev. Thomas",Male,25.5,0,0,SOTON/OQ 498483,16.7,,S
+161,1,2,"Jones, Rev. Emily",Male,7.6,0,0,89885,14.21,C129,S
+12,1,2,"Brown, Dr. Rose",Male,,0,0,PC 288662,4.16,,S
+145,0,3,"Miller, Col. Anna",female,49.1,1,0,CA 162628,3.33,,S
+518,1,2,"Davis, Col. Emily",male,15.2,0,0,48610,17.58,,S
+428,1,3,"Johnson, Mrs. Mary",FEMALE,48.2,0,0,510669,135.37,,C
+640,1,3,"Jones, Miss. Mary",female,25.8,1,2,SOTON/OQ 6407,70.79,,S
+177,1,3,"Taylor, Dr. Thomas",Female,24.3,0,0,SOTON/OQ 682119,192.41,B88,S
+441,1,1,"Williams, Miss. Charles",F,12.8,0,0,A/5 572526,$16.04,,C
+522,0,3,"Brown, Rev. John",F,33.5,0,1,SOTON/OQ 611363,166.82,,S
+790,0,1,"Johnson, Mrs. George",MALE,0.2,0,4,A/5 627561,5.72,E36,S
+850,0,3,"Smith, Col. Alice",male,35.5,0,0,SOTON/OQ 359404,19.46,,S
+232,1,3,"Johnson, Mr. George",male,21.6,0,0,851541,61.21,,S
+211,1,2,"Moore, Miss. James",MALE,8.2,0,0,632102,5.7,,C
+641,1,1,"Anderson, Miss. William",FEMALE,5.0,0,0,PC 63447,126.24,,C
+144,0,3,"Williams, Dr. Emily",male,,0,0,CA 64913,90.7,,Q
+520,0,3,"Williams, Dr. William",MALE,,2,4,SOTON/OQ 577747,32.25,,S
+213,0,2,"Davis, Rev. Anna",F,26.2,0,0,A/5 852150,26.57,,S
+299,1,3,"Brown, Mr. Alice",Male,35.4,0,1,585101,2.68,,S
+429,0,2,"Davis, Miss. Alice",M,26.4,0,0,CA 647837,45.38,,S
+613,0,3,"Brown, Mr. Alice",Male,25.4,0,0,PC 465188,83.26,,S
+838,1,2,"Johnson, Mrs. Alice",MALE,25.8,0,0,PC 876857,25.35,D5,S
+9,0,3,"Smith, Col. Rose",F,10.5,0,0,CA 633536,11.62,,S
+157,1,2,"Miller, Dr. William",FEMALE,,1,0,SOTON/OQ 396653,8.84,A61,C
+540,1,3,"Thomas, Mrs. John",M,,1,0,SOTON/OQ 245885,12.99,,S
+507,1,3,"Miller, Mrs. James",male,34.6,0,0,PC 647553,13.2,,S
+437,0,1,"Smith, Dr. Anna",MALE,,2,0,SOTON/OQ 757244,46.63,G145,S
+267,0,3,"Jones, Miss. John",Female,42.8,0,0,325199,43.48,B119,S
+462,0,3,"Wilson, Miss. Rose",male,20.0,0,0,369913,18.93,,S
+577,0,2,"Davis, Rev. Anna",MALE,49.8,1,2,A/5 910664,53.4,,S
+339,0,3,"Miller, Col. Charles",male,,0,0,SOTON/OQ 405855,22.22,,S
+256,0,3,"Johnson, Mrs. Charles",MALE,,0,2,A/5 765368,25.03,A26,S
+729,1,3,"Brown, Miss. Thomas",male,38.1,1,0,CA 772414,12.18,E92,S
+770,0,3,"Taylor, Miss. John",M,24.7,2,1,A/5 762648,38.51,,S
+666,1,3,"Thomas, Rev. Emily",Male,15.0,2,0,782004,60.38,,S
+561,1,2,"Johnson, Mrs. Rose",M,32.5,1,0,A/5 13198,18.04,A133,S
+209,0,3,"Williams, Dr. George",male,34.6,0,2,A/5 592866,30.94,,C
+288,1,1,"Johnson, Miss. Anna",male,44.0,1,0,661060,23.12,,C
+2,1,3,"Thomas, Miss. Mary",Male,,0,0,SOTON/OQ 707994,16.79,,S
+342,0,1,"Williams, Miss. Edith",MALE,49.2,0,0,A/5 759926,32.8,,S
+270,1,2,"Moore, Dr. Alice",M,31.0,1,0,215232,67.14,,Q
+266,0,1,"Moore, Miss. Rose",FEMALE,14.6,1,0,PC 952924,13.91,,S
+738,1,3,"Taylor, Rev. Rose",male,14.3,0,0,CA 652559,41.11,,S
+744,0,3,"Anderson, Rev. Mary",female,51.4,0,0,89656,0.93,B84,S
+96,1,3,"Wilson, Rev. Emily",Male,28.3,0,2,789989,17.07,D101,S
+875,0,3,"Davis, Rev. Emily",M,49.8,0,1,PC 76442,15.94,F136,S
+43,1,3,"Johnson, Mr. Emily",female,32.9,0,1,A/5 652460,$85.57,,S
+730,1,2,"Smith, Mr. James",Female,,0,0,SOTON/OQ 262032,16.55,,S
+230,0,3,"Brown, Rev. William",F,,1,0,A/5 46035,2.43,,S
+754,0,1,"Jones, Rev. Edith",male,20.9,2,2,SOTON/OQ 266287,58.37,G115,S
+629,1,2,"Taylor, Rev. Rose",Female,22.7,0,0,CA 595766,37.5,,C
+46,1,2,"Johnson, Col. Edith",M,28.2,0,0,CA 946537,26.17,,S
+162,0,2,"Davis, Col. Rose",MALE,44.9,1,1,SOTON/OQ 74417,1.11,,S
+728,1,3,"Johnson, Mrs. George",M,,0,0,380215,62.7,,S
+630,0,3,"Thomas, Mrs. John",female,39.7,1,0,A/5 225271,47.33,A81,S
+289,0,1,"Anderson, Miss. Edith",F,0.5,0,0,PC 744210,3.68,,C
+590,1,3,"Johnson, Col. George",Male,,2,1,CA 490775,$83.13,A107,S
+809,0,3,"Smith, Mrs. John",Female,,1,0,797912,58.92,F69,C
+860,1,1,"Wilson, Miss. George",male,35.1,0,0,CA 138020,24.78,,S
+576,1,2,"Moore, Mrs. Charles",male,41.4,0,2,591962,123.47,,C
+316,0,3,"Wilson, Col. Edith",male,40.0,0,0,A/5 551773,16.01,,S
+231,1,1,"Taylor, Rev. George",M,42.1,0,0,PC 423922,25.91,,C
+699,0,1,"Jones, Col. Charles",male,25.6,0,0,498866,7.43,D83,C
+748,1,2,"Thomas, Col. Anna",Male,9.8,0,1,SOTON/OQ 495765,45.33,,S
+712,0,3,"Thomas, Col. Edith",M,23.7,0,0,901049,34.46,E110,C
+77,1,2,"Miller, Rev. John",FEMALE,32.2,2,0,SOTON/OQ 442429,20.45,,S
+634,1,3,"Wilson, Rev. Edith",M,,1,1,CA 990287,123.86,,Q
+879,1,3,"Moore, Col. Emily",female,40.5,1,0,614663,62.83,B24,C
+248,1,1,"Wilson, Mrs. John",female,50.8,0,0,CA 569295,66.09,,S
+477,0,3,"Taylor, Mrs. George",male,11.4,5,0,CA 532577,0.53,,C
+671,1,1,"Smith, Dr. George",FEMALE,,0,1,PC 433826,45.61,,S
+86,1,1,"Thomas, Col. Charles",female,29.8,0,0,252666,2.09,,Q
+470,0,1,"Wilson, Mr. Alice",F,11.8,0,0,PC 367576,25.84,,
+226,0,1,"Brown, Col. Charles",Male,,1,0,A/5 89453,20.53,G70,S
+332,0,3,"Wilson, Rev. Mary",female,42.2,0,0,SOTON/OQ 6024,32.02,C80,Q
+234,1,3,"Thomas, Rev. Anna",male,0.2,0,1,148369,10.6,,C
+589,0,1,"Miller, Mr. Alice",M,60.5,0,0,SOTON/OQ 223492,58.25,,S
+476,0,2,"Wilson, Mr. Anna",female,28.6,0,0,PC 36781,9.18,,C
+808,1,1,"Johnson, Mrs. Charles",male,,0,1,SOTON/OQ 829175,32.26,,C
+791,0,3,"Moore, Mrs. Edith",Male,0.9,0,2,SOTON/OQ 616335,5.34,,S
+600,0,2,"Thomas, Col. Anna",Male,2.7,1,2,SOTON/OQ 462083,11.47,,S
+422,0,3,"Taylor, Miss. Charles",Female,8.5,0,2,PC 741521,68.67,,S
+688,0,3,"Wilson, Mrs. Alice",male,26.5,0,1,SOTON/OQ 672993,11.4,E16,Q
+183,1,3,"Brown, Miss. William",male,,1,0,CA 241243,5.23,,S
+618,0,3,"Moore, Miss. George",Female,43.5,2,2,SOTON/OQ 77391,62.62,,S
+333,0,3,"Taylor, Rev. James",MALE,19.4,0,0,SOTON/OQ 953623,38.06,E147,S
+439,1,1,"Moore, Mrs. Edith",Female,28.1,0,4,222343,25.24,,S
+50,0,1,"Williams, Rev. Emily",male,,0,1,A/5 709134,26.97,,S
+6,1,3,"Wilson, Mr. James",MALE,46.4,0,0,A/5 237385,23.22,,S
+530,0,3,"Taylor, Miss. Charles",FEMALE,16.9,1,0,680002,71.39,E8,S
+235,1,1,"Jones, Rev. Emily",Female,2.9,1,0,CA 817085,0.05,,C
+487,1,3,"Davis, Rev. Rose",Female,36.5,0,0,586333,22.16,,S
+818,0,3,"Johnson, Rev. William",Male,23.4,0,0,A/5 934972,10.22,,C
+498,1,3,"Brown, Dr. John",MALE,5.4,0,0,CA 60247,57.26,,S
+814,1,3,"Brown, Miss. Anna",FEMALE,42.1,0,0,767619,43.28,C51,S
+107,1,1,"Taylor, Dr. James",MALE,14.7,1,2,SOTON/OQ 52004,23.39,,C
+444,0,1,"Anderson, Miss. William",M,16.5,0,1,720311,6.6,,Q
+489,1,1,"Wilson, Miss. John",female,31.7,1,0,877391,19.52,,C
+647,1,3,"Wilson, Miss. James",FEMALE,,0,0,691658,47.84,,C
+13,1,3,"Johnson, Mrs. Charles",male,,0,2,CA 605529,28.89,,S
+739,0,3,"Davis, Dr. George",F,44.4,2,0,A/5 968330,30.92,F21,S
+727,1,1,"Williams, Miss. Anna",M,,1,0,117537,83.47,,S
+191,0,2,"Anderson, Col. Edith",female,52.5,2,0,A/5 294004,26.16,D25,S
+867,0,1,"Smith, Mrs. John",male,39.5,0,0,CA 355140,$4.42,,Q
+283,1,1,"Smith, Mrs. Anna",M,,1,0,417730,8.0,,S
+30,1,3,"Thomas, Dr. John",female,30.5,1,0,CA 911924,7.03,,S
+170,1,3,"Miller, Mrs. Rose",male,40.3,0,0,SOTON/OQ 464077,6.69,,S
+181,1,3,"Smith, Rev. William",Male,,0,0,818453,13.83,,S
+101,1,2,"Thomas, Dr. George",FEMALE,36.6,0,0,A/5 400572,30.26,,C
+198,0,3,"Jones, Dr. Emily",male,,0,0,SOTON/OQ 608861,50.59,,S
+496,1,2,"Anderson, Miss. John",FEMALE,36.9,1,0,SOTON/OQ 677618,19.79,F56,S
+722,0,3,"Miller, Col. Anna",Male,41.3,0,0,497338,$21.77,,S
+648,1,3,"Brown, Mrs. Alice",MALE,36.4,0,0,CA 884982,3.58,,S
+884,0,2,"Miller, Mr. Edith",M,39.9,3,0,A/5 573183,16.45,G73,S
+843,1,3,"Smith, Mrs. George",MALE,24.2,0,2,641656,24.62,,S
+711,0,3,"Williams, Rev. Rose",male,13.1,0,0,CA 848176,42.0,,S
+374,0,2,"Smith, Rev. George",M,21.9,0,0,A/5 131461,7.33,,S
+679,0,3,"Brown, Rev. William",F,,3,0,A/5 321715,3.28,,S
+851,1,3,"Miller, Rev. Alice",MALE,18.9,0,1,SOTON/OQ 49928,32.18,,S
+649,0,2,"Johnson, Rev. George",MALE,2.1,2,0,PC 887207,66.05,,S
+461,0,1,"Smith, Rev. Mary",MALE,21.9,0,2,CA 779642,16.14,D6,S
+414,1,1,"Johnson, Rev. William",male,15.0,1,1,A/5 148832,36.27,,S
+132,0,3,"Davis, Miss. Mary",MALE,38.9,0,0,PC 123107,14.6,,C
+40,1,2,"Jones, Mrs. John",female,43.1,0,1,PC 258549,3.83,,S
+435,0,3,"Williams, Mr. Anna",Male,43.4,0,0,818733,45.32,,C
+216,1,2,"Jones, Mrs. John",MALE,34.7,0,0,SOTON/OQ 336426,21.69,,S
+556,1,3,"Davis, Col. Anna",female,11.7,0,2,A/5 241003,5.07,,S
+567,0,1,"Johnson, Dr. Charles",female,,2,0,SOTON/OQ 204761,31.27,,C
+763,1,2,"Wilson, Rev. George",MALE,,0,0,SOTON/OQ 189557,6.76,,S
+475,1,2,"Brown, Mrs. Charles",MALE,,0,0,CA 624091,50.89,,S
+457,1,3,"Taylor, Mr. Rose",female,46.1,0,0,874853,5.84,,Q
+261,0,3,"Brown, Mrs. John",MALE,35.4,0,2,A/5 318856,14.49,,S
+36,1,2,"Miller, Miss. Alice",female,,0,0,52838,20.04,G15,S
+310,1,2,"Taylor, Dr. Emily",male,14.9,0,2,744565,72.94,,Q
+277,1,3,"Anderson, Dr. Alice",FEMALE,35.8,0,0,PC 530343,44.22,,S
+637,1,3,"Taylor, Dr. Thomas",Male,24.7,0,0,A/5 968697,49.08,,S
+655,1,3,"Moore, Mrs. Edith",male,54.1,0,0,SOTON/OQ 793477,54.32,,C
+623,0,3,"Moore, Col. Alice",male,,0,0,SOTON/OQ 49385,1.83,,Q
+394,0,3,"Wilson, Mrs. Anna",F,23.5,0,0,CA 395095,16.4,,C
+863,1,3,"Johnson, Rev. Rose",Male,,0,0,A/5 61409,3.72,,S
+108,0,1,"Thomas, Mrs. William",female,16.0,0,0,CA 522029,12.76,,S
+858,1,3,"Davis, Mrs. Alice",male,23.7,1,0,A/5 1528,14.16,B13,C
+525,1,1,"Wilson, Dr. John",MALE,28.7,1,0,PC 205271,0.59,,S
+785,1,2,"Taylor, Dr. Rose",female,,0,0,PC 780578,1.45,,S
+48,0,3,"Davis, Mrs. Charles",Male,,1,0,PC 96648,42.36,,S
+204,1,3,"Davis, Miss. William",male,27.2,2,0,498829,6.7,,S
+840,0,3,"Smith, Miss. Rose",M,,0,0,A/5 62753,$14.63,,S
+632,1,3,"Taylor, Mr. Edith",F,0.5,0,0,621389,17.94,,Q
+22,0,3,"Jones, Miss. Anna",male,39.4,0,2,SOTON/OQ 111708,13.99,,S
+403,0,3,"Wilson, Miss. William",MALE,15.0,1,0,SOTON/OQ 139572,20.67,,S
+84,1,2,"Anderson, Dr. Charles",Male,27.2,1,0,723540,1.27,B74,S
+131,0,3,"Wilson, Mrs. George",male,43.2,0,0,CA 415438,27.29,A13,Q
+416,1,3,"Moore, Dr. Emily",Male,17.5,0,0,CA 311421,29.5,B3,S
+742,0,3,"Wilson, Rev. John",F,34.2,1,0,SOTON/OQ 500038,61.77,,S
+698,0,2,"Miller, Mrs. Charles",M,6.7,3,1,775736,16.56,,S
+287,1,3,"Anderson, Miss. George",M,32.2,0,0,PC 843278,39.7,,C
+124,1,2,"Smith, Mr. Rose",Male,62.7,0,0,PC 199103,39.74,,Q
+34,1,1,"Brown, Miss. Edith",female,0.2,0,0,CA 423532,45.81,,S
+886,0,2,"Thomas, Mrs. Alice",male,56.1,0,0,CA 74217,74.31,,S
+517,1,1,"Smith, Miss. Mary",female,,0,0,SOTON/OQ 251170,67.57,,S
+20,0,2,"Taylor, Rev. Rose",female,,1,0,A/5 594763,76.1,,Q
+841,0,2,"Jones, Dr. John",MALE,42.8,1,0,PC 190610,59.8,,S
+220,1,1,"Jones, Miss. Anna",female,19.3,2,1,PC 773394,7.98,,S
+835,1,2,"Taylor, Col. Thomas",male,36.0,4,0,A/5 442228,34.42,,S
+482,0,3,"Brown, Mrs. James",Male,24.0,0,2,CA 41593,8.78,G85,S
+357,1,3,"Taylor, Rev. George",Female,20.0,0,0,SOTON/OQ 61653,34.74,,S
+662,1,1,"Moore, Rev. James",M,24.7,0,0,CA 113595,93.64,,S
+225,1,3,"Smith, Col. Charles",female,39.4,1,0,A/5 179358,62.6,C87,S
+760,1,3,"Miller, Mrs. William",FEMALE,22.3,0,0,CA 504711,33.21,,S
+93,0,3,"Miller, Col. Thomas",M,30.3,0,0,A/5 840638,0.0,,S
+152,1,3,"Williams, Col. Alice",Male,43.6,0,0,SOTON/OQ 79735,47.29,,S
+288,1,1,"Johnson, Miss. Anna",male,44.0,1,0,661060,23.12,,C
+318,0,1,"Taylor, Miss. James",male,42.0,1,0,CA 679010,7.63,,S
+449,0,1,"Jones, Mrs. Mary",MALE,0.9,0,1,A/5 75531,35.98,,S
+804,1,1,"Smith, Rev. Alice",Male,35.7,2,0,457551,9.38,F77,S
+746,1,3,"Davis, Col. Rose",MALE,20.8,0,0,PC 505675,38.7,,S
+523,0,2,"Brown, Mr. Emily",female,57.1,0,0,CA 73171,37.84,A52,S
+280,1,1,"Williams, Mr. Edith",male,,0,0,A/5 38287,1.56,,S
+584,0,2,"Davis, Col. James",Male,25.0,0,0,SOTON/OQ 158558,2.7,,S
+765,0,3,"Smith, Mrs. Charles",male,22.8,0,0,SOTON/OQ 658836,3.64,,S
+605,1,1,"Moore, Miss. George",male,,0,0,A/5 510940,123.25,C121,S
+350,0,3,"Smith, Mr. John",F,47.9,0,0,302488,37.02,,S
+375,0,1,"Johnson, Mrs. Alice",MALE,37.6,1,0,719843,39.36,E51,C
+401,1,3,"Anderson, Dr. Anna",male,38.1,0,0,CA 213345,24.06,,S
+705,0,2,"Jones, Mrs. Emily",F,11.6,1,0,701246,2.61,,S
+258,0,3,"Smith, Rev. Mary",male,,0,2,A/5 732037,2.4,,S
+852,1,3,"Miller, Mrs. Mary",M,,1,0,900445,21.65,,S
+73,1,2,"Williams, Col. Alice",FEMALE,,0,1,CA 254234,52.26,F66,S
+196,0,3,"Wilson, Mr. William",FEMALE,38.1,1,0,PC 63391,21.59,,S
+484,0,3,"Wilson, Dr. Mary",MALE,,1,0,CA 494793,14.83,,C
+856,0,3,"Moore, Mrs. George",M,7.0,2,0,PC 154864,27.2,,S
+138,1,2,"Moore, Mrs. George",F,31.2,1,0,69440,4.25,,
+495,0,3,"Moore, Rev. William",male,8.4,0,0,195118,104.53,,Q
+773,1,2,"Davis, Mr. James",male,27.1,0,0,PC 12472,41.61,C29,S
+551,0,3,"Johnson, Mr. Alice",female,27.6,0,0,PC 561355,10.87,,S
+463,0,1,"Brown, Mr. Edith",M,,1,0,PC 501157,6.88,,S
+202,1,2,"Davis, Mr. Edith",MALE,8.6,2,2,515279,44.4,,C
+313,0,1,"Jones, Mr. John",male,1.2,0,0,A/5 695478,47.57,,S
+291,1,3,"Anderson, Col. Alice",female,,0,1,CA 986243,64.04,,S
+190,0,3,"Jones, Rev. Emily",male,32.8,0,0,CA 400313,0.38,,S
+764,0,3,"Brown, Mrs. Emily",MALE,7.3,0,0,PC 537814,2.65,,C
+113,0,1,"Brown, Rev. Anna",F,,0,0,A/5 330506,43.04,A55,S
+184,1,1,"Brown, Mrs. George",Male,24.1,0,0,PC 41303,5.74,E65,S
+153,0,3,"Taylor, Dr. Charles",FEMALE,,0,0,157837,7.85,,S
+825,1,3,"Taylor, Rev. George",female,27.3,1,1,110315,23.32,,S
+326,1,3,"Brown, Col. James",male,42.4,1,2,CA 752905,7.87,,Q
+704,0,2,"Thomas, Dr. Emily",male,,0,0,PC 811909,11.43,B119,S
+45,1,2,"Taylor, Dr. Edith",MALE,,1,0,CA 907871,12.31,,S
+445,1,1,"Thomas, Miss. George",female,60.1,0,2,42654,10.03,G30,S
+788,1,3,"Wilson, Rev. Alice",male,12.8,0,0,A/5 872402,1.79,,C
+7,1,3,"Miller, Col. John",MALE,8.7,0,0,CA 329262,17.83,,Q
+251,0,3,"Miller, Mrs. Edith",MALE,,1,0,CA 880532,77.89,,C
+824,1,3,"Moore, Col. Emily",Male,20.7,1,0,CA 213311,1.89,,S
+76,0,3,"Wilson, Dr. Edith",male,19.9,0,0,PC 12767,120.93,,S
+513,1,3,"Moore, Mrs. William",male,,0,2,SOTON/OQ 25954,2.83,F20,C
+392,1,3,"Taylor, Miss. Rose",M,27.2,0,2,393969,61.11,D87,S
+433,1,2,"Taylor, Rev. James",Female,38.5,0,0,341775,46.77,,S
+69,1,3,"Davis, Rev. John",Female,37.5,1,0,CA 527348,$0.22,,S
+168,0,2,"Jones, Mrs. John",male,37.5,0,0,144604,8.25,,C
+731,0,1,"Taylor, Mrs. John",Female,,2,0,CA 63409,0.17,E57,C
+555,1,3,"Taylor, Col. Mary",MALE,8.8,2,0,132696,34.78,E137,S
+367,1,3,"Davis, Dr. Anna",MALE,39.4,4,1,SOTON/OQ 981158,24.43,,S
+346,1,1,"Smith, Dr. James",female,,1,0,47197,5.45,,S
+585,0,3,"Thomas, Miss. Charles",Female,32.6,1,1,217065,8.69,F10,S
+536,0,3,"Brown, Miss. John",male,17.5,0,0,CA 796797,1.38,,C
+399,1,2,"Davis, Mr. Rose",male,53.8,0,0,PC 868869,76.38,F141,C
+186,0,3,"Moore, Miss. George",male,,0,1,CA 312716,31.09,,Q
+349,1,1,"Thomas, Mrs. Alice",M,30.1,0,0,121979,21.49,,S
+616,0,2,"Anderson, Mrs. William",M,0.2,0,0,CA 899028,29.38,,S
+212,0,2,"Johnson, Col. Rose",MALE,42.3,0,0,PC 97535,0.33,,S
+580,1,2,"Johnson, Rev. William",Male,12.5,0,0,PC 306694,15.34,,S
+503,1,3,"Taylor, Mr. Rose",FEMALE,40.4,0,0,CA 312334,1.35,,C
+538,0,1,"Thomas, Rev. James",Female,23.5,2,0,997553,$9.70,,S
+197,1,3,"Jones, Rev. James",MALE,17.1,2,0,A/5 184348,0.13,,S
+176,0,2,"Johnson, Col. George",male,13.1,0,0,A/5 861779,15.3,,S
