@@ -2,7 +2,14 @@ import os
 import time
 
 from dotenv import load_dotenv
-from openai import APIConnectionError, APIError, AuthenticationError, OpenAI, RateLimitError
+from openai import (
+    APIConnectionError,
+    APIError,
+    AuthenticationError,
+    InternalServerError,
+    OpenAI,
+    RateLimitError,
+)
 
 load_dotenv()
 
@@ -41,7 +48,7 @@ def generate(prompt: str, max_tokens: int = 512) -> str:
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=max_tokens,
                 temperature=0.3,
-                timeout=30,
+                timeout=60,
             )
             if not response.choices:
                 raise RuntimeError("API returned an empty choices list.")
@@ -52,7 +59,7 @@ def generate(prompt: str, max_tokens: int = 512) -> str:
             if attempt < _MAX_RETRIES - 1:
                 time.sleep(_BACKOFF_BASE ** (attempt + 1))
 
-        except APIConnectionError as exc:
+        except (APIConnectionError, InternalServerError) as exc:
             last_error = exc
             if attempt < _MAX_RETRIES - 1:
                 time.sleep(_BACKOFF_BASE**attempt)
