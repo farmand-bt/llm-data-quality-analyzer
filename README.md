@@ -1,6 +1,6 @@
 # Data Quality Analyzer
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://llm-data-quality-analyzer.streamlit.app/)
+[![Streamlit App](https://img.shields.io/badge/Streamlit-Live_App-FF4B4B?logo=streamlit&logoColor=white)](https://llm-data-quality-analyzer.streamlit.app/)
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white" alt="Python" />
