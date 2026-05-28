@@ -120,6 +120,18 @@ class TestTypeDetector:
         assert result["dt"]["inferred_type"] == "datetime"
         assert result["dt"]["type_mismatch"] is False
 
+    def test_case_inconsistent_categorical_flagged(self):
+        df = pd.DataFrame({"sex": ["Male", "MALE", "male", "female", "Female"] * 10})
+        result = detect_types(df)
+        assert result["sex"]["inferred_type"] == "categorical"
+        assert result["sex"]["type_mismatch"] is True
+
+    def test_consistent_categorical_not_flagged(self):
+        df = pd.DataFrame({"sex": ["male", "female", "male", "female"] * 10})
+        result = detect_types(df)
+        assert result["sex"]["inferred_type"] == "categorical"
+        assert result["sex"]["type_mismatch"] is False
+
     def test_pandas_dtype_recorded(self):
         df = pd.DataFrame({"x": pd.array([1, 2, 3], dtype="int64")})
         result = detect_types(df)

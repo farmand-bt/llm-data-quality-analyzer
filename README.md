@@ -1,8 +1,20 @@
 # Data Quality Analyzer
 
-A Streamlit app for automated data profiling, interactive cleaning, and optional LLM-powered quality insights — upload a CSV or Excel file and instantly get a comprehensive report with actionable recommendations.
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://llm-data-quality-analyzer.streamlit.app/)
 
-**[▶ Live demo](https://llm-data-quality-analyzer.streamlit.app/)**
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/Streamlit-UI-FF4B4B?logo=streamlit&logoColor=white" alt="Streamlit" />
+  <img src="https://img.shields.io/badge/pandas-Data_Processing-150458?logo=pandas&logoColor=white" alt="pandas" />
+  <img src="https://img.shields.io/badge/SciPy-Statistical_Analysis-8CAAE6?logo=scipy&logoColor=white" alt="SciPy" />
+  <img src="https://img.shields.io/badge/Plotly-Visualizations-3F4F75?logo=plotly&logoColor=white" alt="Plotly" />
+  <img src="https://img.shields.io/badge/OpenAI_SDK-LLM_Integration-412991?logo=openai&logoColor=white" alt="OpenAI SDK" />
+  <img src="https://img.shields.io/badge/uv-Package_Manager-DE5FE9?logoColor=white" alt="uv" />
+  <img src="https://img.shields.io/badge/pytest-203_Tests-0A9EDC?logo=pytest&logoColor=white" alt="pytest" />
+  <img src="https://img.shields.io/badge/Ruff-Linting-D7FF64?logoColor=black" alt="Ruff" />
+</p>
+
+A Streamlit app for automated data profiling, interactive cleaning, and optional LLM-powered quality insights — upload a CSV or Excel file and instantly get a comprehensive report with actionable recommendations.
 
 ## Features
 
@@ -18,7 +30,7 @@ A Streamlit app for automated data profiling, interactive cleaning, and optional
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/your-username/llm-data-quality-analyzer.git
+git clone https://github.com/farmand-bt/llm-data-quality-analyzer.git
 cd llm-data-quality-analyzer
 uv sync
 ```
