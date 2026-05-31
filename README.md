@@ -30,7 +30,6 @@ A Streamlit app for automated data profiling, interactive cleaning, and optional
 - [Sample Datasets](#sample-datasets)
 - [Tech Stack](#tech-stack)
 - [Configuration](#configuration)
-- [Deployment](#deployment)
 - [Possible Future Improvements](#possible-future-improvements)
 - [License](#license)
 - [Author](#author)
@@ -283,19 +282,6 @@ All thresholds live in `config/settings.py`:
 | `HIGH_CARDINALITY_THRESHOLD` | 0.5 | Unique ratio for cardinality warning |
 | `MAX_PREVIEW_ROWS` | 10 | Rows shown in data preview |
 | `QUALITY_GRADE_THRESHOLDS` | A:90, B:80, C:70, D:60 | Score-to-grade mapping |
-
----
-
-## Deployment (Streamlit Community Cloud)
-
-**Live app:** https://llm-data-quality-analyzer.streamlit.app/
-
-To deploy your own instance:
-1. Push the repository to GitHub
-2. Go to [share.streamlit.io](https://share.streamlit.io) → **New app**
-3. Set **Main file path** to `app/app.py`
-4. (Optional) Add `GWDG_API_KEY`, `GWDG_API_BASE`, and `GWDG_MODEL_NAME` under **Secrets**
-5. Deploy — Streamlit Cloud uses `requirements.txt` automatically
 
 ---
 
