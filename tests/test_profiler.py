@@ -733,3 +733,137 @@ class TestRecommendations:
     def test_clean_data_no_critical(self, clean_df):
         report = build_report(clean_df, "t.csv")
         assert not any(r["severity"] == "critical" for r in report["recommendations"])
+
+
+# ---------------------------------------------------------------------------
+# near-duplicates: hashed search returns exactly the original definition
+# ---------------------------------------------------------------------------
+
+
+def _naive_near_duplicates(df: pd.DataFrame) -> set:
+    """The original implementation, verbatim: one full pass per column."""
+    rows = set()
+    for col in df.columns:
+        mask = df.duplicated(subset=[c for c in df.columns if c != col], keep=False)
+        rows.update(mask[mask].index)
+    return rows
+
+
+class TestNearDuplicateHashing:
+    def test_matches_naive_definition_on_random_frames(self):
+        import numpy as np
+
+        from profiler.duplicates import _near_duplicate_rows
+
+        rng = np.random.default_rng(2026)
+        for _ in range(200):
+            n, k = int(rng.integers(2, 60)), int(rng.integers(2, 6))
+            makers = [
+                lambda: rng.integers(0, 3, n),
+                lambda: np.where(
+                    rng.random(n) < 0.3, np.nan, rng.integers(0, 3, n) * 1.0
+                ),
+                lambda: rng.choice(["a", "b", None], n),
+                lambda: pd.array(rng.choice([1, 2, 1.0, "1", None], n), dtype=object),
+                lambda: rng.choice([True, False], n),
+            ]
+            df = pd.DataFrame({f"c{j}": makers[rng.integers(0, 5)]() for j in range(k)})
+            assert _near_duplicate_rows(df) == _naive_near_duplicates(df)
+
+    @pytest.mark.parametrize(
+        ("a", "b"),
+        [
+            (1, True),
+            (0, False),
+            (1, 1.0),
+            (None, float("nan")),
+            (None, pd.NA),
+            (float("nan"), pd.NA),
+            ("1", 1),
+            (-0.0, 0.0),
+            (pd.Timestamp("2020-01-01"), "2020-01-01"),
+        ],
+        ids=repr,
+    )
+    def test_uses_duplicated_equality(self, a, b):
+        from profiler.duplicates import _near_duplicate_rows
+
+        df = pd.DataFrame(
+            {"v": pd.array([a, b], dtype=object), "w": [7, 7], "k": ["p", "q"]}
+        )
+        assert _near_duplicate_rows(df) == _naive_near_duplicates(df)
+
+    def test_permuted_values_are_not_near_duplicates(self):
+        from profiler.duplicates import _near_duplicate_rows
+
+        df = pd.DataFrame({"a": [1, 2], "b": [2, 1], "c": [3, 3], "d": [7, 8]})
+        assert _near_duplicate_rows(df) == set()
+
+    def test_duplicate_column_names_are_handled_by_position(self):
+        from profiler.duplicates import _near_duplicate_rows
+
+        # Two columns named "a": label-based selection would pick both at once
+        df = pd.DataFrame([[1, 2, 3], [1, 2, 4], [5, 6, 7]], columns=["a", "a", "b"])
+        assert _near_duplicate_rows(df) == {0, 1}  # differ only in column "b"
+
+    def test_near_sample_is_sorted(self):
+        df = pd.DataFrame(
+            {"a": [1, 9, 1, 9], "b": [2, 8, 2, 8], "c": ["x", "q", "z", "r"]}
+        )
+        assert analyze_duplicates(df)["near_sample_indices"] == [0, 1, 2, 3]
+
+
+# ---------------------------------------------------------------------------
+# infinite values: stats and fences use finite values, inf is always flagged
+# ---------------------------------------------------------------------------
+
+
+class TestInfiniteValues:
+    def _df(self):
+        import numpy as np
+
+        return pd.DataFrame({"x": [float(i) for i in range(1, 20)] + [np.inf, -np.inf]})
+
+    def test_stats_exclude_inf_and_count_it(self):
+        df = self._df()
+        stats = compute_stats(df, detect_types(df))["x"]
+        assert stats["mean"] == 10.0
+        assert stats["infinite_count"] == 2
+
+    def test_inf_flagged_by_both_methods(self):
+        df = self._df()
+        result = detect_outliers(df, detect_types(df))["x"]
+        assert set(result["iqr_indices"]) == {19, 20}
+        assert {19, 20} <= set(result["zscore_indices"])
+
+    def test_inf_flagged_with_too_few_finite_values(self):
+        import numpy as np
+
+        df = pd.DataFrame({"x": [1.0, 2.0, 3.0, np.inf, -np.inf]})
+        result = detect_outliers(df, detect_types(df))["x"]
+        assert result["iqr_indices"] == [3, 4]
+        assert result["zscore_indices"] == [3, 4]
+
+    def test_inf_flagged_when_iqr_is_zero(self):
+        import numpy as np
+
+        df = pd.DataFrame({"x": [5.0] * 8 + [np.inf]})
+        result = detect_outliers(df, detect_types(df))["x"]
+        assert result["iqr_indices"] == [8]
+        assert result["zscore_indices"] == [8]
+
+    def test_no_inf_keeps_empty_result_for_short_columns(self):
+        df = pd.DataFrame({"x": [1.0, 2.0, 3.0]})
+        assert detect_outliers(df, detect_types(df))["x"]["iqr_count"] == 0
+
+    def test_normality_ignores_inf(self):
+        import numpy as np
+
+        rng = np.random.default_rng(0)
+        series = pd.Series(list(rng.normal(0, 1, 200)) + [np.inf])
+        p_value, _ = _normality_test(series)
+        assert p_value is not None
+
+    def test_report_warns_about_inf(self):
+        report = build_report(self._df(), "inf.csv")
+        assert any("infinite value" in w for w in report["columns"]["x"]["warnings"])

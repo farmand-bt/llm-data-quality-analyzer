@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 from config.settings import OUTLIER_IQR_MULTIPLIER, OUTLIER_ZSCORE_THRESHOLD
@@ -7,6 +8,8 @@ def detect_outliers(df: pd.DataFrame, type_info: dict) -> dict:
     """Return IQR and Z-score outlier counts, percentages, and row indices per numeric column.
 
     Only numeric and mixed columns are analysed; all others return zeros.
+    Fences, mean and std are computed from finite values; +/-inf values are
+    always flagged by both methods.
     The returned indices are integer row labels from df.index — used by cleaner/pipeline.py.
 
     Returns:
@@ -26,33 +29,43 @@ def detect_outliers(df: pd.DataFrame, type_info: dict) -> dict:
             continue
 
         series = pd.to_numeric(df[col], errors="coerce")
-        valid = series.dropna()
+        # Quartiles, mean and std come from finite values only, so a few
+        # +/-inf cells can't distort the fences; +/-inf itself is always an outlier.
+        infinite = pd.Series(
+            np.isinf(series.to_numpy(dtype=float, na_value=np.nan)), index=series.index
+        )
+        valid = series[series.notna() & ~infinite]
 
         if len(valid) < 4:
-            result[col] = dict(_empty)
-            continue
-
-        # --- IQR method ---
-        q1 = float(valid.quantile(0.25))
-        q3 = float(valid.quantile(0.75))
-        iqr = q3 - q1
-
-        if iqr == 0:
-            iqr_mask = pd.Series(False, index=series.index)
+            if not infinite.any():
+                result[col] = dict(_empty)
+                continue
+            # Too few finite values for fences, but infinite values are still flagged
+            iqr_mask = z_mask = infinite
         else:
-            lo = q1 - OUTLIER_IQR_MULTIPLIER * iqr
-            hi = q3 + OUTLIER_IQR_MULTIPLIER * iqr
-            iqr_mask = series.notna() & ((series < lo) | (series > hi))
+            # --- IQR method ---
+            q1 = float(valid.quantile(0.25))
+            q3 = float(valid.quantile(0.75))
+            iqr = q3 - q1
 
-        # --- Z-score method ---
-        mean = float(valid.mean())
-        std = float(valid.std())
+            if iqr == 0:
+                iqr_mask = infinite
+            else:
+                lo = q1 - OUTLIER_IQR_MULTIPLIER * iqr
+                hi = q3 + OUTLIER_IQR_MULTIPLIER * iqr
+                iqr_mask = series.notna() & ((series < lo) | (series > hi))
 
-        if std == 0:
-            z_mask = pd.Series(False, index=series.index)
-        else:
-            z_scores = (series - mean) / std
-            z_mask = series.notna() & (z_scores.abs() > OUTLIER_ZSCORE_THRESHOLD)
+            # --- Z-score method ---
+            mean = float(valid.mean())
+            std = float(valid.std())
+
+            if std == 0:
+                z_mask = infinite
+            else:
+                z_scores = (series - mean) / std
+                z_mask = infinite | (
+                    series.notna() & (z_scores.abs() > OUTLIER_ZSCORE_THRESHOLD)
+                )
 
         iqr_indices = [int(i) for i in iqr_mask[iqr_mask].index]
         zscore_indices = [int(i) for i in z_mask[z_mask].index]

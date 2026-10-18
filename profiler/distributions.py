@@ -1,5 +1,6 @@
 import warnings
 
+import numpy as np
 import pandas as pd
 from scipy import stats
 
@@ -13,6 +14,7 @@ def _normality_test(series: pd.Series) -> tuple[float | None, bool | None]:
     Returns (p_value, is_normal). Both None when n < 3 or variance is zero.
     """
     vals = pd.to_numeric(series, errors="coerce").dropna()
+    vals = vals[np.isfinite(vals.to_numpy(dtype=float))]  # +/-inf breaks the tests
     n = len(vals)
     if n < 3 or float(vals.std()) == 0:
         return None, None

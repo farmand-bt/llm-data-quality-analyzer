@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 from config.settings import OUTLIER_IQR_MULTIPLIER
@@ -31,8 +32,11 @@ def handle_outliers(
 
     elif strategy == "cap_iqr":
         vals = pd.to_numeric(out[column], errors="coerce")
-        q1 = float(vals.quantile(0.25))
-        q3 = float(vals.quantile(0.75))
+        # Fences from finite values, as in profiler/outliers.py; clipping then
+        # caps +/-inf to the fences instead of letting inf distort them
+        finite = vals[np.isfinite(vals.to_numpy(dtype=float, na_value=np.nan))]
+        q1 = float(finite.quantile(0.25))
+        q3 = float(finite.quantile(0.75))
         iqr = q3 - q1
         lo = q1 - OUTLIER_IQR_MULTIPLIER * iqr
         hi = q3 + OUTLIER_IQR_MULTIPLIER * iqr

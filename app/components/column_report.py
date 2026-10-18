@@ -197,6 +197,9 @@ def _render_stats_block(info: dict) -> None:
             if val is not None:
                 fmt = f"{val:,.4g}" if isinstance(val, float) else f"{val:,}"
                 rows.append({"Metric": label, "Value": fmt})
+        # Stats above exclude +/-inf; show how many were left out
+        if s.get("infinite_count"):
+            rows.append({"Metric": "Infinite", "Value": f"{s['infinite_count']:,}"})
         if rows:
             st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
 
