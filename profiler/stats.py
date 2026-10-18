@@ -1,15 +1,22 @@
+import numpy as np
 import pandas as pd
 
 
 def _numeric_stats(series: pd.Series) -> dict:
-    vals = pd.to_numeric(series, errors="coerce").dropna()
+    numbers = pd.to_numeric(series, errors="coerce").dropna()
+    # Moments are computed on finite values only; +/-inf is counted separately
+    infinite = np.isinf(numbers.to_numpy(dtype=float))
+    vals = numbers[~infinite]
+    infinite_count = int(infinite.sum())
     if len(vals) == 0:
         return {
             "mean": None, "median": None, "std": None,
             "min": None, "max": None, "skewness": None,
             "kurtosis": None, "zeros": 0, "unique_count": 0,
+            "infinite_count": infinite_count,
         }
     return {
+        "infinite_count": infinite_count,
         "mean": round(float(vals.mean()), 4),
         "median": round(float(vals.median()), 4),
         "std": round(float(vals.std()), 4),

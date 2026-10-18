@@ -378,3 +378,12 @@ class TestStepPriority:
         sorted_steps = sorted(steps, key=_step_priority)
         priorities = [_step_priority(s) for s in sorted_steps]
         assert priorities == sorted(priorities)
+
+
+def test_cap_iqr_ignores_inf_for_fences_and_caps_it():
+    df = pd.DataFrame({"x": [float(i) for i in range(1, 21)] + [np.inf, -np.inf]})
+    out, _ = handle_outliers(df, "x", [20, 21], "cap_iqr")
+    # Fences come from 1..20 (Q1 = 5.75, Q3 = 15.25, IQR = 9.5): [-8.5, 29.5]
+    assert out["x"].iloc[20] == pytest.approx(29.5)
+    assert out["x"].iloc[21] == pytest.approx(-8.5)
+    assert out["x"].iloc[:20].tolist() == df["x"].iloc[:20].tolist()

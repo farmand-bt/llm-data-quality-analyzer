@@ -76,6 +76,7 @@ def _column_warnings(
     col_missing: dict,
     col_dist: dict,
     col_outlier: dict,
+    col_stats: dict | None = None,
 ) -> list[str]:
     warnings = []
 
@@ -111,6 +112,13 @@ def _column_warnings(
             warnings.append(
                 f"{iqr_count:,} outliers detected ({iqr_pct:.1f}%, IQR method)"
             )
+
+    infinite = (col_stats or {}).get("infinite_count", 0)
+    if infinite:
+        warnings.append(
+            f"{infinite:,} infinite value(s) (inf/-inf) — replace them or treat them "
+            "as missing; statistics exclude them"
+        )
 
     return warnings
 
@@ -163,6 +171,7 @@ def build_report(df: pd.DataFrame, filename: str) -> dict:
                 missing_info["per_column"][col],
                 col_dist,
                 col_out,
+                stats_info[col],
             ),
         }
 
