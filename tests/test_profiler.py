@@ -772,7 +772,17 @@ class TestNearDuplicateHashing:
 
     @pytest.mark.parametrize(
         ("a", "b"),
-        [(1, True), (0, False), (1, 1.0), (None, float("nan")), ("1", 1), (-0.0, 0.0)],
+        [
+            (1, True),
+            (0, False),
+            (1, 1.0),
+            (None, float("nan")),
+            (None, pd.NA),
+            (float("nan"), pd.NA),
+            ("1", 1),
+            (-0.0, 0.0),
+            (pd.Timestamp("2020-01-01"), "2020-01-01"),
+        ],
         ids=repr,
     )
     def test_uses_duplicated_equality(self, a, b):
@@ -788,6 +798,13 @@ class TestNearDuplicateHashing:
 
         df = pd.DataFrame({"a": [1, 2], "b": [2, 1], "c": [3, 3], "d": [7, 8]})
         assert _near_duplicate_rows(df) == set()
+
+    def test_duplicate_column_names_are_handled_by_position(self):
+        from profiler.duplicates import _near_duplicate_rows
+
+        # Two columns named "a": label-based selection would pick both at once
+        df = pd.DataFrame([[1, 2, 3], [1, 2, 4], [5, 6, 7]], columns=["a", "a", "b"])
+        assert _near_duplicate_rows(df) == {0, 1}  # differ only in column "b"
 
     def test_near_sample_is_sorted(self):
         df = pd.DataFrame(
@@ -826,6 +843,14 @@ class TestInfiniteValues:
         result = detect_outliers(df, detect_types(df))["x"]
         assert result["iqr_indices"] == [3, 4]
         assert result["zscore_indices"] == [3, 4]
+
+    def test_inf_flagged_when_iqr_is_zero(self):
+        import numpy as np
+
+        df = pd.DataFrame({"x": [5.0] * 8 + [np.inf]})
+        result = detect_outliers(df, detect_types(df))["x"]
+        assert result["iqr_indices"] == [8]
+        assert result["zscore_indices"] == [8]
 
     def test_no_inf_keeps_empty_result_for_short_columns(self):
         df = pd.DataFrame({"x": [1.0, 2.0, 3.0]})
