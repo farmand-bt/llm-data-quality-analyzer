@@ -34,7 +34,12 @@ class CleaningPipeline:
         self._steps.append(operation)
 
     def execute(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Apply all queued steps sequentially. Original df is never modified."""
+        """Apply all queued steps sequentially. Original df is never modified.
+
+        Row labels are kept until every step has run and reset once at the
+        end, so outlier indices (labels of the original df) stay valid after
+        an earlier step removed rows, e.g. two outlier removals in one run.
+        """
         result = df.copy()
         self._log = []
 
@@ -47,9 +52,12 @@ class CleaningPipeline:
                     step["strategy"],
                     step["column"],
                     value=step.get("value"),
+                    reset_index=False,
                 )
             elif action == "remove_duplicates":
-                result, entry = remove_duplicates(result, keep=step.get("keep", "first"))
+                result, entry = remove_duplicates(
+                    result, keep=step.get("keep", "first"), reset_index=False
+                )
             elif action == "fix_type":
                 result, entry = fix_types(result, step["column"], step["target_type"])
             elif action == "handle_outliers":
@@ -58,13 +66,14 @@ class CleaningPipeline:
                     step["column"],
                     step["indices"],
                     step["strategy"],
+                    reset_index=False,
                 )
             else:
                 raise ValueError(f"Unknown action '{action}'")
 
             self._log.append(entry)
 
-        return result
+        return result.reset_index(drop=True)
 
     def get_log(self) -> list[dict]:
         """Return the log of all applied transformations (populated after execute)."""
