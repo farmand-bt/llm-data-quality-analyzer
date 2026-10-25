@@ -9,6 +9,8 @@ def handle_outliers(
     column: str,
     indices: list,
     strategy: str,
+    *,
+    reset_index: bool = True,
 ) -> tuple[pd.DataFrame, dict]:
     """Return a new DataFrame with outliers treated and a log entry.
 
@@ -19,6 +21,8 @@ def handle_outliers(
         cap_iqr     — clip values to [Q1 − 1.5×IQR, Q3 + 1.5×IQR] (winsorization)
         replace_nan — replace outlier cell values with NaN (treat as missing later)
 
+    reset_index=False keeps the original row labels (see CleaningPipeline).
+
     Never modifies the input DataFrame.
     """
     out = df.copy()
@@ -28,7 +32,9 @@ def handle_outliers(
     rows_before = len(out)
 
     if strategy == "remove":
-        out = out.drop(index=valid_indices).reset_index(drop=True)
+        out = out.drop(index=valid_indices)
+        if reset_index:
+            out = out.reset_index(drop=True)
 
     elif strategy == "cap_iqr":
         vals = pd.to_numeric(out[column], errors="coerce")

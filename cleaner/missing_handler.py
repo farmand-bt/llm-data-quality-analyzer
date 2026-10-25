@@ -6,6 +6,8 @@ def handle_missing(
     strategy: str,
     column: str,
     value=None,
+    *,
+    reset_index: bool = True,
 ) -> tuple[pd.DataFrame, dict]:
     """Return a new DataFrame with missing values handled and a log entry.
 
@@ -19,6 +21,9 @@ def handle_missing(
         ffill         — forward fill (useful for time-series)
         bfill         — backward fill
 
+    reset_index=False keeps the original row labels (see CleaningPipeline).
+
+    Raises ValueError for fill_mean / fill_median on a column with no numbers.
     Never modifies the input DataFrame.
     """
     out = df.copy()
@@ -26,20 +31,22 @@ def handle_missing(
     rows_before = len(out)
 
     if strategy == "drop_rows":
-        out = out.dropna(subset=[column]).reset_index(drop=True)
+        out = out.dropna(subset=[column])
+        if reset_index:
+            out = out.reset_index(drop=True)
 
     elif strategy == "drop_column":
         out = out.drop(columns=[column])
 
     elif strategy == "fill_mean":
-        numeric = pd.to_numeric(out[column], errors="coerce")
+        numeric = _require_numbers(out[column], column, strategy)
         fill_val = numeric.mean()
         if (numeric.dropna() % 1 == 0).all():
             fill_val = round(fill_val)
         out[column] = out[column].fillna(fill_val)
 
     elif strategy == "fill_median":
-        numeric = pd.to_numeric(out[column], errors="coerce")
+        numeric = _require_numbers(out[column], column, strategy)
         fill_val = numeric.median()
         if (numeric.dropna() % 1 == 0).all():
             fill_val = round(fill_val)
@@ -51,6 +58,12 @@ def handle_missing(
             out[column] = out[column].fillna(mode.iloc[0])
 
     elif strategy == "fill_constant":
+        # A categorical column only accepts known labels, so add the fill
+        # value as a category first (fillna raises TypeError otherwise)
+        if isinstance(out[column].dtype, pd.CategoricalDtype) and (
+            value not in out[column].cat.categories
+        ):
+            out[column] = out[column].cat.add_categories([value])
         out[column] = out[column].fillna(value)
 
     elif strategy == "ffill":
@@ -73,3 +86,19 @@ def handle_missing(
         "missing_before": missing_before,
         "missing_after": missing_after,
     }
+
+
+def _require_numbers(series: pd.Series, column: str, strategy: str) -> pd.Series:
+    """Numeric view of the column for fill_mean / fill_median.
+
+    A column with no numbers at all (e.g. an empty CSV column, which loads as
+    float64 NaN) has no mean, and round(nan) would crash.
+    """
+    numeric = pd.to_numeric(series, errors="coerce")
+    if not numeric.notna().any():
+        raise ValueError(
+            f"{strategy} needs at least one numeric value, and '{column}' has none. "
+            "Use fill_constant or drop_column instead (or fill_mode, if the "
+            "column has any values)."
+        )
+    return numeric

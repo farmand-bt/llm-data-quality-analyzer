@@ -4,6 +4,8 @@ import pandas as pd
 def remove_duplicates(
     df: pd.DataFrame,
     keep: str = "first",
+    *,
+    reset_index: bool = True,
 ) -> tuple[pd.DataFrame, dict]:
     """Return a new DataFrame with exact duplicates removed and a log entry.
 
@@ -12,13 +14,17 @@ def remove_duplicates(
         "last"   — keep the last occurrence
         "none"   — remove every copy (no row from a duplicate group is kept)
 
+    reset_index=False keeps the original row labels (see CleaningPipeline).
+
     Never modifies the input DataFrame.
     """
     out = df.copy()
     rows_before = len(out)
 
     keep_arg = keep if keep in ("first", "last") else False
-    out = out.drop_duplicates(keep=keep_arg).reset_index(drop=True)
+    out = out.drop_duplicates(keep=keep_arg)
+    if reset_index:
+        out = out.reset_index(drop=True)
 
     strategy_label = f"keep_{keep}" if keep in ("first", "last") else "remove_all"
     return out, {

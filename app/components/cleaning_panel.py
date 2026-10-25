@@ -52,6 +52,19 @@ _DUP_OPTIONS = {
 }
 
 
+def _missing_options_for(info: dict) -> dict:
+    """Return the missing-value options for a column's report entry.
+
+    Mean and median are offered for numeric and mixed columns that have at
+    least one number. An entirely empty CSV column loads as float64 and is
+    inferred numeric, but has no mean or median to fill with.
+    """
+    has_numbers = (info.get("stats") or {}).get("mean") is not None
+    if info["inferred_type"] in ("numeric", "mixed") and has_numbers:
+        return _MISSING_OPTIONS_ALL
+    return _MISSING_OPTIONS_NON_NUMERIC
+
+
 def _type_options_for(inferred_type: str) -> dict:
     """Return the type-conversion options appropriate for a given inferred type.
 
@@ -97,11 +110,7 @@ def render(df: pd.DataFrame, report: dict) -> None:
                     f"**{col}**  \n"
                     f"{info['missing_count']:,} missing ({info['missing_pct']:.1f}%)"
                 )
-                opts = (
-                    _MISSING_OPTIONS_ALL
-                    if info["inferred_type"] in ("numeric", "mixed")
-                    else _MISSING_OPTIONS_NON_NUMERIC
-                )
+                opts = _missing_options_for(info)
                 choice = c2.selectbox(
                     "Strategy",
                     list(opts.keys()),
@@ -228,11 +237,7 @@ def _collect_steps(
 
     for col, info in missing_cols.items():
         choice = st.session_state.get(f"miss_{col}", "— skip —")
-        opts = (
-            _MISSING_OPTIONS_ALL
-            if info["inferred_type"] in ("numeric", "mixed")
-            else _MISSING_OPTIONS_NON_NUMERIC
-        )
+        opts = _missing_options_for(info)
         strategy = opts.get(choice)
         if strategy is None:
             continue
@@ -302,13 +307,15 @@ def _render_before_after(
 
     orig_missing = int(orig_df.isnull().sum().sum())
     clean_missing = int(cleaned_df.isnull().sum().sum())
-    orig_dups = report.get("duplicates", {}).get("exact_count") or 0
-    clean_dups = int(cleaned_df.duplicated(keep=False).sum())
     orig_score = report["dataset"]["quality_score"]
     orig_grade = report["dataset"]["quality_grade"]
 
     with st.spinner("Recalculating quality score…"):
         cleaned_report = _profile_cleaned(cleaned_df, report["dataset"]["name"])
+    # Both sides use the report's exact_count (the rows a keep-first dedup
+    # would drop); duplicated(keep=False) counted every row in a group
+    orig_dups = report.get("duplicates", {}).get("exact_count") or 0
+    clean_dups = cleaned_report.get("duplicates", {}).get("exact_count") or 0
     clean_score = cleaned_report["dataset"]["quality_score"]
     clean_grade = cleaned_report["dataset"]["quality_grade"]
 

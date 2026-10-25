@@ -387,3 +387,119 @@ def test_cap_iqr_ignores_inf_for_fences_and_caps_it():
     assert out["x"].iloc[20] == pytest.approx(29.5)
     assert out["x"].iloc[21] == pytest.approx(-8.5)
     assert out["x"].iloc[:20].tolist() == df["x"].iloc[:20].tolist()
+
+
+# ---------------------------------------------------------------------------
+# Bug fixes found while porting the cleaner to data-quality-mcp (Milestone 3)
+# ---------------------------------------------------------------------------
+
+
+def _remove_outliers(column: str, indices: list) -> dict:
+    return {
+        "action": "handle_outliers",
+        "column": column,
+        "indices": indices,
+        "strategy": "remove",
+    }
+
+
+def test_two_outlier_removals_delete_the_right_rows():
+    # Before: removing a's outlier reset the index, so b's label 5 then pointed
+    # at the row holding b=15, which was deleted while b=999 survived
+    df = pd.DataFrame({
+        "a": [1, 2, 3, 4, 100, 5, 6, 3, 2, 4],
+        "b": [10, 11, 12, 13, 14, 999, 15, 12, 11, 13],
+    })
+    p = CleaningPipeline()
+    p.add_step(_remove_outliers("a", [4]))
+    p.add_step(_remove_outliers("b", [5]))
+    out = p.execute(df)
+    assert 100 not in out["a"].values and 999 not in out["b"].values
+    assert 15 in out["b"].values
+    assert [e["outliers_treated"] for e in p.get_log()] == [1, 1]
+    assert list(out.index) == list(range(len(out)))  # reset once, at the end
+
+
+def test_outlier_indices_stay_valid_after_drop_rows():
+    df = pd.DataFrame({"x": [1.0, None, 3.0, 4.0, 1000.0], "y": list("abcde")})
+    p = CleaningPipeline()
+    p.add_step({"action": "handle_missing", "column": "x", "strategy": "drop_rows"})
+    p.add_step(_remove_outliers("x", [4]))
+    out = p.execute(df)
+    assert out["y"].tolist() == ["a", "c", "d"]
+
+
+@pytest.mark.parametrize(
+    ("call", "kwargs"),
+    [
+        (handle_missing, {"strategy": "drop_rows", "column": "x"}),
+        (remove_duplicates, {}),
+        (handle_outliers, {"column": "x", "indices": [0], "strategy": "remove"}),
+    ],
+)
+def test_handlers_can_keep_row_labels(call, kwargs):
+    df = pd.DataFrame({"x": [5.0, 5.0, None, 7.0]})
+    out, _ = call(df, **kwargs, reset_index=False)
+    assert list(out.index) != list(range(len(out)))  # original labels kept
+    out, _ = call(df, **kwargs)
+    assert list(out.index) == list(range(len(out)))  # default unchanged
+
+
+@pytest.mark.parametrize("strategy", ["fill_mean", "fill_median"])
+@pytest.mark.parametrize(
+    "values",
+    [
+        [np.nan, np.nan, np.nan],  # an empty CSV column loads as float64
+        [None, None, None],
+        ["x", None, "y"],
+    ],
+)
+def test_fill_mean_median_without_numbers_raises_clearly(strategy, values):
+    # Before: ValueError: cannot convert float NaN to integer
+    df = pd.DataFrame({"c": values})
+    with pytest.raises(ValueError, match="needs at least one numeric value"):
+        handle_missing(df, strategy, "c")
+
+
+def test_missing_options_skip_mean_and_median_for_an_empty_column():
+    import io
+
+    from app.components.cleaning_panel import _missing_options_for
+    from profiler.report import build_report
+
+    df = pd.read_csv(io.StringIO("a,b,c\n1,,1\n2,,\n3,,3\n"))
+    columns = build_report(df, "t.csv")["columns"]
+    assert columns["b"]["inferred_type"] == "numeric"  # all missing, float64
+    assert "fill_mean" not in _missing_options_for(columns["b"]).values()
+    assert "fill_median" in _missing_options_for(columns["c"]).values()
+
+    mixed = pd.read_csv(io.StringIO("m\n10\nTBD\n30\n40\n50\n60\n70\n\n"))
+    info = build_report(mixed, "m.csv")["columns"]["m"]
+    assert info["inferred_type"] == "mixed"
+    assert "fill_median" in _missing_options_for(info).values()
+
+
+@pytest.mark.parametrize(
+    "step",
+    [
+        None,  # empty pipeline
+        {"action": "handle_missing", "column": "x", "strategy": "fill_mean"},
+        {"action": "fix_type", "column": "x", "target_type": "string"},
+    ],
+)
+def test_pipeline_keeps_the_index_when_no_rows_are_removed(step):
+    df = pd.DataFrame({"x": [1.0, None, 3.0]}, index=pd.Index(["r1", "r2", "r3"]))
+    p = CleaningPipeline()
+    if step:
+        p.add_step(step)
+    assert list(p.execute(df).index) == ["r1", "r2", "r3"]
+
+
+def test_fill_constant_with_a_new_label_on_a_categorical_column():
+    # Before: TypeError, a categorical only accepts known labels
+    df = pd.DataFrame({"c": pd.Categorical(["a", "b", None, "a"])})
+    out, log = handle_missing(df, "fill_constant", "c", value="unknown")
+    assert out["c"].tolist() == ["a", "b", "unknown", "a"]
+    assert isinstance(out["c"].dtype, pd.CategoricalDtype)
+    assert log["missing_after"] == 0
+    assert df["c"].isnull().sum() == 1  # input unchanged

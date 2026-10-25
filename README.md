@@ -112,6 +112,8 @@ Non-destructive three-tier pipeline:
 2. **Tier 1** — outlier removal (uses profiler-computed indices; must run before row drops)
 3. **Tier 2** — row-dropping operations (drop_rows, drop_column, remove_duplicates)
 
+Row labels are kept until every step has run and reset once at the end, so the profiler's outlier indices stay valid across several outlier removals in one run.
+
 Every step is logged (action, column, rows before/after). The original DataFrame is never mutated.
 
 ### 8. LLM Insights
