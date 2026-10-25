@@ -23,6 +23,7 @@ def handle_missing(
 
     reset_index=False keeps the original row labels (see CleaningPipeline).
 
+    Raises ValueError for fill_mean / fill_median on a column with no numbers.
     Never modifies the input DataFrame.
     """
     out = df.copy()
@@ -97,6 +98,7 @@ def _require_numbers(series: pd.Series, column: str, strategy: str) -> pd.Series
     if not numeric.notna().any():
         raise ValueError(
             f"{strategy} needs at least one numeric value, and '{column}' has none. "
-            "Use fill_mode, fill_constant or drop_column instead."
+            "Use fill_constant or drop_column instead (or fill_mode, if the "
+            "column has any values)."
         )
     return numeric

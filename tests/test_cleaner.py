@@ -473,6 +473,27 @@ def test_missing_options_skip_mean_and_median_for_an_empty_column():
     assert "fill_mean" not in _missing_options_for(columns["b"]).values()
     assert "fill_median" in _missing_options_for(columns["c"]).values()
 
+    mixed = pd.read_csv(io.StringIO("m\n10\nTBD\n30\n40\n50\n60\n70\n\n"))
+    info = build_report(mixed, "m.csv")["columns"]["m"]
+    assert info["inferred_type"] == "mixed"
+    assert "fill_median" in _missing_options_for(info).values()
+
+
+@pytest.mark.parametrize(
+    "step",
+    [
+        None,  # empty pipeline
+        {"action": "handle_missing", "column": "x", "strategy": "fill_mean"},
+        {"action": "fix_type", "column": "x", "target_type": "string"},
+    ],
+)
+def test_pipeline_keeps_the_index_when_no_rows_are_removed(step):
+    df = pd.DataFrame({"x": [1.0, None, 3.0]}, index=pd.Index(["r1", "r2", "r3"]))
+    p = CleaningPipeline()
+    if step:
+        p.add_step(step)
+    assert list(p.execute(df).index) == ["r1", "r2", "r3"]
+
 
 def test_fill_constant_with_a_new_label_on_a_categorical_column():
     # Before: TypeError, a categorical only accepts known labels
