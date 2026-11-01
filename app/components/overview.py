@@ -219,15 +219,18 @@ def _render_column_table(columns: dict) -> None:
     with st.expander("What does the Pattern column mean?"):
         st.markdown(
             """
-            The **Pattern** column is a heuristic guess at *why* values are missing:
+            The **Pattern** column says what the missing values *go with*, based on
+            tests against the other columns (numeric values, categories, and other
+            columns' gaps):
 
             | Pattern | Meaning |
             |---------|---------|
             | **none** | No missing values — column is complete |
-            | **MCAR** | *Missing Completely At Random* — no detectable pattern; missingness appears random and unrelated to any other variable |
-            | **MAR** | *Missing At Random* — missingness strongly overlaps with another column also having missing values, suggesting a shared cause |
-            | **MNAR** | *Missing Not At Random* — over 60% of values are absent, suggesting the missingness is structural (e.g. a field only filled under certain conditions) |
+            | **MAR** | The gaps go with an observed column (e.g. more missing ratings for older homes); the column report names it. A mean or median fill would bias such a column |
+            | **MCAR** | Tested, and no detectable pattern — consistent with random gaps, but not proof of them |
+            | **unknown** | Too few missing (or present) rows to test |
 
-            These are heuristics, not statistical proofs. Use them as a starting point for investigation.
+            Missingness that depends on the missing values themselves (MNAR) can't
+            be detected from the data alone, so it is never reported.
             """
         )

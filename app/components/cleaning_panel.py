@@ -205,9 +205,14 @@ def render(df: pd.DataFrame, report: dict) -> None:
             pipeline = CleaningPipeline()
             for step in steps:
                 pipeline.add_step(step)
-            cleaned = pipeline.execute(df)
-            st.session_state["cleaned_df"] = cleaned
-            st.session_state["cleaning_log"] = pipeline.get_log()
+            try:
+                cleaned = pipeline.execute(df)
+            except ValueError as exc:
+                # e.g. a column mixing timestamps with and without a timezone
+                st.error(f"Cleaning stopped: {exc}")
+            else:
+                st.session_state["cleaned_df"] = cleaned
+                st.session_state["cleaning_log"] = pipeline.get_log()
 
     # ------------------------------------------------------------------ #
     # Results

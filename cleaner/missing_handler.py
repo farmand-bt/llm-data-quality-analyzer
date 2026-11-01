@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 
@@ -89,10 +90,12 @@ def handle_missing(
 
 
 def _require_numbers(series: pd.Series, column: str, strategy: str) -> pd.Series:
-    """Numeric view of the column for fill_mean / fill_median.
+    """Finite numeric view of the column for fill_mean / fill_median.
 
     A column with no numbers at all (e.g. an empty CSV column, which loads as
-    float64 NaN) has no mean, and round(nan) would crash.
+    float64 NaN) has no mean, and round(nan) would crash. +/-inf is left out,
+    as the report's stats do, so [1, inf, NaN] fills 1, not inf (ported from
+    data-quality-mcp, Milestone 3.5 D6).
     """
     numeric = pd.to_numeric(series, errors="coerce")
     if not numeric.notna().any():
@@ -101,4 +104,11 @@ def _require_numbers(series: pd.Series, column: str, strategy: str) -> pd.Series
             "Use fill_constant or drop_column instead (or fill_mode, if the "
             "column has any values)."
         )
-    return numeric
+    finite = numeric.where(np.isfinite(numeric.to_numpy(dtype=float, na_value=np.nan)))
+    if not finite.notna().any():
+        raise ValueError(
+            f"{strategy} needs at least one finite number, and '{column}' has only "
+            "inf/-inf or missing values. Use fill_constant, or handle the "
+            "outliers first."
+        )
+    return finite

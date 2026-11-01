@@ -126,10 +126,11 @@ def _column_warnings(
 def build_report(df: pd.DataFrame, filename: str) -> dict:
     """Aggregate all profiler sub-module results into a unified report dict.
 
-    Central contract consumed by the UI, the cleaner, and the narrator.
+    Central contract consumed by the UI, the cleaner, and the narrator. For a
+    CSV `filename`, ISO date text counts as typed (CSV has no date type).
     """
-    type_info = detect_types(df)
-    missing_info = analyze_missing(df)
+    type_info = detect_types(df, iso_dates_typed=str(filename).lower().endswith(".csv"))
+    missing_info = analyze_missing(df, type_info)
     stats_info = compute_stats(df, type_info)
     dist_info = analyze_distributions(df, type_info, stats_info)
     outlier_info = detect_outliers(df, type_info)
@@ -149,6 +150,7 @@ def build_report(df: pd.DataFrame, filename: str) -> dict:
             "missing_count": missing_info["per_column"][col]["missing_count"],
             "missing_pct": missing_info["per_column"][col]["missing_pct"],
             "missing_pattern": missing_info["per_column"][col]["missing_pattern"],
+            "missing_related_to": missing_info["per_column"][col]["missing_related_to"],
             "stats": stats_info[col],
             "outliers": {
                 "iqr_count": col_out["iqr_count"],

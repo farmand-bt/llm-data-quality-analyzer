@@ -23,6 +23,12 @@ _TYPE_COLORS = {
 # ---------------------------------------------------------------------------
 
 
+_METHOD_LABELS = {
+    "point_biserial": "r",
+    "cramers_v": "Cramér's V",
+    "missing_together": "missing together, phi",
+}
+
 def render(report: dict) -> None:
     """Render the per-column profiling section with filter, sort, and jump controls."""
     st.subheader("Per-Column Profiling")
@@ -157,10 +163,17 @@ def _render_meta(info: dict) -> None:
     )
 
     _pattern = info.get("missing_pattern", "none")
+    _related = ", ".join(
+        f"{a['column']} ({_METHOD_LABELS.get(a['method'], a['method'])} "
+        f"{a['value']:+.2f})"
+        for a in info.get("missing_related_to") or []
+    )
     _pattern_hints = {
-        "MCAR": "MCAR — Missing Completely At Random: no detectable pattern",
-        "MAR":  "MAR — Missing At Random: missingness overlaps with another column",
-        "MNAR": "MNAR — Missing Not At Random: likely structural absence (>60% missing)",
+        "MCAR": "MCAR — tested, no detectable pattern (consistent with random gaps, "
+        "not proof of them)",
+        "MAR": f"MAR — the gaps go with: {_related}. A mean or median fill would "
+        "bias this column.",
+        "unknown": "Too few missing or present rows to test for a pattern",
     }
     if _pattern in _pattern_hints:
         st.caption(_pattern_hints[_pattern])

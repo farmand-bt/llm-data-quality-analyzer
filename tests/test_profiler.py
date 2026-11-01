@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -262,19 +263,42 @@ class TestMissingAnalysis:
         result = analyze_missing(df)
         assert result["per_column"]["x"]["missing_pattern"] == "none"
 
-    def test_missing_pattern_mnar_high_pct(self):
+    def test_high_missing_is_no_longer_mnar(self):
+        # Data alone can't show MNAR; with nothing to compare against, the
+        # pattern is "unknown" (ported from data-quality-mcp, M3.5 D1)
         df = pd.DataFrame({"x": [None] * 7 + [1, 2, 3]})
         result = analyze_missing(df)
-        assert result["per_column"]["x"]["missing_pattern"] == "MNAR"
+        assert result["per_column"]["x"]["missing_pattern"] == "unknown"
+        assert result["per_column"]["x"]["missing_related_to"] is None
 
     def test_missing_pattern_mcar(self):
-        import random
-        random.seed(42)
-        vals = [float(i) if random.random() > 0.1 else None for i in range(50)]
-        df = pd.DataFrame({"x": vals, "y": list(range(50))})
+        rng = np.random.default_rng(42)
+        x = rng.normal(size=200)
+        x[rng.random(200) < 0.2] = np.nan
+        df = pd.DataFrame({"x": x, "y": rng.normal(size=200)})
         result = analyze_missing(df)
-        # Should not be MNAR (< 60%) and no co-occurrence with y (y has no missing)
-        assert result["per_column"]["x"]["missing_pattern"] in ("MCAR", "MAR")
+        assert result["per_column"]["x"]["missing_pattern"] == "MCAR"
+        assert result["per_column"]["x"]["missing_related_to"] == []
+
+    def test_missing_pattern_mar_names_the_related_column(self):
+        rng = np.random.default_rng(1)
+        age = rng.integers(0, 80, 300).astype(float)
+        rating = np.where(age > 60, np.nan, 5.0)
+        df = pd.DataFrame({"age": age, "rating": rating})
+        result = analyze_missing(df)
+        info = result["per_column"]["rating"]
+        assert info["missing_pattern"] == "MAR"
+        assert info["missing_related_to"][0]["column"] == "age"
+        assert info["missing_related_to"][0]["method"] == "point_biserial"
+
+    def test_housing_sample_school_rating_goes_with_age(self):
+        df = pd.read_csv("sample_data/housing_messy.csv")
+        info = analyze_missing(df)["per_column"]["school_rating"]
+        # Was "MCAR" under the old co-missingness rule
+        assert info["missing_pattern"] == "MAR"
+        assert info["missing_related_to"] == [
+            {"column": "age_years", "method": "point_biserial", "value": 0.663}
+        ]
 
 
 # ---------------------------------------------------------------------------
@@ -867,3 +891,61 @@ class TestInfiniteValues:
     def test_report_warns_about_inf(self):
         report = build_report(self._df(), "inf.csv")
         assert any("infinite value" in w for w in report["columns"]["x"]["warnings"])
+
+
+# ---------------------------------------------------------------------------
+# Ported from data-quality-mcp, Milestone 3.5 and #14
+# ---------------------------------------------------------------------------
+
+
+def test_iso_dates_in_a_csv_are_not_a_type_mismatch():
+    dates = ["2020-01-01", "2020-02-03", "2021-12-31"]
+    df = pd.DataFrame({"when": dates, "x": [1, 2, 3]})
+    csv = build_report(df, "data.CSV")["columns"]["when"]
+    assert (csv["inferred_type"], csv["type_mismatch"]) == ("datetime", False)
+    xlsx = build_report(df, "data.xlsx")["columns"]["when"]
+    assert xlsx["type_mismatch"] is True  # XLSX has a date type
+
+
+@pytest.mark.parametrize(
+    "values",
+    [
+        ["01/02/2020", "03/04/2020", "05/06/2020"],
+        ["2020-01-01", "01/02/2020", "15-Jan-2020"],
+        ["2020-01-01T10:00:00Z", "2020-01-02 10:00"],
+    ],
+)
+def test_other_date_text_stays_a_mismatch_in_a_csv(values):
+    df = pd.DataFrame({"when": values})
+    assert build_report(df, "data.csv")["columns"]["when"]["type_mismatch"] is True
+
+
+def test_timestamps_with_mixed_offsets_are_typed_and_profiled():
+    values = [
+        "2020-01-01T10:00:00Z",
+        "2020-01-02T10:00:00+02:00",
+        "2020-01-03T09:00:00+01:00",
+    ]
+    report = build_report(pd.DataFrame({"when": values}), "t.csv")
+    column = report["columns"]["when"]
+    assert column["inferred_type"] == "datetime"
+    assert column["stats"]["min_date"].startswith("2020-01-01 10:00:00")
+    import json
+
+    json.dumps(report, default=str)
+
+
+def _paired(n_shared: int) -> pd.DataFrame:
+    x = [float(i) for i in range(n_shared + 5)]
+    y = [2.0 * i for i in range(n_shared)] + [None] * 5
+    return pd.DataFrame({"x": x, "y": y})
+
+
+def test_correlations_need_ten_shared_rows():
+    from profiler.correlations import compute_correlations
+
+    below = compute_correlations(_paired(9), detect_types(_paired(9)))
+    assert below["pearson"]["x"]["y"] is None
+    assert below["high_correlation_pairs"] == []
+    at = compute_correlations(_paired(10), detect_types(_paired(10)))
+    assert at["pearson"]["x"]["y"] == 1.0

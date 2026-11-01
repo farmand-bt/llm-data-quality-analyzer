@@ -52,7 +52,7 @@ The demo walks through the full pipeline end-to-end:
 
 ## Features
 
-- ✅ **Data Profiling** — per-column statistics, type inference, missing value analysis with MCAR/MAR/MNAR classification, outlier detection (IQR & Z-score), normality tests, correlation heatmap
+- ✅ **Data Profiling** — per-column statistics, type inference, missing value analysis that names the columns the gaps go with, outlier detection (IQR & Z-score), normality tests, correlation heatmap
 - ✅ **Quality Score** — composite 0–100 score and letter grade (A–F) computed from missing rate, duplicates, type mismatches, and outlier prevalence
 - ✅ **Interactive Cleaning** — remove duplicates, impute missing values (mean/median/mode/constant/ffill/bfill), fix type mismatches, handle outliers; every step logged, nothing mutated
 - ✅ **LLM Insights (optional)** — plain-English explanations and a free-form Q&A interface, powered by any OpenAI-compatible API; summary stats only — raw data never leaves your machine
@@ -95,10 +95,13 @@ Each column is inspected beyond its pandas dtype: numeric strings, boolean-like 
 Numeric columns receive mean, median, standard deviation, min, and max. Categorical columns receive unique count and top value. Distribution analysis runs normality tests (Shapiro–Wilk for small columns, Kolmogorov–Smirnov for larger ones), plus skewness and kurtosis labelling.
 
 ### 4. Missing Values
-Missing count, percentage, and a heuristic pattern classification:
-- **MCAR** — missingness appears random
-- **MAR** — strongly overlaps with another missing column
-- **MNAR** — structural (>60% absent)
+Missing count, percentage, and a pattern based on tests against the other columns (point-biserial correlation with numeric columns, bias-corrected Cramér's V with categories, and other columns' gaps; Bonferroni-corrected):
+- **MAR** — the gaps go with an observed column, which the column report names (e.g. `school_rating` is missing more often for older homes)
+- **MCAR** — tested, no detectable pattern (consistent with random gaps, not proof of them)
+- **unknown** — too few missing or present rows to test
+- **none** — no missing values
+
+MNAR can't be detected from the data alone, so it isn't reported. This comes from [data-quality-mcp](https://github.com/farmand-bt/data-quality-mcp) (Milestone 3.5), which also contributed: ISO dates in a CSV count as typed; correlations need at least 10 shared rows; mean/median fills ignore ±inf; and timestamps with mixed UTC offsets are parsed and converted to UTC.
 
 ### 5. Outlier Detection
 Both IQR (1.5× multiplier) and Z-score (±3σ) methods return counts, percentages, and the exact row indices — so the cleaning pipeline can target them precisely without index drift.
@@ -190,7 +193,7 @@ llm-data-quality-analyzer/
 │   ├── loader.py               # CSV / Excel parsing
 │   ├── type_detector.py        # Inferred-type logic
 │   ├── stats.py                # Descriptive statistics
-│   ├── missing.py              # Missing-value analysis + MCAR/MAR/MNAR
+│   ├── missing.py              # Missing-value analysis + pattern evidence
 │   ├── outliers.py             # IQR and Z-score detection
 │   ├── duplicates.py           # Exact and near-duplicate detection
 │   ├── distributions.py        # Normality tests, skew, kurtosis
