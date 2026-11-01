@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import numpy as np
@@ -292,7 +293,8 @@ class TestMissingAnalysis:
         assert info["missing_related_to"][0]["method"] == "point_biserial"
 
     def test_housing_sample_school_rating_goes_with_age(self):
-        df = pd.read_csv("sample_data/housing_messy.csv")
+        sample = Path(__file__).parent.parent / "sample_data" / "housing_messy.csv"
+        df = pd.read_csv(sample)
         info = analyze_missing(df)["per_column"]["school_rating"]
         # Was "MCAR" under the old co-missingness rule
         assert info["missing_pattern"] == "MAR"
@@ -929,10 +931,9 @@ def test_timestamps_with_mixed_offsets_are_typed_and_profiled():
     report = build_report(pd.DataFrame({"when": values}), "t.csv")
     column = report["columns"]["when"]
     assert column["inferred_type"] == "datetime"
+    assert column["type_mismatch"] is False  # all ISO, all with an offset, in a CSV
     assert column["stats"]["min_date"].startswith("2020-01-01 10:00:00")
-    import json
-
-    json.dumps(report, default=str)
+    json.dumps(report)
 
 
 def _paired(n_shared: int) -> pd.DataFrame:
@@ -949,3 +950,65 @@ def test_correlations_need_ten_shared_rows():
     assert below["high_correlation_pairs"] == []
     at = compute_correlations(_paired(10), detect_types(_paired(10)))
     assert at["pearson"]["x"]["y"] == 1.0
+
+
+def test_cramers_v_needs_ten_shared_rows():
+    from profiler.correlations import compute_correlations
+
+    def frame(n_shared: int) -> pd.DataFrame:
+        a = ["x", "y"] * 10
+        b = (["x", "y"] * 10)[:n_shared] + [None] * (20 - n_shared)
+        return pd.DataFrame({"a": a, "b": b})
+
+    below = compute_correlations(frame(9), detect_types(frame(9)))
+    assert below["cramers_v"]["a"]["b"] is None
+    assert below["high_correlation_pairs"] == []
+    at = compute_correlations(frame(10), detect_types(frame(10)))
+    assert at["cramers_v"]["a"]["b"] is not None
+
+
+def _pattern_frame(n: int = 400, seed: int = 1) -> pd.DataFrame:
+    rng = np.random.default_rng(seed)
+    return pd.DataFrame(
+        {
+            "age": rng.integers(0, 80, n).astype(float),
+            "group": rng.choice(["a", "b", "c", "d"], n),
+            "noise": rng.normal(size=n),
+            "target": 1.0,
+        }
+    )
+
+
+def test_missing_pattern_through_a_category():
+    df = _pattern_frame()
+    df.loc[df["group"] == "a", "target"] = np.nan
+    info = analyze_missing(df)["per_column"]["target"]
+    assert info["missing_pattern"] == "MAR"
+    assert info["missing_related_to"][0]["method"] == "cramers_v"
+    assert info["missing_related_to"][0]["column"] == "group"
+
+
+def test_missing_pattern_through_missing_together():
+    df = _pattern_frame()
+    gaps = df.index % 5 == 0
+    df.loc[gaps, "target"] = np.nan
+    df.loc[gaps, "noise"] = np.nan
+    related = analyze_missing(df)["per_column"]["target"]["missing_related_to"]
+    assert {"column": "noise", "method": "missing_together", "value": 1.0} in related
+
+
+def test_a_constant_column_gives_no_pattern():
+    # 0.1's float mean has a rounding error: the column must still count as constant
+    df = pd.DataFrame({"c": [0.1] * 300, "t": [1.0] * 300})
+    df.loc[:99, "t"] = np.nan
+    info = analyze_missing(df)["per_column"]["t"]
+    assert info["missing_related_to"] is None
+    assert info["missing_pattern"] == "unknown"
+
+
+def test_unknown_without_a_comparison_column():
+    df = pd.DataFrame(
+        {"note": [f"free text {i}" for i in range(400)], "t": [1.0] * 400}
+    )
+    df.loc[:199, "t"] = np.nan
+    assert analyze_missing(df)["per_column"]["t"]["missing_pattern"] == "unknown"

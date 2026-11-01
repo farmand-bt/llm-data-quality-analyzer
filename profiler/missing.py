@@ -8,7 +8,9 @@ values go with a column's missingness, using calibrated tests, and
     "MAR"     — related to at least one observed column (see missing_related_to)
     "MCAR"    — tested and no detectable pattern (consistent with random gaps,
                 not proof of them)
-    "unknown" — missing values, but too few rows to test any pair
+    "unknown" — missing values, but not tested: too few missing or present
+                rows, no numeric or categorical column to compare with, or
+                beyond the first MAX_MISSING_PATTERN_COLUMNS columns with gaps
 Data alone can't show MNAR (missingness that depends on the missing values
 themselves), so that label is no longer given.
 """

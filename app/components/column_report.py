@@ -171,9 +171,10 @@ def _render_meta(info: dict) -> None:
     _pattern_hints = {
         "MCAR": "MCAR — tested, no detectable pattern (consistent with random gaps, "
         "not proof of them)",
-        "MAR": f"MAR — the gaps go with: {_related}. A mean or median fill would "
-        "bias this column.",
-        "unknown": "Too few missing or present rows to test for a pattern",
+        "MAR": f"MAR — the gaps go with: {_related}. If they depend on it, a mean "
+        "or median fill would bias this column.",
+        "unknown": "Not tested: too few missing or present rows, no numeric or "
+        "categorical column to compare with, or beyond the first 50 columns with gaps",
     }
     if _pattern in _pattern_hints:
         st.caption(_pattern_hints[_pattern])

@@ -24,7 +24,8 @@ def render(report: dict) -> None:
         st.caption(
             "Pearson r measures the linear relationship between two numeric columns. "
             "Values range from −1 (perfect negative) to +1 (perfect positive); "
-            "0 means no linear relationship. "
+            "0 means no linear relationship. Blank cells weren't computed: fewer "
+            "than 10 rows hold both values, or a column is constant. "
             f"Pairs with |r| ≥ {HIGH_CORRELATION_THRESHOLD} are flagged as potentially redundant."
         )
         _render_pearson_heatmap(pearson)
@@ -76,7 +77,7 @@ def _render_pearson_heatmap(pearson: dict) -> None:
         [
             round(float(pearson[col_a][col_b]), 3)
             if pearson[col_a].get(col_b) is not None
-            else 0.0
+            else float("nan")  # not computed: blank, not "no relationship"
             for col_b in cols
         ]
         for col_a in cols

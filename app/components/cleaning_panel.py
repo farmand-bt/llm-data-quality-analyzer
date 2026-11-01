@@ -208,7 +208,10 @@ def render(df: pd.DataFrame, report: dict) -> None:
             try:
                 cleaned = pipeline.execute(df)
             except ValueError as exc:
-                # e.g. a column mixing timestamps with and without a timezone
+                # e.g. a column mixing timestamps with and without a timezone;
+                # drop the previous run's results so they aren't shown as this one
+                st.session_state.pop("cleaned_df", None)
+                st.session_state.pop("cleaning_log", None)
                 st.error(f"Cleaning stopped: {exc}")
             else:
                 st.session_state["cleaned_df"] = cleaned

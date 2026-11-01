@@ -226,9 +226,9 @@ def _render_column_table(columns: dict) -> None:
             | Pattern | Meaning |
             |---------|---------|
             | **none** | No missing values — column is complete |
-            | **MAR** | The gaps go with an observed column (e.g. more missing ratings for older homes); the column report names it. A mean or median fill would bias such a column |
+            | **MAR** | The gaps go with an observed column (e.g. more missing ratings for older homes); the column report names it. If the gaps depend on it, a mean or median fill would bias the column |
             | **MCAR** | Tested, and no detectable pattern — consistent with random gaps, but not proof of them |
-            | **unknown** | Too few missing (or present) rows to test |
+            | **unknown** | Not tested: too few missing or present rows, no numeric or categorical column to compare with, or beyond the first 50 columns with gaps |
 
             Missingness that depends on the missing values themselves (MNAR) can't
             be detected from the data alone, so it is never reported.
