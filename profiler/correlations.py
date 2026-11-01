@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import chi2_contingency
 
-from config.settings import HIGH_CORRELATION_THRESHOLD
+from config.settings import HIGH_CORRELATION_THRESHOLD, MIN_CORRELATION_ROWS
 
 # Cap categorical columns for Cramér's V to avoid O(n_cat²) blowing up
 _MAX_CAT_COLS = 15
@@ -24,10 +24,14 @@ def _cramers_v(x: pd.Series, y: pd.Series) -> float:
 def compute_correlations(df: pd.DataFrame, type_info: dict) -> dict:
     """Return Pearson correlation matrix, Cramér's V for categoricals, and high-correlation pairs.
 
+    A pair with fewer than MIN_CORRELATION_ROWS rows holding both values is None
+    and never a high pair: two rows always give r = +/-1 (ported from
+    data-quality-mcp, Milestone 3.5 D5).
+
     Returns:
         {
             "pearson": {col_a: {col_b: float | None}},
-            "cramers_v": {col_a: {col_b: float}},
+            "cramers_v": {col_a: {col_b: float | None}},
             "high_correlation_pairs": [
                 {"col_a": str, "col_b": str, "method": str, "value": float}
             ],
@@ -49,7 +53,7 @@ def compute_correlations(df: pd.DataFrame, type_info: dict) -> dict:
     # --- Pearson (numeric-numeric) ---
     if len(numeric_cols) >= 2:
         num_df = df[numeric_cols].apply(pd.to_numeric, errors="coerce")
-        matrix = num_df.corr(method="pearson")
+        matrix = num_df.corr(method="pearson", min_periods=MIN_CORRELATION_ROWS)
 
         for col_a in numeric_cols:
             pearson[col_a] = {}
@@ -74,6 +78,10 @@ def compute_correlations(df: pd.DataFrame, type_info: dict) -> dict:
         for i, col_a in enumerate(cat_limited):
             cramers[col_a] = {}
             for col_b in cat_limited[i + 1 :]:
+                shared = int((df[col_a].notna() & df[col_b].notna()).sum())
+                if shared < MIN_CORRELATION_ROWS:
+                    cramers[col_a][col_b] = None
+                    continue
                 v = _cramers_v(df[col_a], df[col_b])
                 cramers[col_a][col_b] = round(v, 4)
                 if v >= HIGH_CORRELATION_THRESHOLD:

@@ -503,3 +503,37 @@ def test_fill_constant_with_a_new_label_on_a_categorical_column():
     assert isinstance(out["c"].dtype, pd.CategoricalDtype)
     assert log["missing_after"] == 0
     assert df["c"].isnull().sum() == 1  # input unchanged
+
+
+# ---------------------------------------------------------------------------
+# Ported from data-quality-mcp, Milestone 3.5 (D6) and #14
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("strategy", ["fill_mean", "fill_median"])
+def test_fills_ignore_infinite_values(strategy):
+    df = pd.DataFrame({"x": [1.0, np.inf, np.nan, 3.0]})
+    out, _ = handle_missing(df, strategy, "x")
+    assert out["x"].iloc[2] == 2.0
+    assert np.isinf(out["x"].iloc[1])
+
+
+def test_fill_on_only_infinite_values_raises_clearly():
+    df = pd.DataFrame({"x": [np.inf, -np.inf, np.nan, np.inf]})
+    with pytest.raises(ValueError, match="at least one finite number"):
+        handle_missing(df, "fill_mean", "x")
+
+
+def test_to_datetime_with_mixed_offsets_converts_to_utc():
+    values = ["2020-01-01T10:00:00Z", "2020-01-02T10:00:00+02:00", None, "unknown"]
+    out, _ = fix_types(pd.DataFrame({"t": values}), "t", "datetime")
+    assert str(out["t"].dt.tz) == "UTC"
+    assert out["t"].iloc[1] == pd.Timestamp("2020-01-02T08:00:00Z")
+    assert out["t"].isna().tolist() == [False, False, True, True]
+
+
+@pytest.mark.parametrize("other", ["2020-01-02 10:00", "15-Jan-2020"])
+def test_to_datetime_mixing_naive_and_offset_values_raises(other):
+    values = ["2020-01-01T10:00:00Z", "2020-01-02T10:00:00+02:00", other]
+    with pytest.raises(ValueError, match="with and without a timezone"):
+        fix_types(pd.DataFrame({"t": values}), "t", "datetime")

@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 
+from profiler.type_detector import parse_datetimes
+
 
 def _numeric_stats(series: pd.Series) -> dict:
     numbers = pd.to_numeric(series, errors="coerce").dropna()
@@ -45,10 +47,7 @@ def _datetime_stats(series: pd.Series) -> dict:
     if pd.api.types.is_datetime64_any_dtype(series.dtype):
         dt = series.dropna()
     else:
-        try:
-            dt = pd.to_datetime(series, format="mixed", errors="coerce").dropna()
-        except Exception:
-            dt = pd.to_datetime(series, errors="coerce").dropna()
+        dt = parse_datetimes(series).dropna()
     if len(dt) == 0:
         return {"min_date": None, "max_date": None, "range_days": None}
     return {

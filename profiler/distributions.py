@@ -1,10 +1,9 @@
-import warnings
-
 import numpy as np
 import pandas as pd
 from scipy import stats
 
 from config.settings import HIGH_CARDINALITY_THRESHOLD
+from profiler.type_detector import parse_datetimes
 
 
 def _normality_test(series: pd.Series) -> tuple[float | None, bool | None]:
@@ -57,12 +56,7 @@ def _detect_datetime_gaps(series: pd.Series) -> dict:
 
     A gap is flagged when it exceeds 3× the median interval.
     """
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", UserWarning)
-        try:
-            dt = pd.to_datetime(series, format="mixed", errors="coerce").dropna().sort_values()
-        except Exception:
-            dt = pd.to_datetime(series, errors="coerce").dropna().sort_values()
+    dt = parse_datetimes(series).dropna().sort_values()
     if len(dt) < 2:
         return {"max_gap_days": None, "gap_count": 0, "median_gap_days": None}
     diffs_days = dt.diff().dropna().dt.days
