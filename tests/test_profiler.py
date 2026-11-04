@@ -1085,8 +1085,11 @@ def test_a_many_to_one_mapping_needs_rows_per_level(rows, high):
     assert bool(result["high_correlation_pairs"]) is high
 
 
-def test_the_fixture_pair(messy_df):
-    result = compute_correlations(messy_df, detect_types(messy_df))
+def test_the_housing_sample_pair():
+    # 0.1171 with the plain V. data-quality-mcp's fixture differs (0.0292 there)
+    sample = Path(__file__).parent.parent / "sample_data" / "housing_messy.csv"
+    df = pd.read_csv(sample)
+    result = compute_correlations(df, detect_types(df))
     assert result["cramers_v"] == {"neighborhood": {"garage": 0.0153}, "garage": {}}
 
 
