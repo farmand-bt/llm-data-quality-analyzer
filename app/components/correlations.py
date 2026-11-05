@@ -62,6 +62,8 @@ def render(report: dict) -> None:
             st.caption(
                 "Cramér's V measures the strength of association between two categorical columns. "
                 "Values range from 0 (no association) to 1 (perfect association). "
+                "It is bias-corrected, so unrelated columns stay near 0 "
+                "even on few rows. "
                 "Unlike Pearson r, it does not indicate direction — only strength."
             )
             _render_cramers_table(cramers)

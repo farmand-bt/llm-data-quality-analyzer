@@ -1,4 +1,5 @@
 import json
+from datetime import date, timedelta
 from pathlib import Path
 
 import numpy as np
@@ -963,8 +964,11 @@ def test_cramers_v_needs_ten_shared_rows():
     below = compute_correlations(frame(9), detect_types(frame(9)))
     assert below["cramers_v"]["a"]["b"] is None
     assert below["high_correlation_pairs"] == []
+    # From 10 shared rows on. Without Yates' correction a matching pair is 1.0
+    # (it was 0.8 with it), so it is a high pair
     at = compute_correlations(frame(10), detect_types(frame(10)))
-    assert at["cramers_v"]["a"]["b"] is not None
+    assert at["cramers_v"]["a"]["b"] == 1.0
+    assert at["high_correlation_pairs"][0]["method"] == "cramers_v"
 
 
 def _pattern_frame(n: int = 400, seed: int = 1) -> pd.DataFrame:
@@ -1012,3 +1016,246 @@ def test_unknown_without_a_comparison_column():
     )
     df.loc[:199, "t"] = np.nan
     assert analyze_missing(df)["per_column"]["t"]["missing_pattern"] == "unknown"
+
+
+# --- bias-corrected Cramér's V (ported from data-quality-mcp, Milestone 3.5,
+# Amendment: bias-corrected Cramér's V) ---
+
+
+def _categorical(df: pd.DataFrame) -> dict:
+    """compute_correlations with every column typed categorical: on few rows,
+    type detection would call a many-level column text."""
+    return compute_correlations(df, {c: {"inferred_type": "categorical"} for c in df})
+
+
+def _plain_v(x: pd.Series, y: pd.Series) -> float:
+    """The plain V (Yates on 2 x 2), the value before this port."""
+    from scipy.stats import chi2_contingency
+
+    table = pd.crosstab(x, y)
+    chi2 = chi2_contingency(table)[0]
+    return float(np.sqrt(chi2 / (table.to_numpy().sum() * (min(table.shape) - 1))))
+
+
+def _reference_v(x: pd.Series, y: pd.Series) -> float:
+    """The corrected V from a pd.crosstab table, no Yates' correction."""
+    from scipy.stats import chi2_contingency
+
+    from profiler.correlations import corrected_cramers_v
+
+    table = pd.crosstab(x, y)  # drops rows where either value is missing
+    if min(table.shape) < 2:
+        return 0.0
+    chi2 = chi2_contingency(table, correction=False)[0]
+    return corrected_cramers_v(float(chi2), int(table.to_numpy().sum()), table.shape)
+
+
+def test_unrelated_many_level_columns_are_no_longer_a_high_pair():
+    rng = np.random.default_rng(3)
+    df = pd.DataFrame(
+        {
+            "a": [f"a{v}" for v in rng.integers(0, 50, 20)],
+            "b": [f"b{v}" for v in rng.integers(0, 50, 20)],
+        }
+    )
+    assert _plain_v(df["a"], df["b"]) >= 0.9  # the false high pair before
+    result = _categorical(df)
+    assert result["cramers_v"]["a"]["b"] < 0.5
+    assert result["high_correlation_pairs"] == []
+
+
+@pytest.mark.parametrize("levels", [2, 5])
+def test_a_one_to_one_association_is_one(levels):
+    from profiler.correlations import _cramers_v
+
+    a = [f"x{i % levels}" for i in range(50)]
+    b = [f"y{i % levels}" for i in range(50)]
+    assert _cramers_v(pd.Series(a), pd.Series(b)) == 1.0
+
+
+@pytest.mark.parametrize(("rows", "high"), [(20, False), (100, True)])
+def test_a_many_to_one_mapping_needs_rows_per_level(rows, high):
+    # The accepted trade-off: 10 levels -> 2 groups is redundant, but on 2 rows
+    # per level the corrected V stays below 0.9
+    rng = np.random.default_rng(10)
+    codes = rng.integers(0, 10, rows)
+    df = pd.DataFrame({"city": [f"c{v}" for v in codes], "region": codes % 2})
+    result = _categorical(df)
+    assert (result["cramers_v"]["city"]["region"] >= 0.9) is high
+    assert bool(result["high_correlation_pairs"]) is high
+
+
+def test_the_housing_sample_pair():
+    # 0.1171 with the plain V. data-quality-mcp's fixture differs (0.0292 there)
+    sample = Path(__file__).parent.parent / "sample_data" / "housing_messy.csv"
+    df = pd.read_csv(sample)
+    result = compute_correlations(df, detect_types(df))
+    assert result["cramers_v"] == {"neighborhood": {"garage": 0.0153}, "garage": {}}
+
+
+def test_a_two_by_two_table_has_no_yates_correction():
+    from scipy.stats import chi2_contingency
+
+    from profiler.correlations import _cramers_v, corrected_cramers_v
+
+    rng = np.random.default_rng(22)
+    x = pd.Series(rng.integers(0, 2, 30))
+    y = pd.Series(np.where(rng.random(30) < 0.7, x, 1 - x))
+    table = pd.crosstab(x, y)
+    chi2 = chi2_contingency(table, correction=False)[0]
+    assert _cramers_v(x, y) == corrected_cramers_v(float(chi2), 30, (2, 2))
+    assert chi2_contingency(table)[0] < chi2  # Yates would have lowered it
+
+
+@pytest.mark.parametrize("seed", range(8))
+def test_the_numpy_table_matches_crosstab(seed):
+    from profiler.correlations import _cramers_v
+
+    rng = np.random.default_rng(seed)
+    n = 200
+    x = pd.Series([f"x{v}" for v in rng.integers(0, 6, n)], dtype=object)
+    y = pd.Series([[True, False, "maybe"][v] for v in rng.integers(0, 3, n)])
+    y = y.astype(object)  # real bools beside a string
+    nulls = [None, np.nan, pd.NA, pd.NaT]
+    for s in (x, y):
+        for i in np.flatnonzero(rng.random(n) < 0.15):
+            s[i] = nulls[i % len(nulls)]
+    # A category that only appears where the other column is missing
+    lonely = int(np.flatnonzero(y.isna().to_numpy())[0])
+    x[lonely] = "only-here"
+    assert _cramers_v(x, y) == pytest.approx(_reference_v(x, y), abs=1e-12)
+    assert _cramers_v(y, x) == pytest.approx(_reference_v(x, y), abs=1e-12)
+
+
+def test_series_are_matched_by_label_and_no_shared_rows_gives_zero():
+    from profiler.correlations import _cramers_v
+
+    rng = np.random.default_rng(5)
+    x = pd.Series(["a", "b"] * 15)
+    y = pd.Series(["p", "q"] * 15, index=rng.permutation(30))
+    positional = pd.Series(y.to_numpy())
+    assert _cramers_v(x, positional) == 1.0  # a different answer by position
+    assert _cramers_v(x, y) == pytest.approx(_reference_v(x, y), abs=1e-12)
+    assert _cramers_v(x, y) < 1.0
+    assert _cramers_v(pd.Series(["a", None]), pd.Series([None, "b"])) == 0.0
+
+
+def test_a_different_value_on_every_shared_row_gives_zero():
+    from profiler.correlations import _cramers_v
+
+    x = pd.Series([f"r{i}" for i in range(12)])
+    y = pd.Series(["a", "b"] * 6)
+    assert _cramers_v(x, y) == 0.0
+
+
+def test_one_category_on_the_shared_rows_gives_zero():
+    from profiler.correlations import _cramers_v
+
+    # "b" exists, but only where y is missing
+    x = pd.Series(["a"] * 10 + ["b"] * 3)
+    y = pd.Series(["p", "q"] * 5 + [None] * 3)
+    assert _cramers_v(x, y) == 0.0
+    assert _categorical(pd.DataFrame({"x": x, "y": y}))["cramers_v"]["x"]["y"] == 0.0
+
+
+# --- ruling out dates early (ported from data-quality-mcp #20): the result
+# must equal parsing every value ---
+
+_DATES = [str(d.date()) for d in pd.date_range("2000-01-01", periods=9000, freq="D")]
+_JUNK = [f"note {i}" for i in range(9000)]
+
+
+def _days(first: date, n: int) -> list[str]:
+    """`n` consecutive ISO dates; built in Python, as pandas 2 can't hold
+    dates outside 1677-2262."""
+    return [str(first + timedelta(days=i)) for i in range(n)]
+
+
+def _interleave(dates: int, junk: int) -> list[str]:
+    """`dates` dates and `junk` free-text values, spread evenly."""
+    values = _DATES[:dates] + _JUNK[:junk]
+    order = np.argsort(np.arange(len(values)) % 7, kind="stable")
+    return [values[i] for i in order]
+
+
+DATE_CASES = {
+    "free text": _JUNK[:5000],
+    "a quarter junk": _interleave(6000, 2000),
+    "exactly at the threshold": _interleave(8000, 2000),
+    "just below the threshold": _interleave(7999, 2001),
+    "junk first, then dates": _JUNK[:1500] + _DATES[:8500],
+    "one junk value on many rows": ["n/a"] * 3000 + _DATES[:7000],
+    "dates on many rows, junk unique": _DATES[:20] * 400 + _JUNK[:2000],
+    "naive values, then mixed offsets": _DATES[:1500]
+    + [f"2020-01-01T10:00:00{tz}" for tz in ("Z", "+02:00")] * 300,
+    "nanoseconds, then dates after 2262": [
+        f"2020-01-01 00:00:00.{i:09d}" for i in range(1, 1001)
+    ]
+    + _days(date(2300, 1, 1), 4000),
+}
+
+
+@pytest.mark.parametrize("values", DATE_CASES.values(), ids=DATE_CASES.keys())
+def test_ruling_out_dates_early_gives_the_full_parse_result(values):
+    from profiler.type_detector import _DATETIME_THRESHOLD, _date_mask, parse_datetimes
+
+    codes, uniques = pd.factorize(pd.Series(values, dtype=object))
+    uniques = pd.Series(uniques, dtype=object)
+    full = parse_datetimes(uniques).notna().to_numpy()
+    mask = _date_mask(uniques, np.bincount(codes))
+    if mask is None:
+        assert full[codes].mean() < _DATETIME_THRESHOLD
+    else:
+        assert (mask == full).all()
+
+
+def test_dates_out_of_range_for_the_whole_column_stay_unparsed():
+    # On pandas 3 one nanosecond timestamp makes the whole column nanosecond
+    # resolution, where dates before 1677 don't fit; a chunk without it would
+    # parse them, so the column must not pass with half its values
+    from profiler.type_detector import _infer_type
+
+    values = _days(date(1500, 1, 1), 500) + _days(date(2000, 1, 1), 500)
+    values.append("2020-01-01 00:00:00.123456789")
+    assert _infer_type(pd.Series(values, dtype=object)) == ("text", False)
+
+
+@pytest.mark.parametrize(
+    ("values", "expected"),
+    [
+        (_interleave(8000, 2000), ("datetime", True)),
+        (_interleave(7999, 2001), ("text", False)),
+        (["n/a"] * 3000 + _DATES[:7000], ("text", False)),
+    ],
+)
+def test_the_date_threshold_is_unchanged(values, expected):
+    from profiler.type_detector import _infer_type
+
+    assert _infer_type(pd.Series(values, dtype=object)) == expected
+
+
+def test_free_text_is_ruled_out_after_a_fraction_of_its_values(monkeypatch):
+    from profiler import type_detector
+
+    parsed = []
+    parse_mixed = type_detector._parse_mixed
+
+    def spy(series):
+        parsed.append(len(series))
+        return parse_mixed(series)
+
+    monkeypatch.setattr(type_detector, "_parse_mixed", spy)
+    assert type_detector._infer_type(pd.Series(_JUNK, dtype=object)) == ("text", False)
+    assert parsed == [1000, 1000]  # 20% of 9000 is 1800
+    parsed.clear()
+    assert type_detector._infer_type(pd.Series(_DATES, dtype=object))[0] == "datetime"
+    assert parsed == [1000, 9000]  # one chunk, then the whole column
+
+
+def test_a_chunk_needing_the_last_fallback_parses_the_whole_column(monkeypatch):
+    from profiler import type_detector
+
+    monkeypatch.setattr(type_detector, "_parse_mixed", lambda series: None)
+    uniques = pd.Series(_DATES[:3000], dtype=object)
+    mask = type_detector._date_mask(uniques, np.ones(3000, dtype=int))
+    assert mask is not None and mask.all()

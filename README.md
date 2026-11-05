@@ -101,7 +101,7 @@ Missing count, percentage, and a pattern based on tests against the other column
 - **unknown** — not tested: too few missing or present rows, no numeric or categorical column to compare with, or beyond the first 50 columns with gaps
 - **none** — no missing values
 
-MNAR can't be detected from the data alone, so it isn't reported. This comes from [data-quality-mcp](https://github.com/farmand-bt/data-quality-mcp) (Milestone 3.5), which also contributed: ISO dates in a CSV count as typed; correlations need at least 10 shared rows; mean/median fills ignore ±inf; and timestamps with mixed UTC offsets are parsed and converted to UTC.
+MNAR can't be detected from the data alone, so it isn't reported. This comes from [data-quality-mcp](https://github.com/farmand-bt/data-quality-mcp) (Milestone 3.5), which also contributed: ISO dates in a CSV count as typed; correlations need at least 10 shared rows, and Cramér's V between categories is bias-corrected; mean/median fills ignore ±inf; and timestamps with mixed UTC offsets are parsed and converted to UTC.
 
 ### 5. Outlier Detection
 Both IQR (1.5× multiplier) and Z-score (±3σ) methods return counts, percentages, and the exact row indices — so the cleaning pipeline can target them precisely without index drift.
